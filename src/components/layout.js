@@ -13,6 +13,19 @@ import Header from "./header"
 import "./layout.css"
 
 const Layout = ({ children }) => {
+  const [height, setHeight] = React.useState(0)
+  const [width, setWidth] = React.useState(0)
+  const updateWindowDimentsions = () => {
+    setHeight(window.innerHeight)
+    setWidth(window.innerWidth)
+  }
+  React.useEffect(() => {
+    updateWindowDimentsions()
+    window.addEventListener('resize', updateWindowDimentsions)
+    return () => {
+      window.removeEventListener('resize', updateWindowDimentsions)
+    }
+  })
   const data = useStaticQuery(graphql`
     query SiteTitleQuery {
       site {
@@ -29,7 +42,7 @@ const Layout = ({ children }) => {
       <div
         style={{
           margin: `0 auto`,
-          maxWidth: 960,
+          maxWidth: width,
           padding: `0 1.0875rem 1.45rem`,
         }}
       >
@@ -37,9 +50,9 @@ const Layout = ({ children }) => {
         <footer style={{
           marginTop: `2rem`
         }}>
-          © {new Date().getFullYear()}, Built with
+          © {new Date().getFullYear()}, Built by
           {` `}
-          <a href="https://www.gatsbyjs.com">Gatsby</a>
+          <a href="https://www.github.com/JohnnyHandy">JohnnyHandy</a>
         </footer>
       </div>
     </>
