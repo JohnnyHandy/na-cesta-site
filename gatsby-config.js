@@ -3,7 +3,8 @@ module.exports = {
     title: `Use Verano`,
     description: `Moda verão`,
     author: `@gatsbyjs`,
-    url: 'https://www.useverano.com.br'
+    url: 'https://www.useverano.com.br',
+    image: '/images/veranosol.png'
   },
   plugins: [
     `gatsby-plugin-react-helmet`,
@@ -25,10 +26,10 @@ module.exports = {
         background_color: `#663399`,
         theme_color: `#663399`,
         display: `minimal-ui`,
-        icon: `src/images/gatsby-icon.png`, // This path is relative to the root of the site.
+        icon: `src/images/veranosol.png`, // This path is relative to the root of the site.
       },
     },
-    `gatsby-plugin-styled-components`
+    `gatsby-plugin-emotion`
     // this (optional) plugin enables Progressive Web App + Offline functionality
     // To learn more, visit: https://gatsby.dev/offline
     // `gatsby-plugin-offline`,

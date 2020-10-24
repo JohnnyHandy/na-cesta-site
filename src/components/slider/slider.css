@@ -1,0 +1,10 @@
+.slick-slider {
+    background: lightgray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slick-list {
+    width: 40vw
+}

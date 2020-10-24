@@ -1,10 +1,10 @@
-import { Link, useStaticQuery, graphql } from "gatsby"
+import { useStaticQuery, graphql } from "gatsby"
 import Img from 'gatsby-image'
 import PropTypes from "prop-types"
 import React from "react"
 import { FaUserCircle, FaRegHeart,  } from 'react-icons/fa'
 import { BiShoppingBag } from 'react-icons/bi'
-import styled from 'styled-components'
+import styled from '@emotion/styled'
 
 const AnchorItem = styled('a')`
   text-decoration: underline;
