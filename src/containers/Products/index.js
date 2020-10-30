@@ -2,7 +2,9 @@ import React from 'react'
 import { graphql, useStaticQuery } from 'gatsby'
 import styled from '@emotion/styled'
 
+import { PhoneBreakpoint, DesktopBreakpoint } from '../../components/responsive/devices'
 import Thumbnail from '../../components/product/thumbnail'
+import Filters from '../Filters'
 
 const SpanItem = styled('span')`
   font-family: Quicksand;
@@ -16,14 +18,22 @@ const MenuContainer = styled('div')`
     padding: 1vh 2vw;
 `
 
-const ProductsArea = styled('div')`
+const ProductsAreaLandscape = styled('div')`
 display: grid;
 grid-template-columns: 25% 25% 25%;
 justify-content: space-evenly;
 width: 100%;
 height: 100%;
 row-gap: 5vh;
+`
 
+const ProductsAreaPortrait = styled('div')`
+  display: grid;
+  grid-template-columns: 50% 50%;
+  justify-content: space-evenly;
+  width: 100%;
+  height: 100%;
+  row-gap: 5vh;
 `
 const MenuItems = () => [
     {
@@ -85,40 +95,77 @@ const Products = () => {
             <MenuContainer>
                 <MenuItems />
             </MenuContainer>
-            <ProductsArea
-            >
-            <Thumbnail
-              img={data.modelo.childImageSharp.fixed}
-              name={'Modelo'}
-              price={'R$ 45,00'}
-            />
-            <Thumbnail
-              img={data.modelo.childImageSharp.fixed}
-              name={'Modelo'}
-              price={'R$ 45,00'}
-            />
-            <Thumbnail
-              img={data.modelo.childImageSharp.fixed}
-              name={'Modelo'}
-              price={'R$ 45,00'}
-            />
-            <Thumbnail
-              img={data.modelo.childImageSharp.fixed}
-              name={'Modelo'}
-              price={'R$ 45,00'}
-            />
-            <Thumbnail
-              img={data.modelo.childImageSharp.fixed}
-              name={'Modelo'}
-              price={'R$ 45,00'}
-            />
-            <Thumbnail
-              img={data.modelo.childImageSharp.fixed}
-              name={'Modelo'}
-              price={'R$ 45,00'}
-            />
-
-            </ProductsArea>
+            <PhoneBreakpoint>
+              <Filters />
+            </PhoneBreakpoint>
+            <DesktopBreakpoint>
+              <ProductsAreaLandscape>
+                <Thumbnail
+                  img={data.modelo.childImageSharp.fixed}
+                  name={'Modelo'}
+                  price={'R$ 45,00'}
+                />
+                <Thumbnail
+                  img={data.modelo.childImageSharp.fixed}
+                  name={'Modelo'}
+                  price={'R$ 45,00'}
+                />
+                <Thumbnail
+                  img={data.modelo.childImageSharp.fixed}
+                  name={'Modelo'}
+                  price={'R$ 45,00'}
+                />
+                <Thumbnail
+                  img={data.modelo.childImageSharp.fixed}
+                  name={'Modelo'}
+                  price={'R$ 45,00'}
+                />
+                <Thumbnail
+                  img={data.modelo.childImageSharp.fixed}
+                  name={'Modelo'}
+                  price={'R$ 45,00'}
+                />
+                <Thumbnail
+                  img={data.modelo.childImageSharp.fixed}
+                  name={'Modelo'}
+                  price={'R$ 45,00'}
+                />
+              </ProductsAreaLandscape>
+            </DesktopBreakpoint>
+            <PhoneBreakpoint>
+              <ProductsAreaPortrait>
+                <Thumbnail
+                  img={data.modelo.childImageSharp.fixed}
+                  name={'Modelo'}
+                  price={'R$ 45,00'}
+                />
+                <Thumbnail
+                  img={data.modelo.childImageSharp.fixed}
+                  name={'Modelo'}
+                  price={'R$ 45,00'}
+                />
+                <Thumbnail
+                  img={data.modelo.childImageSharp.fixed}
+                  name={'Modelo'}
+                  price={'R$ 45,00'}
+                />
+                <Thumbnail
+                  img={data.modelo.childImageSharp.fixed}
+                  name={'Modelo'}
+                  price={'R$ 45,00'}
+                />
+                <Thumbnail
+                  img={data.modelo.childImageSharp.fixed}
+                  name={'Modelo'}
+                  price={'R$ 45,00'}
+                />
+                <Thumbnail
+                  img={data.modelo.childImageSharp.fixed}
+                  name={'Modelo'}
+                  price={'R$ 45,00'}
+                />
+              </ProductsAreaPortrait>
+            </PhoneBreakpoint>
         </div>
     )
 }

@@ -2,7 +2,9 @@ import React from 'react'
 import Img from 'gatsby-image'
 import styled from '@emotion/styled'
 
-const CartButton = styled('button')`
+import { PhoneBreakpoint, DesktopBreakpoint } from '../responsive/devices'
+
+const CartButtonLandscape = styled('button')`
     color: #DE6E52;
     cursor: pointer;
     font-family: Quicksand;
@@ -10,14 +12,30 @@ const CartButton = styled('button')`
     margin: 1vh auto ;
     width: 12vw;
 `
-const BuyNowButton = styled('button') `
+const BuyNowButtonLandscape = styled('button') `
     color: #1A4350;
     cursor: pointer;
     font-family: Quicksand;
     margin: 1vh auto ;
     width: 12vw;
 `
+const BuyNowButtonPortrait = styled('button')`
+    color: #1A4350;
+    cursor: pointer;
+    font-family: Quicksand;
+    margin: 1vh auto;
+    width: 25vw;
+}
+`
 
+const CartButtonPortrait = styled('button')`
+    color: #DE6E52;
+    cursor: pointer;
+    font-family: Quicksand;
+    font-size: 4vw;
+    margin: 1vh auto;
+    width: 25vw;
+`
 
 const ProductThumb = ({ name, price, img }) => {
     return (
@@ -41,12 +59,22 @@ const ProductThumb = ({ name, price, img }) => {
             />
             <span> {name} </span>
             <span> {price} </span>
-            <BuyNowButton>
-                Comprar agora
-            </BuyNowButton>
-            <CartButton>
-                Adicionar à sacola
-            </CartButton>
+            <DesktopBreakpoint>
+                <BuyNowButtonLandscape>
+                    Comprar agora
+                </BuyNowButtonLandscape>
+                <CartButtonLandscape>
+                    Adicionar à sacola
+                </CartButtonLandscape>
+            </DesktopBreakpoint>
+            <PhoneBreakpoint>
+                <BuyNowButtonPortrait>
+                    Comprar agora
+                </BuyNowButtonPortrait>
+                <CartButtonPortrait>
+                    Adicionar à sacola
+                </CartButtonPortrait>
+            </PhoneBreakpoint>
         </div>
     )
 }

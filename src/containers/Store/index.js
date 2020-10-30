@@ -1,21 +1,40 @@
 import React from 'react'
-import Filters from '../Filters'
-import Products from '../Products'
+import styled from '@emotion/styled'
 
-const StoreContainer = (props) => {
+import { DesktopBreakpoint, PhoneBreakpoint } from '../../components/responsive/devices'
+import Products from '../Products'
+import Filters from '../Filters'
+
+
+const StoreLandscapeContainer = styled('div')`
+    display: grid;
+    grid-template-columns: 30% 70%;
+    justify-content: space-evenly;,
+    padding: 3vh 0;
+`
+const StorePortraitContainer = styled('div')`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;,
+    padding: 3vh 0;
+`
+
+const StoreArea = (props) => {
     return(
-        <div
-            style={{
-                display: 'grid',
-                gridTemplateColumns: '30% 60%',
-                justifyContent: 'space-between',
-                padding: '3vh 0'
-            }}
-        >
-            <Filters />
-            <Products />
-        </div>
+        <>
+        <DesktopBreakpoint>
+            <StoreLandscapeContainer>
+                <Filters />
+                <Products />
+            </StoreLandscapeContainer>
+        </DesktopBreakpoint>
+        <PhoneBreakpoint>
+            <StorePortraitContainer>
+                <Products />
+            </StorePortraitContainer>
+        </PhoneBreakpoint>
+        </>
     )
 }
 
-export default StoreContainer
+export default StoreArea
