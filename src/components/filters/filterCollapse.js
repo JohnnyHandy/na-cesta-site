@@ -24,7 +24,7 @@ const FilterCollapse = ({ label, children, initialState = false, icons, style })
         >
             {children}
         </ChildrenComponentWrapper>
-    ), [collapse])
+    ), [collapse, children])
     return (
         <div
             style={style}

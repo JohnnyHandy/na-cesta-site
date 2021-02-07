@@ -53,7 +53,7 @@ const Layout = ({ children }) => {
         </PhoneBreakpoint>
         <main
           style={{
-            overflow: menu ? 'hidden' : 'scroll'
+            // overflow: menu ? 'hidden' : 'scroll'
           }}
         >{children}</main>
         <footer style={{

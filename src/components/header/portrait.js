@@ -1,6 +1,6 @@
 import React from 'react'
 import Img from 'gatsby-image'
-import { FaUserCircle, FaRegHeart,  } from 'react-icons/fa'
+import { FaRegHeart,  } from 'react-icons/fa'
 import { BiShoppingBag , BiMenuAltLeft} from 'react-icons/bi'
 
 

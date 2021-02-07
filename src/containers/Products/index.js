@@ -78,7 +78,8 @@ const MenuItems = () => [
   ))
   
 
-const Products = () => {
+const Products = (props) => {
+  const { products } = props
   const data = useStaticQuery(graphql`
   query {
     modelo: file(relativePath: { eq: "modelo.jpeg" }) {
@@ -90,6 +91,15 @@ const Products = () => {
     }
   }
 `)
+  const ProductItems = ({items}) => items.map(item => {
+    return (
+      <Thumbnail
+        name={item.name}
+        price={item.price}
+        img={`https://useverano.s3-sa-east-1.amazonaws.com/${item.images[0]['key']}`}
+      />
+    )
+  })
     return(
         <div>
             <MenuContainer>
@@ -100,36 +110,7 @@ const Products = () => {
             </PhoneBreakpoint>
             <DesktopBreakpoint>
               <ProductsAreaLandscape>
-                <Thumbnail
-                  img={data.modelo.childImageSharp.fixed}
-                  name={'Modelo'}
-                  price={'R$ 45,00'}
-                />
-                <Thumbnail
-                  img={data.modelo.childImageSharp.fixed}
-                  name={'Modelo'}
-                  price={'R$ 45,00'}
-                />
-                <Thumbnail
-                  img={data.modelo.childImageSharp.fixed}
-                  name={'Modelo'}
-                  price={'R$ 45,00'}
-                />
-                <Thumbnail
-                  img={data.modelo.childImageSharp.fixed}
-                  name={'Modelo'}
-                  price={'R$ 45,00'}
-                />
-                <Thumbnail
-                  img={data.modelo.childImageSharp.fixed}
-                  name={'Modelo'}
-                  price={'R$ 45,00'}
-                />
-                <Thumbnail
-                  img={data.modelo.childImageSharp.fixed}
-                  name={'Modelo'}
-                  price={'R$ 45,00'}
-                />
+               <ProductItems items={products} />
               </ProductsAreaLandscape>
             </DesktopBreakpoint>
             <PhoneBreakpoint>

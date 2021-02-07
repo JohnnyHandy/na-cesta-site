@@ -49,16 +49,19 @@ const ProductThumb = ({ name, price, img }) => {
                 justifyContent: 'space-evenly'
             }}
         >
-            <Img
+            <div style={{ width: '150px', height: '150px' }} >
+                <img alt={img} src={img} />
+            </div>
+            {/* <Img
                 fluid={img}
                 alt={name}
                 style={{
                     width: '150px',
                     height: '150px'
                 }}
-            />
+            /> */}
             <span> {name} </span>
-            <span> {price} </span>
+            <span> R$ {' '} {price} </span>
             <DesktopBreakpoint>
                 <BuyNowButtonLandscape>
                     Comprar agora

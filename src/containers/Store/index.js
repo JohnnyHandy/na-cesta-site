@@ -9,7 +9,7 @@ import Filters from '../Filters'
 const StoreLandscapeContainer = styled('div')`
     display: grid;
     grid-template-columns: 30% 70%;
-    justify-content: space-evenly;,
+    justify-content: space-evenly;
     padding: 3vh 0;
 `
 const StorePortraitContainer = styled('div')`
@@ -24,13 +24,13 @@ const StoreArea = (props) => {
         <>
         <DesktopBreakpoint>
             <StoreLandscapeContainer>
-                <Filters />
-                <Products />
+                <Filters {...props} />
+                <Products {...props} />
             </StoreLandscapeContainer>
         </DesktopBreakpoint>
         <PhoneBreakpoint>
             <StorePortraitContainer>
-                <Products />
+                <Products {...props} />
             </StorePortraitContainer>
         </PhoneBreakpoint>
         </>
