@@ -49,7 +49,7 @@ const Layout = ({ children }) => {
         }}
       >
         <PhoneBreakpoint>
-          {menu && <Menu menu={menu} setMenu={setMenu} />}
+          {menu && <Menu height={height} menu={menu} setMenu={setMenu} />}
         </PhoneBreakpoint>
         <main
           style={{

@@ -2,31 +2,8 @@ import React from 'react'
 import { graphql, useStaticQuery } from 'gatsby'
 import Img from 'gatsby-image'
 import styled from '@emotion/styled'
-import { BiLeftArrow, BiRightArrow } from 'react-icons/bi'
 
 import { DesktopBreakpoint, PhoneBreakpoint } from '../responsive/devices'
-
-const ForwardArrow = ({ onClick, className }) => {
-    return (
-        <BiRightArrow
-            color='#DE6E52'
-            description='Próximo'
-            className={className}
-            onClick={onClick}
-        />
-    )
-}
-
-const PrevArrow = ({ onClick, className }) => {
-    return (
-        <BiLeftArrow
-            color='#DE6E52'
-            description='Anterior'
-            className={className}
-            onClick={onClick}
-        />
-    )
-}
 
 const CarouselLandscapeContainer = styled('div')`
     align-items: center;

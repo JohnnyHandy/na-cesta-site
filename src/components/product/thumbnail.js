@@ -1,5 +1,6 @@
 import React from 'react'
 import Img from 'gatsby-image'
+import { Link } from 'gatsby'
 import styled from '@emotion/styled'
 
 import { PhoneBreakpoint, DesktopBreakpoint } from '../responsive/devices'
@@ -37,7 +38,7 @@ const CartButtonPortrait = styled('button')`
     width: 25vw;
 `
 
-const ProductThumb = ({ name, price, img }) => {
+const ProductThumb = ({ name, price, img, productId }) => {
     return (
         <div
             style={{
@@ -48,18 +49,23 @@ const ProductThumb = ({ name, price, img }) => {
                 padding: '3vh 1vw',
                 justifyContent: 'space-evenly'
             }}
+            key={name}
         >
-            <div style={{ width: '150px', height: '150px' }} >
+            {/* <div style={{ width: '150px', height: '150px' }} >
                 <img alt={img} src={img} />
-            </div>
-            {/* <Img
-                fluid={img}
-                alt={name}
-                style={{
-                    width: '150px',
-                    height: '150px'
-                }}
-            /> */}
+            </div> */}
+            <Link
+                to={`${productId}-${name.replace(/\s/g, '')}`}
+            >
+                <Img
+                    fluid={img}
+                    alt={name}
+                    style={{
+                        width: '150px',
+                        height: '150px'
+                    }}
+                />
+            </Link>
             <span> {name} </span>
             <span> R$ {' '} {price} </span>
             <DesktopBreakpoint>

@@ -1,16 +1,15 @@
 import React from "react"
-import { Link } from "gatsby"
 
 import Layout from "../components/layout"
-import Image from "../components/image"
 import SEO from "../components/seo"
-import LandingCarousel from "../components/carousel"
-import StoreContainer from '../containers/Store'
+import ProductUnit from '../containers/Products/productUnit'
 
-const IndexPage = () => (
+const IndexPage = ({ pageContext: { product, productIndex } }) => {
+  return (
   <Layout>
-    Template
+      <SEO title='Produto' />
+      <ProductUnit product={product} productIndex={productIndex} />
   </Layout>
-)
+)}
 
 export default IndexPage

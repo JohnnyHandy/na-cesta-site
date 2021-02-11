@@ -81,22 +81,30 @@ const MenuItems = () => [
 const Products = (props) => {
   const { products } = props
   const data = useStaticQuery(graphql`
-  query {
-    modelo: file(relativePath: { eq: "modelo.jpeg" }) {
-      childImageSharp {
-        fixed (width: 150, height: 150) {
-          ...GatsbyImageSharpFixed
+  {
+    allProduct {
+    nodes {
+      imageArray {
+        childImageSharp {
+          fluid(maxWidth: 150, maxHeight: 150) {
+            ...GatsbyImageSharpFluid
+          }
         }
       }
     }
   }
-`)
-  const ProductItems = ({items}) => items.map(item => {
+}`)
+  const ProductItems = ({items}) => items.map((item, index) => {
+    console.log('data',data, 'item', item, 'index', index )
+    const ThumbImg = data['allProduct']['nodes'][index]['imageArray'][0]['childImageSharp']['fluid']
+    console.log('test', data['allProduct']['nodes'][index]['imageArray'])
     return (
       <Thumbnail
+        key={item.name}
         name={item.name}
         price={item.price}
-        img={`https://useverano.s3-sa-east-1.amazonaws.com/${item.images[0]['key']}`}
+        productId={item.ProductId}
+        img={ThumbImg}
       />
     )
   })
@@ -115,36 +123,7 @@ const Products = (props) => {
             </DesktopBreakpoint>
             <PhoneBreakpoint>
               <ProductsAreaPortrait>
-                <Thumbnail
-                  img={data.modelo.childImageSharp.fixed}
-                  name={'Modelo'}
-                  price={'R$ 45,00'}
-                />
-                <Thumbnail
-                  img={data.modelo.childImageSharp.fixed}
-                  name={'Modelo'}
-                  price={'R$ 45,00'}
-                />
-                <Thumbnail
-                  img={data.modelo.childImageSharp.fixed}
-                  name={'Modelo'}
-                  price={'R$ 45,00'}
-                />
-                <Thumbnail
-                  img={data.modelo.childImageSharp.fixed}
-                  name={'Modelo'}
-                  price={'R$ 45,00'}
-                />
-                <Thumbnail
-                  img={data.modelo.childImageSharp.fixed}
-                  name={'Modelo'}
-                  price={'R$ 45,00'}
-                />
-                <Thumbnail
-                  img={data.modelo.childImageSharp.fixed}
-                  name={'Modelo'}
-                  price={'R$ 45,00'}
-                />
+                <ProductItems items={products} />
               </ProductsAreaPortrait>
             </PhoneBreakpoint>
         </div>

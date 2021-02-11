@@ -78,7 +78,9 @@ const MenuItems = ({ isPortrait }) => {
         ...loginStyleProps
     }
     ].map(item =>(
-        <>
+        <React.Fragment
+            key={item.description}
+        >
         <DesktopBreakpoint>
             <AnchorItem
                 href={item.href}
@@ -95,7 +97,7 @@ const MenuItems = ({ isPortrait }) => {
                 {item.description} {item.icon && React.createElement(item.icon, {...item.iconProps})}
             </AnchorItemPortrait>
         </PhoneBreakpoint>
-        </>
+        </React.Fragment>
 ))}
 
 const Menu = ({setMenu, menu}) => {
@@ -135,7 +137,7 @@ const Menu = ({setMenu, menu}) => {
         </DesktopBreakpoint>
         <PhoneBreakpoint>
         <Helmet>
-            <html style='overflow: hidden;' />
+            <html lang='pt-br' style='overflow: hidden;' />
         </Helmet>
             <Backdrop>
             <MenuPortraitContainer ref={MenuRef}>
