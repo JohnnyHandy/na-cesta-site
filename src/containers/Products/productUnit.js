@@ -5,6 +5,81 @@ import styled from '@emotion/styled'
 
 import { colorPallete } from '../../utils/colors'
 
+const UpperWrapper = styled('div')`
+    display: flex;
+    justify-content: space-around
+`
+
+const ImagesSection = styled('div')`
+align-items: center;
+display: flex;
+justify-content: space-between;
+width: 50%;
+`
+
+const ImageSliderContainer = styled('div')`
+    display: flex;
+    flex-direction: column;
+    height: 30em;
+    margin: auto;
+    width: 30%;
+`
+
+const DetailsWrapper = styled('div')`
+    background: #D0775D;
+    border: 1px solid;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 0.5em 0;
+    width: 25%;
+`
+
+const DetailsTitle = styled('span')`
+    color: white;
+    font-size: 2em;
+    font-weight: bold;
+    padding: 0.2em;
+` 
+const DetailSection = styled('div')`
+    align-items: center;
+    background: #1A4350;
+    color: white;
+    display: flex;
+    justify-content: center;
+    padding: 0.5em 0;
+    width: 100%;
+`
+const QuantityControl = styled('span')`
+    align-items: baseline;
+    cursor: pointer;
+    display: flex; 
+    font-size: 4em;
+`
+
+const QuantityDisplay = styled('div')`
+    align-items: center;
+    background: white;
+    color: black;
+    display: flex;
+    height: 2.5em;
+    justify-content: center;
+    margin: 0 1em;
+    width: 2.5em;
+`
+const BuyButton = styled('div')`
+    background: #C4C4C4;
+    cursor: pointer;
+    margin: 0 1em;
+    padding: 0.5em;
+`
+
+const DescriptionWrapper = styled('div')`
+    border: 1px solid;
+    marginTop: 2em;
+    minHeight: 5em;
+`
+
 const SizeWrapper = styled('div')`
     background: #C4C4C4;
     border: ${({ sizeSelected }) => sizeSelected ? '3px solid white' : ''};
@@ -24,6 +99,7 @@ const ColorSquare = styled('div')`
     margin: 0 0.5em;
     width: 1.5em;
 `
+
 
 const ImagesSlider = ({ images, setImageIndex }) => images.map((item, index) => (
     <div
@@ -92,7 +168,6 @@ const ProductUnit = (props) => {
     }
   }`
   )
-    console.log('product', product)
     const imagesArray = data['allProduct']['nodes'][productIndex]['imageArray']
     return(
         <div
@@ -101,180 +176,75 @@ const ProductUnit = (props) => {
                 minHeight: '75vh'
             }}
         >
-            <div
-               style={{
-                   display: 'flex',
-                   justifyContent: 'space-around'
-               }} 
-            >
-                <div
-                    style={{
-                        alignItems: 'center',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        width: '50%'
-                    }}
-                >
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            height: '30em',
-                            margin: 'auto',
-                            width: '30%'
-                        }}
-                    >
+            <UpperWrapper>
+                <ImagesSection>
+                    <ImageSliderContainer>
                         <ImagesSlider
                             images={imagesArray}
                             setImageIndex={setImageIndex}
                         />
-                    </div>
+                    </ImageSliderContainer>
                     <Img
                         fluid={imagesArray[selectedImageIndex]['childImageSharp']['fluid']}
                         alt={imagesArray[selectedImageIndex]['childImageSharp']['fluid']['src']}
                         style={{ width: '400px', height: '400px' }}
                     />
-                </div>
-                <div
-                    style={{
-                        background: '#D0775D',
-                        border: '1px solid',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'space-around',
-                        padding: '0.5em 0',
-                        width: '25%'
-                    }}
-                >
-                    <span
-                        style={{ color: 'white', fontSize: '2em' ,fontWeight: 'bold', padding: '0.2em' }}
-                    >
+                </ImagesSection>
+                <DetailsWrapper >
+                    <DetailsTitle>
                         Tamanhos
-                    </span>
-                    <div
-                        style={{
-                            alignItems: 'center',
-                            background: '#1A4350',
-                            color: 'white',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            padding: '0.5em 0',
-                            width: '100%'
-                        }}
-                    >
+                    </DetailsTitle>
+                    <DetailSection>
                         <SizeOptions
                             sizeSelected={sizeSelected}
                             setColorIndex={setColorIndex}
                             setSize={setSize}
                             details={product.details}
                         />  
-                    </div>
-                    <span
-                        style={{ color: 'white', fontSize: '2em' ,fontWeight: 'bold', padding: '0.2em' }}
-                    >
+                    </DetailSection>
+                    <DetailsTitle>
                         Cores
-                    </span>
-                    <div
-                        style={{
-                            alignItems: 'center',
-                            background: '#1A4350',
-                            color: 'white',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            padding: '0.5em 0',
-                            width: '100%'
-                        }}
-                    >
+                    </DetailsTitle>
+                    <DetailSection>
                         <ColorOptions
                             colors={product['details'][sizeSelected]['colors']}
                             setColorIndex={setColorIndex}
                             selectedColor={selectedColor}
                         />
-                    </div>
-                    <span
-                        style={{ color: 'white', fontSize: '2em' ,fontWeight: 'bold', padding: '0.2em' }}
-                    >
+                    </DetailSection>
+                    <DetailsTitle>
                         Quantidade
-                    </span>
-                    <div
-                        style={{
-                            alignItems: 'center',
-                            background: '#1A4350',
-                            color: 'white',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            padding: '0.5em 0',
-                            width: '100%'
-                        }}
+                    </DetailsTitle>
+                    <DetailSection
                     >
-                        <span
-                            style={{ alignItems: 'baseline', cursor: 'pointer', display: 'flex', fontSize: '4em' }}
+                        <QuantityControl
                             onClick={() => setQuantity(quantity + 1)}
                         >
                             +
-                        </span>
-                        <div
-                            style={{
-                                alignItems: 'center',
-                                background: 'white',
-                                color: 'black',
-                                display: 'flex',
-                                height: '2.5em',
-                                justifyContent: 'center',
-                                width: '2.5em',
-                                margin: '0 1em'
-                            }}
-                        >
+                        </QuantityControl>
+                        <QuantityDisplay>
                             { quantity }
-                        </div>
-                        <span
+                        </QuantityDisplay>
+                        <QuantityControl
                             onClick={() => quantity > 1 && setQuantity(quantity - 1)}
-                            style={{ alignItems: 'baseline', cursor: 'pointer', display: 'flex', fontSize: '4em' }}> - </span>
-                    </div>
-                    <div
-                        style={{
-                            alignItems: 'center',
-                            background: '#1A4350',
-                            color: 'white',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            margin: '1em 0',
-                            padding: '0.5em 0',
-                            width: '100%'
-                        }}
-                    >
-                        <div
-                            style={{
-                                background: '#C4C4C4',
-                                cursor: 'pointer',
-                                margin: '0 1em',
-                                padding: '0.5em'
-                            }}
+                        
                         >
+                            - 
+                        </QuantityControl>
+                    </DetailSection>
+                    <DetailSection>
+                        <BuyButton>
                             Comprar Agora
-                        </div>
-                        <div
-                            style={{
-                                background: '#C4C4C4',
-                                cursor: 'pointer',
-                                margin: '0 1em',
-                                padding: '0.5em'
-                            }}
-                        >
+                        </BuyButton>
+                        <BuyButton>
                             Adicionar à sacola
-                        </div>
-                        </div>
-                </div>
-            </div>
-            <div
-                style={{
-                    border: '1px solid',
-                    marginTop: '2em',
-                    minHeight: '5em'
-                }}
-            >
+                        </BuyButton>
+                        </DetailSection>
+                </DetailsWrapper>
+            </UpperWrapper>
+            <DescriptionWrapper>
                 {product.description}
-            </div>
+            </DescriptionWrapper>
         </div>
     )
 }

@@ -7,7 +7,7 @@ import ProductUnit from '../containers/Products/productUnit'
 const IndexPage = ({ pageContext: { product, productIndex } }) => {
   return (
   <Layout>
-      <SEO title='Produto' />
+      <SEO title={product.name} />
       <ProductUnit product={product} productIndex={productIndex} />
   </Layout>
 )}

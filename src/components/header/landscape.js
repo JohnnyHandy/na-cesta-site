@@ -1,5 +1,6 @@
 import React from 'react'
 import Img from 'gatsby-image'
+import { Link } from 'gatsby'
 import {  FaRegHeart  } from 'react-icons/fa'
 import { BiShoppingBag } from 'react-icons/bi'
 
@@ -11,12 +12,16 @@ const Landscape = ({
 }) => {
     return (
         <>
-        <Img
-          style={{
-            width: '18vw'
-          }}
-          fluid={imgSrc}
-        />
+        <Link
+          to='/'
+        >
+          <Img
+            style={{
+              width: '18vw'
+            }}
+            fluid={imgSrc}
+          />
+        </Link>
       <div
         style={{
           display: '-webkit-flex',
