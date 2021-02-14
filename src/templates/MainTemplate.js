@@ -7,6 +7,7 @@ import Layout from "../components/layout"
 import SEO from "../components/seo"
 import LandingCarousel from "../components/carousel"
 import StoreContainer from '../containers/Store'
+import MenuComponent from '../components/menu/menuItems'
 
 const IndexPage = ({ pageContext: { productData } }) => {
   const dispatch = useDispatch()
@@ -18,6 +19,7 @@ const IndexPage = ({ pageContext: { productData } }) => {
   <Layout>
     <SEO title="Home" />
     <LandingCarousel />
+    <MenuComponent />
     <StoreContainer products={products} />
   </Layout>
 )}

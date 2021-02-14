@@ -9,7 +9,8 @@ import { DesktopBreakpoint, PhoneBreakpoint } from '../../components/responsive/
 
 const FiltersWrapper = styled('div')`
     display: -webkit-flex;
-    flex-direction: column
+    flex-direction: column;
+    width: 100%;
 `
 
 const FiltersArea = styled('div')`

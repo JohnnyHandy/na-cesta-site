@@ -89,7 +89,7 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
     })
     result.data.allProduct.nodes.forEach((item, index) => {
         createPage({
-            path: `${item.ProductId}-${item.name.replace(/\s/g, '')}`,
+            path: `${item.ProductId}-${item.name.replace(/\s/g, '-')}`,
             component: require.resolve('./src/templates/ProdTemplate.js'),
             context: { product: item, productIndex: index }
         })

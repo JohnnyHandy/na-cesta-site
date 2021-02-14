@@ -22,16 +22,11 @@ const Header = ({ siteTitle, setMenu, menu }) => {
 
 
   return (
-    <header 
-      style={{
-        marginBottom: `1.45rem`,
-      }}
-    >
+    <header>
       <div
         id='header'
         style={{
           margin: `0 auto`,
-          padding: `0 1.0875rem`,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',

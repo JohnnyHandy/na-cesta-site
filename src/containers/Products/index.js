@@ -6,18 +6,6 @@ import { PhoneBreakpoint, DesktopBreakpoint } from '../../components/responsive/
 import Thumbnail from '../../components/product/thumbnail'
 import Filters from '../Filters'
 
-const SpanItem = styled('span')`
-  font-family: Quicksand;
-  color: black;
-  cursor: pointer;
-`
-const MenuContainer = styled('div')`
-    width: 100%;
-    justify-content: space-around;
-    display: flex;
-    padding: 1vh 2vw;
-`
-
 const ProductsAreaLandscape = styled('div')`
 display: grid;
 grid-template-columns: 25% 25% 25%;
@@ -35,48 +23,6 @@ const ProductsAreaPortrait = styled('div')`
   height: 100%;
   row-gap: 5vh;
 `
-const MenuItems = () => [
-    {
-      description: 'Ofertas',
-      icon: null,
-      iconProps: {},
-      style: {
-          textDecoration: 'underline'
-      }
-    },
-    {
-      description: 'Mais vendidos',
-      icon: null,
-      iconProps: {},
-      style: {}
-    },
-    {
-      description: 'Biquinis',
-      icon: null,
-      iconProps: {},
-      style: {}
-    },
-    {
-      description: 'Maiôs',
-      icon: null,
-      iconProps: {},
-      style: {}
-    },
-    {
-      description: 'Saídas',
-      icon: null,
-      iconProps: {},
-      style: {}
-    }
-  ].map(item =>(
-    <SpanItem
-      key={item.description}
-      style={item.style}
-    >
-      {item.description}
-    </SpanItem>
-  ))
-  
 
 const Products = (props) => {
   const { products } = props
@@ -109,10 +55,9 @@ const Products = (props) => {
     )
   })
     return(
-        <div>
-            <MenuContainer>
-                <MenuItems />
-            </MenuContainer>
+        <div
+          style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', paddingTop: '2em' }}
+        >
             <PhoneBreakpoint>
               <Filters />
             </PhoneBreakpoint>
