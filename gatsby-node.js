@@ -17,9 +17,10 @@ const fetchProductsData = () => {
             '#PID': 'ProductId',
             '#IM': 'images',
             "#DC": 'description',
-            '#DT': 'details'
+            '#DT': 'details',
+            '#TP': 'type'
           },
-          ProjectionExpression: '#NM, #ID, #PR, #DP, #PID, #IM, #DC, #DT'
+          ProjectionExpression: '#NM, #ID, #PR, #DP, #PID, #IM, #DC, #DT, #TP'
     }
     const options = {
         method: 'POST',
@@ -52,6 +53,7 @@ exports.sourceNodes = async ({ actions, createNodeId, createContentDigest }) => 
         price: product.price,
         description: product.description,
         details: product.details,
+        type: product.type,
         id: createNodeId(`${product.ProductId}-${product.name}`),
         internal: {
           type: "Product",
@@ -75,6 +77,7 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
             isDeal
             price
             description
+            type
             details { size, colors { colorId, quantity } }
           }
         }

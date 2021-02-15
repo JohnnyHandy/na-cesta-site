@@ -4,7 +4,7 @@ import { FaRegHeart,  } from 'react-icons/fa'
 import { BiShoppingBag , BiMenuAltLeft} from 'react-icons/bi'
 
 
-const PortraitHeader = ({ imgSrc, menu, setMenu, ...props }) => {
+const PortraitHeader = ({ imgSrc, toggleMenu, reference, ...props }) => {
     return (
         <div
             style={{
@@ -14,10 +14,14 @@ const PortraitHeader = ({ imgSrc, menu, setMenu, ...props }) => {
                 width: '100%'
             }}
         >
-        <BiMenuAltLeft
+        <div
+            ref={reference}
+        >
+            <BiMenuAltLeft
             size='15vw'
-            onClick={() => setMenu(!menu)}
-        />
+            onClick={toggleMenu}
+            />
+        </div>
         <Img
             fluid={imgSrc}
             style={{

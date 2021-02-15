@@ -100,13 +100,16 @@ const MenuItems = ({ isPortrait }) => {
         </React.Fragment>
 ))}
 
-const Menu = ({setMenu, menu}) => {
+const Menu = ({setMenu, menu, MenuIconRef}) => {
     const MenuRef = React.useRef()
-    useOutsideAlerter(MenuRef)
+    useOutsideAlerter(MenuRef, MenuIconRef)
     const isPortrait = useMediaQuery({ query: '(orientation: portrait)' })
-    function useOutsideAlerter (ref) {
+    function useOutsideAlerter (ref, MenuIconRef) {
         React.useEffect(() => {
             function handleClickOutside (event) {
+              if(MenuIconRef && MenuIconRef.current &&  MenuIconRef.current.contains(event.target)) {
+                  return null
+              }
               if (ref.current && !ref.current.contains(event.target) && menu) {
                 setMenu(!menu)
               }

@@ -2,29 +2,47 @@ import React from 'react'
 import { graphql, useStaticQuery } from 'gatsby'
 import Img from 'gatsby-image'
 import styled from '@emotion/styled'
+import { DesktopBreakpoint, PhoneBreakpoint } from '../../components/responsive/devices'
 import { BiUpArrow, BiDownArrow } from 'react-icons/bi'
 
 import Slider from '../../components/slider'
 
 import { colorPallete } from '../../utils/colors'
 
+const ProductUnitWrapper = styled('div')`
+    font-family: Quicksand;
+    min-height: 75vh;
+`
+
 const UpperWrapper = styled('div')`
     display: flex;
     justify-content: space-around;
     position: relative;
 `
-const ProductTitle = styled('span')`
+const ProductTitleDesktop = styled('span')`
     font-size: 1.5em;
     left: 6em;
     position: absolute;
 `
 
-const ImagesSection = styled('div')`
+const ProductTitleMobile = styled('span')`
+    font-size: 1.5em;
+    margin: 0 auto;
+`
+
+const ImagesSectionDesktop = styled('div')`
     align-items: center;
     display: flex;
     justify-content: space-between;
     margin-top: 3em;
     width: 50%;
+`
+
+const ImageSectionMobile = styled('div')`
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
 `
 
 const ImageSliderContainer = styled('div')`
@@ -36,7 +54,7 @@ const ImageSliderContainer = styled('div')`
     width: 30%;
 `
 
-const DetailsWrapper = styled('div')`
+const DetailsWrapperDesktop = styled('div')`
     background: #D0775D;
     border: 1px solid;
     display: flex;
@@ -46,12 +64,24 @@ const DetailsWrapper = styled('div')`
     width: 25%;
 `
 
-const DetailsTitle = styled('span')`
+const DetailsWrapperMobile = styled('div')`
+    background: #D0775D;
+    padding: 1em 0;
+`
+
+const DetailsTitleDesktop = styled('span')`
     color: white;
     font-size: 2em;
     font-weight: bold;
     padding: 0.2em;
 ` 
+const DetailsTitleMobile = styled('span')`
+    color: white;
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 0 0.5em;
+`
+
 const DetailSection = styled('div')`
     align-items: center;
     background: #1A4350;
@@ -78,11 +108,18 @@ const QuantityDisplay = styled('div')`
     margin: 0 1em;
     width: 2.5em;
 `
-const BuyButton = styled('div')`
+const BuyButtonDesktop = styled('div')`
     background: #C4C4C4;
     cursor: pointer;
     margin: 0 1em;
     padding: 0.5em;
+`
+
+const BuyButtonMobile = styled('div')`
+    background: #C4C4C4;
+    margin: 0 1em;
+    padding: 0.5em;
+    text-align: center;
 `
 
 const DescriptionWrapper = styled('div')`
@@ -204,16 +241,6 @@ const ColorOptions = ({ colors, setColorIndex, selectedColor }) => colors.map((i
 
 })
 
-const ArrowDown = (props) => {
-    const { className, style, onClick } = props
-    return <BiDownArrow className={className} style={style} onClick={onClick} />
-}
-
-const ArrowUp = (props) => {
-    const { className, style, onClick } = props
-    return <BiUpArrow className={className} style={style} onClick={onClick} />
-}
-
 const ProductUnit = (props) => {
     const { product, productIndex } = props
     const [sizeSelected, setSize] = React.useState(0)
@@ -239,26 +266,89 @@ const ProductUnit = (props) => {
   console.log('slideref', SlideRef)
     const imagesArray = data['allProduct']['nodes'][productIndex]['imageArray']
     return(
-        <div
-            style={{
-                fontFamily: 'Quicksand',
-                minHeight: '75vh'
-            }}
-        >
-            <UpperWrapper>
-            <ProductTitle> {product.name} </ProductTitle>
-                <ImagesSection>
-                    <ImagesSlider images={imagesArray} setImageIndex={setImageIndex} SlideRef={SlideRef} />
-                    <Img
-                        fluid={imagesArray[selectedImageIndex]['childImageSharp']['fluid']}
-                        alt={imagesArray[selectedImageIndex]['childImageSharp']['fluid']['src']}
-                        style={{ width: '400px', height: '400px' }}
-                    />
-                </ImagesSection>
-                <DetailsWrapper>
-                    <DetailsTitle>
+        <>
+        <DesktopBreakpoint>
+            <ProductUnitWrapper>
+                <UpperWrapper>
+                <ProductTitleDesktop> {product.name} </ProductTitleDesktop>
+                    <ImagesSectionDesktop>
+                        <ImagesSlider images={imagesArray} setImageIndex={setImageIndex} SlideRef={SlideRef} />
+                        <Img
+                            fluid={imagesArray[selectedImageIndex]['childImageSharp']['fluid']}
+                            alt={imagesArray[selectedImageIndex]['childImageSharp']['fluid']['src']}
+                            style={{ width: '400px', height: '400px' }}
+                        />
+                    </ImagesSectionDesktop>
+                    <DetailsWrapperDesktop>
+                        <DetailsTitleDesktop>
+                            Tamanhos
+                        </DetailsTitleDesktop>
+                        <DetailSection>
+                            <SizeOptions
+                                sizeSelected={sizeSelected}
+                                setColorIndex={setColorIndex}
+                                setSize={setSize}
+                                details={product.details}
+                            />  
+                        </DetailSection>
+                        <DetailsTitleDesktop>
+                            Cores
+                        </DetailsTitleDesktop>
+                        <DetailSection>
+                            <ColorOptions
+                                colors={product['details'][sizeSelected]['colors']}
+                                setColorIndex={setColorIndex}
+                                selectedColor={selectedColor}
+                            />
+                        </DetailSection>
+                        <DetailsTitleDesktop>
+                            Quantidade
+                        </DetailsTitleDesktop>
+                        <DetailSection>
+                            <QuantityControl
+                                onClick={() => setQuantity(quantity + 1)}
+                            >
+                                +
+                            </QuantityControl>
+                            <QuantityDisplay>
+                                { quantity }
+                            </QuantityDisplay>
+                            <QuantityControl
+                                onClick={() => quantity > 1 && setQuantity(quantity - 1)}
+                            >
+                                - 
+                            </QuantityControl>
+                        </DetailSection>
+                        <DetailSection>
+                            <BuyButtonDesktop>
+                                Comprar Agora
+                            </BuyButtonDesktop>
+                            <BuyButtonDesktop>
+                                Adicionar à sacola
+                            </BuyButtonDesktop>
+                        </DetailSection>
+                    </DetailsWrapperDesktop>
+                </UpperWrapper>
+                <DescriptionWrapper>
+                    {product.description}
+                </DescriptionWrapper>
+            </ProductUnitWrapper>
+        </DesktopBreakpoint>
+        <PhoneBreakpoint>
+            <ProductUnitWrapper>
+                <ProductTitleMobile> {product.name} </ProductTitleMobile>
+                <ImageSectionMobile>
+                        <Img
+                            fluid={imagesArray[selectedImageIndex]['childImageSharp']['fluid']}
+                            alt={imagesArray[selectedImageIndex]['childImageSharp']['fluid']['src']}
+                            style={{ width: '200px', height: '200px' }}
+                        />
+                        <ImagesSlider images={imagesArray} setImageIndex={setImageIndex} SlideRef={SlideRef} />
+                </ImageSectionMobile>
+                <DetailsWrapperMobile>
+                    <DetailsTitleMobile>
                         Tamanhos
-                    </DetailsTitle>
+                    </DetailsTitleMobile>
                     <DetailSection>
                         <SizeOptions
                             sizeSelected={sizeSelected}
@@ -267,9 +357,9 @@ const ProductUnit = (props) => {
                             details={product.details}
                         />  
                     </DetailSection>
-                    <DetailsTitle>
+                    <DetailsTitleMobile>
                         Cores
-                    </DetailsTitle>
+                    </DetailsTitleMobile>
                     <DetailSection>
                         <ColorOptions
                             colors={product['details'][sizeSelected]['colors']}
@@ -277,9 +367,9 @@ const ProductUnit = (props) => {
                             selectedColor={selectedColor}
                         />
                     </DetailSection>
-                    <DetailsTitle>
+                    <DetailsTitleMobile>
                         Quantidade
-                    </DetailsTitle>
+                    </DetailsTitleMobile>
                     <DetailSection>
                         <QuantityControl
                             onClick={() => setQuantity(quantity + 1)}
@@ -296,19 +386,20 @@ const ProductUnit = (props) => {
                         </QuantityControl>
                     </DetailSection>
                     <DetailSection>
-                        <BuyButton>
+                        <BuyButtonMobile>
                             Comprar Agora
-                        </BuyButton>
-                        <BuyButton>
+                        </BuyButtonMobile>
+                        <BuyButtonMobile>
                             Adicionar à sacola
-                        </BuyButton>
+                        </BuyButtonMobile>
                     </DetailSection>
-                </DetailsWrapper>
-            </UpperWrapper>
-            <DescriptionWrapper>
-                {product.description}
-            </DescriptionWrapper>
-        </div>
+                </DetailsWrapperMobile>
+                <DescriptionWrapper>
+                    {product.description}
+                </DescriptionWrapper>
+            </ProductUnitWrapper>
+        </PhoneBreakpoint>
+        </>
     )
 }
 

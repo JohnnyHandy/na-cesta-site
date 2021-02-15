@@ -7,7 +7,7 @@ import Landscape from './landscape'
 import { DesktopBreakpoint, PhoneBreakpoint } from '../responsive/devices'
 
 
-const Header = ({ siteTitle, setMenu, menu }) => {
+const Header = ({ siteTitle, toggleMenu, reference }) => {
   const data = useStaticQuery(graphql`
   query {
     logo: file(relativePath: { eq: "useveranologo.png" }) {
@@ -19,10 +19,10 @@ const Header = ({ siteTitle, setMenu, menu }) => {
     }
   }
 `)
-
-
+  
   return (
     <header>
+      <title> {siteTitle} </title>
       <div
         id='header'
         style={{
@@ -40,8 +40,8 @@ const Header = ({ siteTitle, setMenu, menu }) => {
         </DesktopBreakpoint>
         <PhoneBreakpoint>
            <Portrait
-            menu={menu}
-            setMenu={setMenu}
+            reference={reference}
+            toggleMenu={toggleMenu}
             imgSrc={data.logo.childImageSharp.fluid}
            />
         </PhoneBreakpoint>

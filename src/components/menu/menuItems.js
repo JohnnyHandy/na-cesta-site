@@ -5,6 +5,7 @@ const SpanItem = styled('span')`
   font-family: Quicksand;
   color: black;
   cursor: pointer;
+  font-size: 0.8em;
 `
 
 

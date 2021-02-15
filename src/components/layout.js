@@ -18,6 +18,7 @@ const Layout = ({ children }) => {
   const [height, setHeight] = React.useState(0)
   const [width, setWidth] = React.useState(0)
   const [menu, setMenu] = React.useState(false)
+  const MenuIconRef = React.useRef()
   const updateWindowDimentsions = () => {
     setHeight(window.innerHeight)
     setWidth(window.innerWidth)
@@ -38,9 +39,14 @@ const Layout = ({ children }) => {
       }
     }
   `)
+
+  const toggleMenu = () => {
+      setMenu(!menu)
+  }
+  console.log('menuicon ref', MenuIconRef)
   return (
     <>
-      <Header siteTitle={data.site.siteMetadata?.title || `Title`} setMenu={setMenu} menu={menu} />
+      <Header reference={MenuIconRef} siteTitle={data.site.siteMetadata?.title || `Title`} toggleMenu={toggleMenu} />
       <div
         style={{
           margin: `0 auto`,
@@ -49,7 +55,7 @@ const Layout = ({ children }) => {
         }}
       >
         <PhoneBreakpoint>
-          {menu && <Menu height={height} menu={menu} setMenu={setMenu} />}
+          {menu && <Menu height={height} menu={menu} MenuIconRef={MenuIconRef} setMenu={setMenu} />}
         </PhoneBreakpoint>
         <main
           style={{
