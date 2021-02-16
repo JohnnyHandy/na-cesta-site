@@ -18,9 +18,10 @@ const fetchProductsData = () => {
             '#IM': 'images',
             "#DC": 'description',
             '#DT': 'details',
-            '#TP': 'type'
+            '#TP': 'type',
+            '#MD': 'model'
           },
-          ProjectionExpression: '#NM, #ID, #PR, #DP, #PID, #IM, #DC, #DT, #TP'
+          ProjectionExpression: '#NM, #ID, #PR, #DP, #PID, #IM, #DC, #DT, #TP, #MD'
     }
     const options = {
         method: 'POST',
@@ -54,6 +55,7 @@ exports.sourceNodes = async ({ actions, createNodeId, createContentDigest }) => 
         description: product.description,
         details: product.details,
         type: product.type,
+        model: product.model,
         id: createNodeId(`${product.ProductId}-${product.name}`),
         internal: {
           type: "Product",
@@ -90,12 +92,93 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
         component: require.resolve('./src/templates/MainTemplate.js'),
         context: { productData: result.data.allProduct.nodes }
     })
+    createPage({
+      path: '/produtos',
+      component: require.resolve('./src/templates/ProdListTemplate.js'),
+      context: { productData: result.data.allProduct.nodes, title: 'Produtos' }
+    })
     result.data.allProduct.nodes.forEach((item, index) => {
         createPage({
             path: `${item.ProductId}-${item.name.replace(/\s/g, '-')}`,
             component: require.resolve('./src/templates/ProdTemplate.js'),
             context: { product: item, productIndex: index }
         })
+    })
+    const resultForBiquinis = await graphql(`
+      {
+        allProduct(filter: {type: {eq: "biquini"}}) {
+          edges {
+            node {
+              ProductId
+              dealPrice
+              name
+              price
+            }
+          }
+        }
+      }
+    `)
+    createPage({
+      path: `/produtos/biquinis`,
+      component: require.resolve('./src/templates/ProdListTemplate.js'),
+      context: { products: resultForBiquinis.data.allProduct.edges, title: 'Biquinis' }
+    })
+    const resultForMaios = await graphql(`
+      {
+        allProduct(filter: {type: {eq: "maiô"}}) {
+          edges {
+            node {
+              ProductId
+              dealPrice
+              name
+              price
+            }
+          }
+        }
+      }
+    `)
+    createPage({
+      path: `/produtos/maios`,
+      component: require.resolve('./src/templates/ProdListTemplate.js'),
+      context: { products: resultForMaios.data.allProduct.edges, title: 'Maiôs' }
+    })
+    const resultForSaidas = await graphql(`
+      {
+        allProduct(filter: {type: {eq: "saida"}}) {
+          edges {
+            node {
+              ProductId
+              dealPrice
+              name
+              price
+            }
+          }
+        }
+      }
+    `)
+    createPage({
+      path: `/produtos/saidas`,
+      component: require.resolve('./src/templates/ProdListTemplate.js'),
+      context: { products: resultForSaidas.data.allProduct.edges, title: 'Saídas' }
+    })
+    const resultForDeals = await graphql(`
+      {
+        allProduct(filter: {isDeal: {eq: true}}) {
+          edges {
+            node {
+              ProductId
+              dealPrice
+              name
+              price
+            }
+          }
+        }
+      }
+    `)
+    createPage({
+      path: '/produtos/ofertas',
+      component: require.resolve('./src/templates/ProdListTemplate.js'),
+      context: { products: resultForDeals.data.allProduct.edges, title: 'Ofertas' }
     })
 }
 

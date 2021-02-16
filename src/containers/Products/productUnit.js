@@ -49,6 +49,7 @@ const ImageSliderContainer = styled('div')`
     align-items: center;
     display: flex;
     flex-direction: column;
+    height: 100%;
     justify-content: center;
     margin: auto;
     width: 30%;
@@ -152,17 +153,13 @@ const ColorSquare = styled('div')`
 const ImagesSlider = ({ images, setImageIndex, SlideRef }) => {
     const settings = {
         infinite: true,
-        slidesToShow: 1,
+        slidesToShow: 2,
         slidesToScroll: 1,
         vertical: true,
         verticalSwiping: true,
-        beforeChange: function(currentSlide, nextSlide) {
-          console.log("before change", currentSlide, nextSlide);
-        },
-        afterChange: function(currentSlide) {
-          console.log("after change", currentSlide);
-        }}
-        console.log('images', images)
+        nextArrow: <div style={{ display: 'none' }} />,
+        prevArrow: <div style={{ display: 'none' }} />
+    }
     return (
         <ImageSliderContainer>
             {images.length > 4 
@@ -174,9 +171,7 @@ const ImagesSlider = ({ images, setImageIndex, SlideRef }) => {
                                 <div
                                 style={{
                                     cursor: 'pointer',
-                                    height: '100px',
                                     margin: '1em auto',
-                                    width: '100px'
                                 }}
                                 onClick={() => setImageIndex(index)}
                                 key={item['childImageSharp']['fluid']['src']}
@@ -184,6 +179,10 @@ const ImagesSlider = ({ images, setImageIndex, SlideRef }) => {
                                 <Img
                                     fluid={item['childImageSharp']['fluid']}
                                     alt={item['childImageSharp']['fluid']['src']}
+                                    style={{
+                                        height: '100px',
+                                        width: '100px'
+                                    }}
                                 />
                                 </div>
                             ))

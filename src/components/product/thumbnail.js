@@ -51,11 +51,8 @@ const ProductThumb = ({ name, price, img, productId }) => {
             }}
             key={name}
         >
-            {/* <div style={{ width: '150px', height: '150px' }} >
-                <img alt={img} src={img} />
-            </div> */}
             <Link
-                to={`${productId}-${name.replace(/\s/g, '-')}`}
+                to={`/${productId}-${name.replace(/\s/g, '-')}`}
             >
                 <Img
                     fluid={img}

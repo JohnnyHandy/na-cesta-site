@@ -1,3 +1,10 @@
 .slick-list {
   height: 350px;
 }
+
+.slick-vertical .slick-slide {
+  display: flex !important;
+  height: auto;
+  border: 1px solid transparent;
+  justify-content: center !important;
+}
