@@ -3,9 +3,10 @@ import { graphql, useStaticQuery } from 'gatsby'
 import Img from 'gatsby-image'
 import styled from '@emotion/styled'
 import { DesktopBreakpoint, PhoneBreakpoint } from '../../components/responsive/devices'
-import { BiUpArrow, BiDownArrow } from 'react-icons/bi'
+import { BiUpArrow, BiDownArrow, BiLeftArrow, BiRightArrow } from 'react-icons/bi'
 
 import Slider from '../../components/slider'
+import KeenSlider from '../../components/slider/keen'
 
 import { colorPallete } from '../../utils/colors'
 
@@ -35,7 +36,7 @@ const ImagesSectionDesktop = styled('div')`
     display: flex;
     justify-content: space-between;
     margin-top: 3em;
-    width: 50%;
+    width: auto;
 `
 
 const ImageSectionMobile = styled('div')`
@@ -45,14 +46,24 @@ const ImageSectionMobile = styled('div')`
     justify-content: space-evenly;
 `
 
-const ImageSliderContainer = styled('div')`
+const ImageSliderContainerDesktop = styled('div')`
+    align-items: center;
+    display: grid;
+    grid-column-gap: 1em;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 20% 20% 20% 20%;
+    height: 100%;
+    justify-content: center;
+    justify-items: center;
+    margin: 0 1em;
+`
+
+const ImageSliderContainerMobile = styled('div')`
     align-items: center;
     display: flex;
-    flex-direction: column;
     height: 100%;
     justify-content: center;
     margin: auto;
-    width: 30%;
 `
 
 const DetailsWrapperDesktop = styled('div')`
@@ -149,6 +160,28 @@ const ColorSquare = styled('div')`
     width: 1.5em;
 `
 
+function NextArrow(props) {
+    const { className, style, onClick } = props;
+    return (
+      <BiLeftArrow
+        className={className}
+        style={{ ...style, display: "block", background: "red" }}
+        onClick={onClick}
+      />
+    );
+  }
+
+function PrevArrow(props) {
+const { className, style, onClick } = props;
+return (
+    <BiRightArrow
+    className={className}
+    style={{ ...style, display: "block", background: "red" }}
+    onClick={onClick}
+    />
+);
+}
+
 
 const ImagesSlider = ({ images, setImageIndex, SlideRef }) => {
     const settings = {
@@ -161,55 +194,82 @@ const ImagesSlider = ({ images, setImageIndex, SlideRef }) => {
         prevArrow: <div style={{ display: 'none' }} />
     }
     return (
-        <ImageSliderContainer>
-            {images.length > 4 
-            ? ( <>
-                    <BiUpArrow style={{ cursor: 'pointer' }} onClick={() => SlideRef.current.slickPrev()} />
-                    <Slider reference={SlideRef} settings={settings}>
+        <>
+        <DesktopBreakpoint>
+            <ImageSliderContainerDesktop>
+                {
+                    images.map((item, index) => (
+                        <div
+                            style={{
+                                cursor: 'pointer'
+                            }}
+                            onClick={() => setImageIndex(index)}
+                            key={item['childImageSharp']['fluid']['src']}
+                        >
+                            <Img
+                                fluid={item['childImageSharp']['fluid']}
+                                alt={item['childImageSharp']['fluid']['src']}
+                                style={{
+                                    height: '75px',
+                                    width: '75px'
+                                }}
+                            />
+                        </div>
+                    ))
+                }
+            </ImageSliderContainerDesktop>
+        </DesktopBreakpoint>
+        <PhoneBreakpoint>
+            <ImageSliderContainerMobile>
+                {images.length > 4 
+                ? ( 
+                    <KeenSlider>
                         {
                             images.map((item, index) => (
                                 <div
-                                style={{
-                                    cursor: 'pointer',
-                                    margin: '1em auto',
-                                }}
-                                onClick={() => setImageIndex(index)}
-                                key={item['childImageSharp']['fluid']['src']}
-                                >
-                                <Img
-                                    fluid={item['childImageSharp']['fluid']}
-                                    alt={item['childImageSharp']['fluid']['src']}
                                     style={{
-                                        height: '100px',
-                                        width: '100px'
+                                        margin: '0.5em 0',
                                     }}
-                                />
+                                    onClick={() => setImageIndex(index)}
+                                    key={item['childImageSharp']['fluid']['src']}
+                                    className='keen-slider__slide'
+                                >
+                                    <Img
+                                        fluid={item['childImageSharp']['fluid']}
+                                        alt={item['childImageSharp']['fluid']['src']}
+                                        style={{
+                                            height: '50px',
+                                            width: '50px'
+                                        }}
+                                    />
                                 </div>
                             ))
                         }
-                    </Slider>
-                    <BiDownArrow style={{ cursor: 'pointer' }} onClick={() => SlideRef.current.slickNext()} />
-                </>)
-        : (
-            images.map((item, index) => (
-                <div
-                    style={{
-                        cursor: 'pointer',
-                        height: '100px',
-                        margin: '1em auto',
-                        width: '100px'
-                    }}
-                    onClick={() => setImageIndex(index)}
-                    key={item['childImageSharp']['fluid']['src']}
-                >
-                    <Img
-                        fluid={item['childImageSharp']['fluid']}
-                        alt={item['childImageSharp']['fluid']['src']}
-                    />
-                </div>
-            ))
-        )}
-        </ImageSliderContainer>
+                    </KeenSlider>
+                    
+                )
+            : (
+                images.map((item, index) => (
+                    <div
+                        style={{
+                            cursor: 'pointer',
+                            height: '75px',
+                            margin: '1em',
+                            width: '75px'
+                        }}
+                        onClick={() => setImageIndex(index)}
+                        key={item['childImageSharp']['fluid']['src']}
+                    >
+                        <Img
+                            fluid={item['childImageSharp']['fluid']}
+                            alt={item['childImageSharp']['fluid']['src']}
+                        />
+                    </div>
+                ))
+            )}
+            </ImageSliderContainerMobile>
+        </PhoneBreakpoint>
+        </>
     )
 }
 
@@ -262,7 +322,6 @@ const ProductUnit = (props) => {
     }
   }`
   )
-  console.log('slideref', SlideRef)
     const imagesArray = data['allProduct']['nodes'][productIndex]['imageArray']
     return(
         <>
@@ -271,7 +330,11 @@ const ProductUnit = (props) => {
                 <UpperWrapper>
                 <ProductTitleDesktop> {product.name} </ProductTitleDesktop>
                     <ImagesSectionDesktop>
-                        <ImagesSlider images={imagesArray} setImageIndex={setImageIndex} SlideRef={SlideRef} />
+                        <ImagesSlider
+                            images={imagesArray}
+                            setImageIndex={setImageIndex}
+                            SlideRef={SlideRef}
+                        />
                         <Img
                             fluid={imagesArray[selectedImageIndex]['childImageSharp']['fluid']}
                             alt={imagesArray[selectedImageIndex]['childImageSharp']['fluid']['src']}
