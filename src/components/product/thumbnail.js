@@ -38,7 +38,7 @@ const CartButtonPortrait = styled('button')`
     width: 25vw;
 `
 
-const ProductThumb = ({ name, price, img, productId }) => {
+const ProductThumb = ({ name, price, img, productId, isDeal, dealPrice }) => {
     return (
         <div
             style={{
@@ -64,22 +64,45 @@ const ProductThumb = ({ name, price, img, productId }) => {
                 />
             </Link>
             <span> {name} </span>
-            <span> R$ {' '} {price} </span>
+                <span
+                    style={{
+                        width: '50%',
+                        display: 'flex',
+                        justifyContent: 'space-evenly'
+                    }}
+                >
+                     <span
+                        style={{
+                            color: isDeal ? '#8a8080' : '',
+                            textDecoration: isDeal ? 'line-through' : ''
+                        }}
+                        >R$ {' '} {price}
+                    </span>
+                     {isDeal && <span>R$ {' '} {dealPrice} </span>}
+                 </span>
             <DesktopBreakpoint>
-                <BuyNowButtonLandscape>
-                    Comprar agora
-                </BuyNowButtonLandscape>
-                <CartButtonLandscape>
+                <Link
+                    to={`/${productId}-${name.replace(/\s/g, '-')}`}
+                >
+                    <BuyNowButtonLandscape>
+                        Detalhes
+                    </BuyNowButtonLandscape>
+                </Link>
+                {/* <CartButtonLandscape>
                     Adicionar à sacola
-                </CartButtonLandscape>
+                </CartButtonLandscape> */}
             </DesktopBreakpoint>
             <PhoneBreakpoint>
-                <BuyNowButtonPortrait>
-                    Comprar agora
-                </BuyNowButtonPortrait>
-                <CartButtonPortrait>
+                <Link
+                    to={`/${productId}-${name.replace(/\s/g, '-')}`}
+                >
+                    <BuyNowButtonPortrait>
+                        Detalhes
+                    </BuyNowButtonPortrait>
+                </Link>
+                {/* <CartButtonPortrait>
                     Adicionar à sacola
-                </CartButtonPortrait>
+                </CartButtonPortrait> */}
             </PhoneBreakpoint>
         </div>
     )

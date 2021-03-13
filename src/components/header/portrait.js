@@ -1,5 +1,6 @@
 import React from 'react'
 import Img from 'gatsby-image'
+import { Link } from 'gatsby'
 import { FaRegHeart,  } from 'react-icons/fa'
 import { BiShoppingBag , BiMenuAltLeft} from 'react-icons/bi'
 
@@ -36,7 +37,9 @@ const PortraitHeader = ({ imgSrc, toggleMenu, reference, ...props }) => {
                   }}        
         >
         <FaRegHeart size='15vw'/>
-        <BiShoppingBag size='15vw' />
+        <Link to='/carrinho'>
+            <BiShoppingBag size='15vw' />
+        </Link>
         </div>
        </div>
     )

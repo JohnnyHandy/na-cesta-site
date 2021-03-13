@@ -1,7 +1,6 @@
 import React from "react"
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 
-import { fetchProductsSuccess } from '../store/products/index'
 
 import Layout from "../components/layout"
 import SEO from "../components/seo"
@@ -10,17 +9,19 @@ import StoreContainer from '../containers/Store'
 import MenuComponent from '../components/menu/menuItems'
 
 const IndexPage = ({ pageContext: { productData } }) => {
-  const dispatch = useDispatch()
-  React.useEffect(() => {
-    dispatch(fetchProductsSuccess(productData))
-  }, [])
-  const products = useSelector(state => state.products.items)
+  const { items, isFetching } = useSelector(state => state.products)
+  const itemsData = items.length ? items : productData
   return (
   <Layout>
-    <SEO title="Home" />
+    <SEO
+      title="Home"
+    />
     <LandingCarousel />
     <MenuComponent />
-    <StoreContainer products={products} />
+    <StoreContainer
+      isFetching={isFetching}
+      products={itemsData}
+    />
   </Layout>
 )}
 

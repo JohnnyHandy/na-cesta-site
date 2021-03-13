@@ -113,6 +113,7 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
               dealPrice
               name
               price
+              images
             }
           }
         }
@@ -132,6 +133,7 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
               dealPrice
               name
               price
+              images
             }
           }
         }
@@ -151,6 +153,7 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
               dealPrice
               name
               price
+              images
             }
           }
         }
@@ -170,6 +173,7 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
               dealPrice
               name
               price
+              images
             }
           }
         }
@@ -179,6 +183,10 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
       path: '/produtos/ofertas',
       component: require.resolve('./src/templates/ProdListTemplate.js'),
       context: { products: resultForDeals.data.allProduct.edges, title: 'Ofertas' }
+    })
+    createPage({
+      path: '/carrinho',
+      component: require.resolve('./src/templates/CartTemplate.js')
     })
 }
 

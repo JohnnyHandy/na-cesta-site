@@ -4,14 +4,16 @@ export const fetchProductsRequest = createAction('Products/FETCH_PRODUCTS_REQUES
 export const fetchProductsSuccess = createAction('Products/FETCH_PRODUCTS_SUCCESS');
 export const fetchProductsFailure = createAction('Products/FETCH_PRODUCTS_FAILURE');
 
+export const filterProductsRequest = createAction('Products/FILTER_PRODUCTS_REQUEST');
+export const filterProductsSuccess = createAction('Products/FILTER_PRODUCTS_SUCCESS');
+export const filterProductsFailure = createAction('Products/FILTER_PRODUCTS_FAILURE');
+
+export const clearProductsList = createAction('Products/CLEAR_PRODUCTS_LIST');
+
 export const initialState = {
     items: [],
     isFetching: false,
     error: null,
-    filters: {
-        size: '',
-        price: ''
-    }
 }
 
 export const ProductsReducer = createReducer(initialState, {
@@ -29,5 +31,22 @@ export const ProductsReducer = createReducer(initialState, {
         ...state,
         isFetching: false,
         items: action.payload
+    }),
+    [filterProductsRequest]: (state) => ({
+        ...state,
+        isFetching: true
+    }),
+    [filterProductsSuccess]: (state, action) => ({
+        ...state,
+        isFetching: false,
+        items: action.payload
+    }),
+    [filterProductsFailure]: (state, action) => ({
+        ...state,
+        isFetching: false,
+        error: action.payload
+    }),
+    [clearProductsList]: (state) => ({
+        ...initialState
     })
 })

@@ -43,7 +43,6 @@ const Layout = ({ children }) => {
   const toggleMenu = () => {
       setMenu(!menu)
   }
-  console.log('menuicon ref', MenuIconRef)
   return (
     <>
       <Header reference={MenuIconRef} siteTitle={data.site.siteMetadata?.title || `Title`} toggleMenu={toggleMenu} />

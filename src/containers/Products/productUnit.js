@@ -2,12 +2,11 @@ import React from 'react'
 import { graphql, useStaticQuery } from 'gatsby'
 import Img from 'gatsby-image'
 import styled from '@emotion/styled'
+import { useDispatch } from 'react-redux'
 import { DesktopBreakpoint, PhoneBreakpoint } from '../../components/responsive/devices'
-import { BiUpArrow, BiDownArrow, BiLeftArrow, BiRightArrow } from 'react-icons/bi'
 
-import Slider from '../../components/slider'
 import KeenSlider from '../../components/slider/keen'
-
+import { addToCart } from '../../store/cart'
 import { colorPallete } from '../../utils/colors'
 
 const ProductUnitWrapper = styled('div')`
@@ -160,39 +159,8 @@ const ColorSquare = styled('div')`
     width: 1.5em;
 `
 
-function NextArrow(props) {
-    const { className, style, onClick } = props;
-    return (
-      <BiLeftArrow
-        className={className}
-        style={{ ...style, display: "block", background: "red" }}
-        onClick={onClick}
-      />
-    );
-  }
-
-function PrevArrow(props) {
-const { className, style, onClick } = props;
-return (
-    <BiRightArrow
-    className={className}
-    style={{ ...style, display: "block", background: "red" }}
-    onClick={onClick}
-    />
-);
-}
-
-
 const ImagesSlider = ({ images, setImageIndex, SlideRef }) => {
-    const settings = {
-        infinite: true,
-        slidesToShow: 2,
-        slidesToScroll: 1,
-        vertical: true,
-        verticalSwiping: true,
-        nextArrow: <div style={{ display: 'none' }} />,
-        prevArrow: <div style={{ display: 'none' }} />
-    }
+
     return (
         <>
         <DesktopBreakpoint>
@@ -301,6 +269,7 @@ const ColorOptions = ({ colors, setColorIndex, selectedColor }) => colors.map((i
 })
 
 const ProductUnit = (props) => {
+    const dispatch = useDispatch()
     const { product, productIndex } = props
     const [sizeSelected, setSize] = React.useState(0)
     const [selectedImageIndex, setImageIndex] = React.useState(0)
@@ -322,6 +291,25 @@ const ProductUnit = (props) => {
     }
   }`
   )
+  const AddItemToCart = () => {
+      const newCartItem = {
+          quantity: quantity,
+          size: product['details'][sizeSelected]['size'],
+          colors: product['details'][sizeSelected]['colors'][selectedColor]['colorId'],
+          product: {
+              name: product.name,
+              code: product.ProductId,
+              price: product.price,
+              dealPrice: product.dealPrice,
+              isDeal: product.isDeal,
+              image: imagesArray[0]['childImageSharp']['fluid']
+          }
+      }
+      dispatch(addToCart(newCartItem))
+    console.log('newcartitem', newCartItem)
+  }
+    const disableButton = Boolean(product['details'][sizeSelected]['size'])
+    || product['details'][sizeSelected]['colors'][selectedColor]['colorId']
     const imagesArray = data['allProduct']['nodes'][productIndex]['imageArray']
     return(
         <>
@@ -385,7 +373,9 @@ const ProductUnit = (props) => {
                             <BuyButtonDesktop>
                                 Comprar Agora
                             </BuyButtonDesktop>
-                            <BuyButtonDesktop>
+                            <BuyButtonDesktop
+                                onClick={AddItemToCart}
+                            >
                                 Adicionar à sacola
                             </BuyButtonDesktop>
                         </DetailSection>

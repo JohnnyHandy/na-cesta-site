@@ -18,16 +18,16 @@ const CheckboxLabelLandscape = styled('span')`
     font-size: 2vw
 `
 
-const Checkbox = ({ label }) => {
-    const [checked, setChecked] = React.useState(false)
+const Checkbox = ({ label, checkedValue = false, handleFilterChange, type, value }) => {
+    // const [checked, setChecked] = React.useState(checkedValue)
     const handleCheckboxClick = () => {
-        setChecked(!checked)
+        handleFilterChange(type, value)
     }
     const CheckboxComponent = React.useCallback((props) => (
-            checked
+            checkedValue
             ? <MdCheckBox {...props} />
             : <MdCheckBoxOutlineBlank {...props} /> 
-    ), [checked])
+    ), [checkedValue])
     return (
         <CheckboxContainer>
             <PhoneBreakpoint>

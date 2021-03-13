@@ -41,7 +41,9 @@ const Landscape = ({
           }}
         >
           <FaRegHeart size='2vw'/>
-          <BiShoppingBag size='2vw' />
+          <Link to='/carrinho'>
+            <BiShoppingBag size='2vw' />
+          </Link>
         </div>
         </>
     )
