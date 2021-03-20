@@ -43,7 +43,15 @@ const Products = (props) => {
   }
 }`)
   if(isFetching) {
-    return <LoadingComponent />
+    return (
+      <div
+        style={{
+          display: 'flex'
+        }}
+      >
+        <LoadingComponent />
+      </div>
+    )
   }
   const ProductItems = ({items}) => items.map((item, index) => {
     const formattedImageUrls = item.images.map(image => {
@@ -67,7 +75,6 @@ const Products = (props) => {
       />
     )
   })
-
     return(
         <div
           style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', paddingTop: '2em' }}

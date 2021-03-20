@@ -2,6 +2,8 @@ import React from 'react'
 import { useStaticQuery, graphql } from 'gatsby'
 import Img from 'gatsby-image'
 
+import './loading.css'
+
 const Loading = () => {
   const data = useStaticQuery(graphql`
     query {
@@ -17,10 +19,12 @@ const Loading = () => {
 
     return (
       <Img
+        className='loader'
         style={{
           width: '300px',
           height: '300px',
-          borderRadius: '50%'
+          borderRadius: '50%',
+          margin: 'auto'
         }}
         alt={'Loading...'}
         fluid={data.image.childImageSharp.fluid}
