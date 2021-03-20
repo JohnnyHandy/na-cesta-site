@@ -2,9 +2,9 @@ import React from 'react'
 import styled from '@emotion/styled'
 import Img from 'gatsby-image'
 
-import TestImg from '../../images/modelo.jpeg'
 import CustomRadio from '../inputs/radio'
-import { clearCart } from '../../store/cart'
+import { clearCart, registerOrderRequest } from '../../store/cart'
+import { generateId } from '../../utils/functions'
 
 const CartWrapper = styled('div')`
     font-family: Quicksand;
@@ -76,9 +76,10 @@ const ClearCartButton = styled('div')`
     padding: 0.5em;
 `
 
-const CartItems = ({cartItems}) => cartItems.map(item => {
+const CartItems = ({cartItems}) => cartItems.map(product => {
   return (
     <div
+    key={product.name}
     style={{
       alignItems: 'center',
       background: '#eaeaea',
@@ -88,11 +89,15 @@ const CartItems = ({cartItems}) => cartItems.map(item => {
       padding: '1em'
     }}
     >
-      <Img fluid={item.product.image} alt={item.product.image.src} style={{ width: '100px', height: '100px', margin: '0' }} />
+      <Img
+        fluid={product.image}
+        alt={product.image.src}
+        style={{ width: '100px', height: '100px', margin: '0' }}
+      />
       <div
         style={{ display: 'flex', flexDirection: 'column', flexGrow: '1' }}
       >
-        <span style={{ fontWeight: 'bold', fontSize: '1.5em' }}> {item.product.name} </span>
+        <span style={{ fontWeight: 'bold', fontSize: '1.5em' }}> {product.name} </span>
         <div
           style={{
             display: 'flex',
@@ -107,12 +112,12 @@ const CartItems = ({cartItems}) => cartItems.map(item => {
             width: '15em'
           }}
         >
-          <span> Código: {item.product.code} </span>
-          <span> Quantidade: {item.quantity} </span>
-          <span> Tamanho: {item.size} </span>
-          <span> Cor: {item.colors} </span>
+          <span> Código: {product.code} </span>
+          <span> Quantidade: {product.quantity} </span>
+          <span> Tamanho: {product.size} </span>
+          <span> Cor: {product.colors} </span>
         </div>
-        <span> Subtotal: R${item.product.isDeal ? item.product.dealPrice : item.product.price} </span>
+        <span> Subtotal: R${product.isDeal ? product.dealPrice : product.price} </span>
         </div>
       </div>
     </div>
@@ -121,7 +126,43 @@ const CartItems = ({cartItems}) => cartItems.map(item => {
 
 
 const CartComponent = ({ cartItems, dispatch }) => {
-  console.log('cartItems', cartItems)
+  const subtotal = cartItems?.reduce((ac, item) => {
+    const { isDeal, dealPrice, price, quantity } = item
+    const finalPrice = isDeal ? dealPrice : price
+    return ac + (finalPrice * quantity)
+  }, 0)
+  const deliverPrice = 0
+  const discount = 0
+  const total = subtotal + discount + deliverPrice
+  const registerOrder = () => {
+    const orderParams = {
+      ProductIds: cartItems.map(item => item.code),
+      UserId: 'test',
+      OrderId: generateId(7),
+      created_at: (new Date()).toISOString(),
+      orderDetails: {
+        discount: 0,
+        discountCode: '',
+        deliverMethod: '',
+        paymentMethod: '',
+        deliverCost: 0,
+        totalCost: total
+      },
+      products: cartItems.map(item => ({
+        ProductId: item.code,
+        color: item.color,
+        dealPrice: item.dealPrice,
+        isDeal: item.isDeal,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        size: item.size
+      })),
+      totalPrice: total.toString(),
+      status: '0'
+    }
+    dispatch(registerOrderRequest(orderParams))
+  }
   return (
     <CartWrapper>
       <UpperWrapper>
@@ -169,21 +210,25 @@ const CartComponent = ({ cartItems, dispatch }) => {
           <SummarySection style={{ flexDirection: 'column' }}>
             <SummaryValueWrapper>
               <span> Subtotal </span>
-              <span> R$100,00 </span>
+              <span> R${subtotal.toFixed(2)} </span>
             </SummaryValueWrapper>
             <SummaryValueWrapper>
               <span> Desconto </span>
-              <span> R$0,00 </span>
+              <span> R${discount} </span>
             </SummaryValueWrapper>
             <SummaryValueWrapper>
               <span>Entrega</span>
-              <span>R$0,00</span>
+              <span>R${deliverPrice}</span>
             </SummaryValueWrapper>
             <SummaryValueWrapper style={{ fontWeight: 'bolder' }}>
               <span> Total </span>
-              <span> R$100,00 </span>
+              <span> R${total} </span>
             </SummaryValueWrapper>
-            <CalcButtonDesktop> Finalizar compra </CalcButtonDesktop>
+            <CalcButtonDesktop
+              onClick={registerOrder}
+            >
+              Finalizar compra
+            </CalcButtonDesktop>
           </SummarySection>
         </SummaryWrapperDesktop>
       </UpperWrapper>

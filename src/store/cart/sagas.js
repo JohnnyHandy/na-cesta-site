@@ -1,17 +1,27 @@
 import { all, call, put, takeLatest } from 'redux-saga/effects'
 
 import * as actions from './index'
+import * as services from './services'
 
 export function* registerOrder ({ payload }) {
   try {
-    console.log('payload', payload)
-  } catch(error) {
-    console.error(error)
-  }
+    const params = {
+        data: {
+            action: 'create',
+            order: {...payload}
+        },
+        method: 'POST'
+    }
+    const response = yield call(services.ordersApi, {...params});
+    yield put(actions.registerOrderSuccess(response.data));
+} catch (error) {
+    yield put(actions.registerOrderFailure(error))
+}
+
 }
 
 export function* watchRegisterOrder() {
-  takeLatest(actions.registerOrderRequest, registerOrder)
+  yield takeLatest(actions.registerOrderRequest, registerOrder)
 }
 
 export default function* ordersSaga() {

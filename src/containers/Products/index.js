@@ -46,7 +46,6 @@ const Products = (props) => {
     return <LoadingComponent />
   }
   const ProductItems = ({items}) => items.map((item, index) => {
-    console.log('item', item)
     const formattedImageUrls = item.images.map(image => {
       let urlPiece = image.key ? image.key : image
       return `https://useverano.s3-sa-east-1.amazonaws.com/${urlPiece}`

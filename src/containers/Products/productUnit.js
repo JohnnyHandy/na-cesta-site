@@ -293,20 +293,17 @@ const ProductUnit = (props) => {
   )
   const AddItemToCart = () => {
       const newCartItem = {
-          quantity: quantity,
-          size: product['details'][sizeSelected]['size'],
-          colors: product['details'][sizeSelected]['colors'][selectedColor]['colorId'],
-          product: {
-              name: product.name,
-              code: product.ProductId,
-              price: product.price,
-              dealPrice: product.dealPrice,
-              isDeal: product.isDeal,
-              image: imagesArray[0]['childImageSharp']['fluid']
-          }
+        quantity: quantity,
+        size: product['details'][sizeSelected]['size'],
+        color: product['details'][sizeSelected]['colors'][selectedColor]['colorId'],
+        name: product.name,
+        code: product.ProductId,
+        price: product.price,
+        dealPrice: product.dealPrice,
+        isDeal: product.isDeal,
+        image: imagesArray[0]['childImageSharp']['fluid']
       }
       dispatch(addToCart(newCartItem))
-    console.log('newcartitem', newCartItem)
   }
     const disableButton = Boolean(product['details'][sizeSelected]['size'])
     || product['details'][sizeSelected]['colors'][selectedColor]['colorId']
