@@ -188,5 +188,16 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
       path: '/carrinho',
       component: require.resolve('./src/templates/CartTemplate.js')
     })
+    createPage({
+      path: '/registrar',
+      component: require.resolve('./src/templates/AuthTemplate.js'),
+      context: { auth: 'register' }
+    })
+    createPage({
+      path: '/entrar',
+      component: require.resolve('./src/templates/AuthTemplate.js'),
+      context: { auth: 'login' }
+    })
+
 }
 
