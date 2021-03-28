@@ -8,8 +8,8 @@ const FormComponent = styled('form')`
 `
 const InputsContainer = styled('div')`
   display: grid;
-  grid-column-gap: 1em; 
-  grid-template-columns: repeat(2,0.8fr);
+  grid-row-gap: 1em; 
+  grid-template-rows: repeat(2,0.8fr);
   padding: 1em;
 `
 
@@ -37,6 +37,10 @@ const SubmitButton = styled('button')`
   font-weight: bold;
   margin: auto;
   padding: 0.5em;
+  & :hover {
+    color: #1A4350;
+    background: white
+  }
 `
 const LoginLink = styled(Link)`
   color: #1A4350;
@@ -54,7 +58,7 @@ const InputComponent = (props) => {
   )
 }
 
-let RegisterFormComponent = () => {
+const LoginFormComponent = () => {
   return (
     <div
       style={{
@@ -72,19 +76,14 @@ let RegisterFormComponent = () => {
           textAlign: 'center'
         }}
       >
-        <FormTitle> Registre-se </FormTitle>
+        <FormTitle> Acesse sua conta </FormTitle>
         <FormComponent
           onSubmit={(e) => {
             e.preventDefault()
+            console.log('e', e)
           }}
         >
           <InputsContainer>
-          <Field
-            name='name'
-            type='text'
-            placeholder='Nome'
-            component={InputComponent}
-          />
           <Field
             type='text'
             placeholder='Email'
@@ -93,77 +92,28 @@ let RegisterFormComponent = () => {
           />
           <Field
             type='text'
-            placeholder='Genêro'
-            name='gender'
-            component={InputComponent}                      
-          />
-          <Field
-            type='text'
-            placeholder='Telefone'
-            name='phone_number'
-            component={InputComponent}                  
-          />
-          <Field
-            type='text'
-            placeholder='CEP'
-            name='cep'
-            component={InputComponent}
-          />
-          <Field
-            type='text'
-            placeholder='Rua e número'
-            name='address'
-            component={InputComponent}
-          />
-          <Field
-            type='text'
-            placeholder='Complemento'
-            name='complement'
-            component={InputComponent}
-          />
-          <Field
-            type='text'
-            placeholder='Bairro'
-            name='neighborhood'
-            component={InputComponent}
-          />
-          <Field
-            type='text'
-            placeholder='Cidade'
-            name='city'
-            component={InputComponent}
-          />
-          <Field
-            type='text'
-            placeholder='Estado'
-            name='state'
-            component={InputComponent}
-          />
-          <Field
-            type='text'
             placeholder='Senha'
             name='password'
             component={InputComponent}
-          />
-          <Field
-            type='text'
-            placeholder='Confirmar senha'
-            name='confirm_password'
-            component={InputComponent}     
           />
           </InputsContainer>
           <SubmitButton
             type='submit'
           >
-            Registrar
+            Entrar
           </SubmitButton>
         </FormComponent>
-        <LoginLink to='/entrar'>Já tenho uma conta</LoginLink>
+        <div
+          style={{
+            display: 'inline-grid'
+          }}
+        >
+          <LoginLink to='/'>Esqueci a senha</LoginLink>
+          <LoginLink to='/registrar'>Ainda não tem uma conta? Registre-se</LoginLink>
+        </div>
       </div>
     </div>
   )
 }
 
-RegisterFormComponent = reduxForm({ form: 'register' })(RegisterFormComponent)
-
-export default RegisterFormComponent
+export default reduxForm({ form: 'login' })(LoginFormComponent)
