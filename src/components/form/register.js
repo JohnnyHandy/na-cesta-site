@@ -1,7 +1,9 @@
 import React from 'react'
 import { Link } from 'gatsby'
-import { Field, reduxForm } from 'redux-form'
+import { Field, reduxForm, change } from 'redux-form'
+import InputMask from 'react-input-mask'
 import styled from '@emotion/styled'
+import axios from 'axios'
 
 const FormComponent = styled('form')`
   display: grid;
@@ -27,34 +29,62 @@ const InputWrapper = styled('div')`
   display: inline-grid;
   text-align: initial
 `
-const SubmitButton = styled('button')`
+const FormButton = styled('button')`
   background: #1A4350;
   border: none;
   color: white;
   cursor: pointer;
   font-family: Quicksand;
-  font-size: 2vw;
+  font-size: 2em;
   font-weight: bold;
   margin: auto;
   padding: 0.5em;
+  & :disabled {
+    background: white;
+    color: #1A4350;
+    cursor: not-allowed;
+  }
 `
 const LoginLink = styled(Link)`
   color: #1A4350;
   font-size: 1.5em;
 `
 
+const zipcodeUrl = zipcode => `https://viacep.com.br/ws/${zipcode}/json/`
+const fetchCepInfo = (cep) => {
+  return axios.get(zipcodeUrl(cep)).then(res => res).catch(err => err.response)
+}
 const InputComponent = (props) => {
-  console.log('props', props)
-  const { input, placeholder, ...rest } = props
+  const { input, placeholder, style, ...rest } = props
   return (
-    <InputWrapper>
+    <InputWrapper style={style}>
       <FormLabel htmlFor={input.name} >{placeholder}</FormLabel>
-      <input placeholder={placeholder} {...input}/>
+      <InputMask placeholder={placeholder} {...input} {...rest} />
     </InputWrapper>
   )
 }
 
-let RegisterFormComponent = () => {
+let RegisterFormComponent = (props) => {
+  const {dispatch, formValues} = props
+  const cepValue = formValues && formValues['cep']
+  const handleCepSearch = async () => {
+    const formattedCepValue = cepValue.replace(/[^0-9]/g, '')
+    const response = await fetchCepInfo(formattedCepValue)
+    if(response.status === 200){
+      const {
+        data: {
+          bairro,
+          localidade,
+          logradouro,
+          uf
+        }
+      } = response
+      dispatch(change('register', 'neighborhood', bairro))
+      dispatch(change('register', 'city', localidade))
+      dispatch(change('register', 'address', logradouro))
+      dispatch(change('register', 'state', uf))
+    }
+  }
   return (
     <div
       style={{
@@ -89,30 +119,49 @@ let RegisterFormComponent = () => {
             type='text'
             placeholder='Email'
             name='email'
-            component={InputComponent}                   
+            component={InputComponent} 
           />
           <Field
             type='text'
             placeholder='Genêro'
             name='gender'
-            component={InputComponent}                      
+            component={InputComponent}    
           />
           <Field
             type='text'
             placeholder='Telefone'
             name='phone_number'
-            component={InputComponent}                  
+            component={InputComponent}
+            mask='(99) 99999-9999'
           />
           <Field
             type='text'
             placeholder='CEP'
             name='cep'
             component={InputComponent}
+            mask='99999-999'
+          />
+            <FormButton
+              style={{
+                fontSize: '1em',
+                margin: '0 auto 0 0',
+                alignSelf: 'flex-end'
+              }}
+              disabled={(!cepValue) || (cepValue && cepValue.replace(/[^0-9]/g, '').length !== 8)}
+              onClick={handleCepSearch}
+            >
+              Buscar CEP 
+            </FormButton>
+          <Field
+            type='text'
+            placeholder='Rua'
+            name='address'
+            component={InputComponent}
           />
           <Field
             type='text'
-            placeholder='Rua e número'
-            name='address'
+            placeholder='Número'
+            name='number'
             component={InputComponent}
           />
           <Field
@@ -152,11 +201,11 @@ let RegisterFormComponent = () => {
             component={InputComponent}     
           />
           </InputsContainer>
-          <SubmitButton
+          <FormButton
             type='submit'
           >
             Registrar
-          </SubmitButton>
+          </FormButton>
         </FormComponent>
         <LoginLink to='/entrar'>Já tenho uma conta</LoginLink>
       </div>

@@ -90,11 +90,10 @@ const LoginFormComponent = () => {
             name='email'
             component={InputComponent}                   
           />
-          <Field
-            type='text'
+          <InputComponent
+            type='password'
             placeholder='Senha'
-            name='password'
-            component={InputComponent}
+            name='password'          
           />
           </InputsContainer>
           <SubmitButton
