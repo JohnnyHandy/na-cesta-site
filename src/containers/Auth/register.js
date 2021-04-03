@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getFormValues } from 'redux-form'
+import { getFormValues, isValid } from 'redux-form'
 import {
 	CognitoUserPool,
 	CognitoUserAttribute,
@@ -52,6 +52,7 @@ const RegisterContainer = () => {
   const dispatch = useDispatch()
   const state = useSelector(state => state)
   const formValues = getFormValues('register')(state)
+  const isFormValid = isValid('register')(state)
   const registerUserMethod = () => {
     userPool.signUp('example@email.com', 'senha123', attributeList, null, function(err, result) {
       if (err) {
@@ -67,6 +68,7 @@ const RegisterContainer = () => {
     <RegisterForm
       dispatch={dispatch}
       formValues={formValues}
+      isFormValid={isFormValid}
     />
     <button onClick={() => registerUserMethod()}> Register User </button>
     </>

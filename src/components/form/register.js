@@ -1,9 +1,12 @@
 import React from 'react'
 import { Link } from 'gatsby'
-import { Field, reduxForm, change } from 'redux-form'
+import { Field, reduxForm, change, clearFields } from 'redux-form'
 import InputMask from 'react-input-mask'
+import Select from 'react-select'
 import styled from '@emotion/styled'
 import axios from 'axios'
+
+import { required, minBRPhoneNumberLength, minPassLength, validEmail, validCep } from './validation'
 
 const FormComponent = styled('form')`
   display: grid;
@@ -29,6 +32,10 @@ const InputWrapper = styled('div')`
   display: inline-grid;
   text-align: initial
 `
+const StyledSelect = styled(Select)`
+
+`
+
 const FormButton = styled('button')`
   background: #1A4350;
   border: none;
@@ -51,25 +58,83 @@ const LoginLink = styled(Link)`
 `
 
 const zipcodeUrl = zipcode => `https://viacep.com.br/ws/${zipcode}/json/`
+const fetchStatesUrl = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados'
+const fetchCitiesUrl = (id) => `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${id}/municipios?orderBy=Adam`
 const fetchCepInfo = (cep) => {
   return axios.get(zipcodeUrl(cep)).then(res => res).catch(err => err.response)
 }
 const InputComponent = (props) => {
-  const { input, placeholder, style, ...rest } = props
+  const { input, placeholder, style, meta, ...rest } = props
+  console.log('rest', rest)
   return (
     <InputWrapper style={style}>
       <FormLabel htmlFor={input.name} >{placeholder}</FormLabel>
       <InputMask placeholder={placeholder} {...input} {...rest} />
+      { meta && meta.error && <span style={{ color: 'red' }}> {meta.error} </span> }
+    </InputWrapper>
+  )
+}
+const SelectComponent = (props) => {
+  const { input, placeholder, style, ...rest } = props
+
+  return (
+    <InputWrapper style={style}>
+      <FormLabel htmlFor={input.name} >{placeholder}</FormLabel>
+      <StyledSelect {...input} {...rest} onBlur={() => input.onBlur(input.value)} placeholder={placeholder}  />
     </InputWrapper>
   )
 }
 
 let RegisterFormComponent = (props) => {
-  const {dispatch, formValues} = props
-  const cepValue = formValues && formValues['cep']
+  const {dispatch, formValues, isFormValid} = props
+  const cepFieldValue = formValues && formValues['cep']
+  const stateFieldValue = formValues && formValues['state']
+  const [citiesList, setCities] = React.useState([])
+  const [statesList, setStates] = React.useState([])
+  const [loadingCities, setLoadingCities] = React.useState(false)
+  React.useEffect(() => {
+    const fetchStatesInfo = async () => {
+      const response = await axios.get(fetchStatesUrl).then(res => res).catch(err => err.response)
+      if (response.status === 200) {
+        const formattedData = response.data.map(item => ({
+          value: item.id,
+          label: `${item.sigla} - ${item.nome}`,
+          uf: item.sigla
+        })).sort(function(a, b){
+          if(a.label < b.label) { return -1; }
+          if(a.label > b.label) { return 1; }
+          return 0;
+      })
+        setStates(formattedData)
+      }
+    }
+    fetchStatesInfo()
+  }, [])
+  const fetchCitiesInfo = async ({ city, state }) => {
+    setLoadingCities(true)
+    let stateValue = state || stateFieldValue
+    const response = await axios.get(fetchCitiesUrl(stateValue.value)).then(res => res).catch(err => err.response)
+    if(response.status === 200) {
+      const formattedData = response.data.map(item => ({
+        value: item.id,
+        label: item.nome
+      })).sort(function(a, b){
+        if(a.label < b.label) { return -1; }
+        if(a.label > b.label) { return 1; }
+        return 0;
+    })
+      setCities(formattedData)
+      if(city){
+        const getCityInfo = formattedData.find(item => item.label === city)
+        dispatch(change('register', 'city', getCityInfo))
+      }
+    }
+    setLoadingCities(false)
+  }
+
   const handleCepSearch = async () => {
-    const formattedCepValue = cepValue.replace(/[^0-9]/g, '')
-    const response = await fetchCepInfo(formattedCepValue)
+    const formattedcepFieldValue = cepFieldValue.replace(/[^0-9]/g, '')
+    const response = await fetchCepInfo(formattedcepFieldValue)
     if(response.status === 200){
       const {
         data: {
@@ -79,10 +144,12 @@ let RegisterFormComponent = (props) => {
           uf
         }
       } = response
+      const findstateFieldValue = statesList.find(item => item.uf === uf)
       dispatch(change('register', 'neighborhood', bairro))
-      dispatch(change('register', 'city', localidade))
+      // dispatch(change('register', 'city', localidade))
       dispatch(change('register', 'address', logradouro))
-      dispatch(change('register', 'state', uf))
+      dispatch(change('register', 'state', findstateFieldValue))
+      fetchCitiesInfo({ city: localidade, state: findstateFieldValue })
     }
   }
   return (
@@ -114,18 +181,21 @@ let RegisterFormComponent = (props) => {
             type='text'
             placeholder='Nome'
             component={InputComponent}
+            validate={[required]}
           />
           <Field
             type='text'
             placeholder='Email'
             name='email'
             component={InputComponent} 
+            validate={[required, validEmail]}
           />
           <Field
             type='text'
             placeholder='Genêro'
             name='gender'
-            component={InputComponent}    
+            component={InputComponent}
+            validate={[required]}
           />
           <Field
             type='text'
@@ -133,6 +203,7 @@ let RegisterFormComponent = (props) => {
             name='phone_number'
             component={InputComponent}
             mask='(99) 99999-9999'
+            validate={[required, minBRPhoneNumberLength]}
           />
           <Field
             type='text'
@@ -140,6 +211,7 @@ let RegisterFormComponent = (props) => {
             name='cep'
             component={InputComponent}
             mask='99999-999'
+            required={[required, validCep]}
           />
             <FormButton
               style={{
@@ -147,7 +219,7 @@ let RegisterFormComponent = (props) => {
                 margin: '0 auto 0 0',
                 alignSelf: 'flex-end'
               }}
-              disabled={(!cepValue) || (cepValue && cepValue.replace(/[^0-9]/g, '').length !== 8)}
+              disabled={(!cepFieldValue) || (cepFieldValue && cepFieldValue.replace(/[^0-9]/g, '').length !== 8)}
               onClick={handleCepSearch}
             >
               Buscar CEP 
@@ -157,12 +229,14 @@ let RegisterFormComponent = (props) => {
             placeholder='Rua'
             name='address'
             component={InputComponent}
+            validate={[required]}
           />
           <Field
             type='text'
             placeholder='Número'
             name='number'
             component={InputComponent}
+            validate={[required]}
           />
           <Field
             type='text'
@@ -175,34 +249,47 @@ let RegisterFormComponent = (props) => {
             placeholder='Bairro'
             name='neighborhood'
             component={InputComponent}
-          />
-          <Field
-            type='text'
-            placeholder='Cidade'
-            name='city'
-            component={InputComponent}
+            validate={[required]}
           />
           <Field
             type='text'
             placeholder='Estado'
             name='state'
-            component={InputComponent}
+            component={SelectComponent}
+            options={statesList}
+            validate={[required]}
+            onChange={(_, value) => {
+              dispatch(clearFields('register', false, false, 'city'))
+              fetchCitiesInfo({ state: value })
+            }}
           />
           <Field
             type='text'
+            placeholder='Cidade'
+            name='city'
+            component={SelectComponent}
+            options={citiesList}
+            isLoading={loadingCities}
+            validate={[required]}
+          />
+          <Field
+            type='password'
             placeholder='Senha'
             name='password'
             component={InputComponent}
+            validate={[required, minPassLength]}
           />
           <Field
-            type='text'
+            type='password'
             placeholder='Confirmar senha'
             name='confirm_password'
-            component={InputComponent}     
+            component={InputComponent}
+            validate={[required, minPassLength]}
           />
           </InputsContainer>
           <FormButton
             type='submit'
+            disabled={!isFormValid}
           >
             Registrar
           </FormButton>
