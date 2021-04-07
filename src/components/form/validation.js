@@ -28,3 +28,5 @@ export const minUSPhoneNumberLength = value =>
     ? undefined
     : 'Invalid phone number'
 export const validCep = value => value.replace(/[^0-9]/g, '').length === 8 ? undefined : 'Insira CEP corretamente'
+
+export const validConfirmPassword = (value, allValues) => value === allValues['password'] ? undefined : 'As senhas precisam ser iguais.'

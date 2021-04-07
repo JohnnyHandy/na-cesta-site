@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getFormValues, isValid } from 'redux-form'
+import { getFormValues, isValid, submit } from 'redux-form'
 import {
 	CognitoUserPool,
 	CognitoUserAttribute,
@@ -63,12 +63,30 @@ const RegisterContainer = () => {
       console.log('user name is ' + cognitoUser.getUsername());
     })
   }
+  const onSubmit= (data) => {
+    console.log('onsubmit data', data)
+    const formattedData = {
+      ...data,
+      state: data['state']['label'],
+      city: data['city']['label']
+    }
+    console.log('formateddata', formattedData)
+    const attributeList = Object.keys(formattedData).map((item) => {
+      const formattedAttributes ={
+        Name: item,
+        Value: formattedData[item]
+      }
+      return new CognitoUserAttribute(formattedAttributes)
+    })
+    console.log('attribute list', attributeList)
+  }
   return (
     <>
     <RegisterForm
       dispatch={dispatch}
       formValues={formValues}
       isFormValid={isFormValid}
+      onSubmit={onSubmit}
     />
     <button onClick={() => registerUserMethod()}> Register User </button>
     </>

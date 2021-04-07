@@ -6,12 +6,13 @@ import Select from 'react-select'
 import styled from '@emotion/styled'
 import axios from 'axios'
 
-import { required, minBRPhoneNumberLength, minPassLength, validEmail, validCep } from './validation'
+import { required, minBRPhoneNumberLength, minPassLength, validEmail, validCep, validConfirmPassword } from './validation'
 
 const FormComponent = styled('form')`
   display: grid;
 `
 const InputsContainer = styled('div')`
+  align-items: flex-start;
   display: grid;
   grid-column-gap: 1em; 
   grid-template-columns: repeat(2,0.8fr);
@@ -57,6 +58,22 @@ const LoginLink = styled(Link)`
   font-size: 1.5em;
 `
 
+const genderOptions = [
+  {
+    label: 'Masculino',
+    value: 'M'
+  },
+  {
+    label: 'Feminino',
+    value: 'F'
+  },
+  {
+    label: 'Outro',
+    value: 'Outro'
+  }
+  
+]
+
 const zipcodeUrl = zipcode => `https://viacep.com.br/ws/${zipcode}/json/`
 const fetchStatesUrl = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados'
 const fetchCitiesUrl = (id) => `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${id}/municipios?orderBy=Adam`
@@ -65,12 +82,11 @@ const fetchCepInfo = (cep) => {
 }
 const InputComponent = (props) => {
   const { input, placeholder, style, meta, ...rest } = props
-  console.log('rest', rest)
   return (
     <InputWrapper style={style}>
       <FormLabel htmlFor={input.name} >{placeholder}</FormLabel>
       <InputMask placeholder={placeholder} {...input} {...rest} />
-      { meta && meta.error && <span style={{ color: 'red' }}> {meta.error} </span> }
+      { meta && meta.error && meta.touched && meta.visited && <span style={{ color: 'red' }}> {meta.error} </span> }
     </InputWrapper>
   )
 }
@@ -86,9 +102,10 @@ const SelectComponent = (props) => {
 }
 
 let RegisterFormComponent = (props) => {
-  const {dispatch, formValues, isFormValid} = props
+  const {dispatch, formValues, isFormValid, onSubmit, handleSubmit} = props
   const cepFieldValue = formValues && formValues['cep']
   const stateFieldValue = formValues && formValues['state']
+  const passwordValue = formValues && formValues['password']
   const [citiesList, setCities] = React.useState([])
   const [statesList, setStates] = React.useState([])
   const [loadingCities, setLoadingCities] = React.useState(false)
@@ -171,9 +188,7 @@ let RegisterFormComponent = (props) => {
       >
         <FormTitle> Registre-se </FormTitle>
         <FormComponent
-          onSubmit={(e) => {
-            e.preventDefault()
-          }}
+          onSubmit={handleSubmit(onSubmit)}
         >
           <InputsContainer>
           <Field
@@ -194,7 +209,8 @@ let RegisterFormComponent = (props) => {
             type='text'
             placeholder='Genêro'
             name='gender'
-            component={InputComponent}
+            component={SelectComponent}
+            options={genderOptions}
             validate={[required]}
           />
           <Field
@@ -284,7 +300,7 @@ let RegisterFormComponent = (props) => {
             placeholder='Confirmar senha'
             name='confirm_password'
             component={InputComponent}
-            validate={[required, minPassLength]}
+            validate={[required, minPassLength, validConfirmPassword]}
           />
           </InputsContainer>
           <FormButton
