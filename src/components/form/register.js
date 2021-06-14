@@ -103,8 +103,8 @@ const SelectComponent = (props) => {
 
 let RegisterFormComponent = (props) => {
   const {dispatch, formValues, isFormValid, onSubmit, handleSubmit} = props
-  const cepFieldValue = formValues && formValues['cep']
-  const stateFieldValue = formValues && formValues['state']
+  const cepFieldValue = formValues && formValues['custom:cep']
+  const stateFieldValue = formValues && formValues['custom:state']
   const passwordValue = formValues && formValues['password']
   const [citiesList, setCities] = React.useState([])
   const [statesList, setStates] = React.useState([])
@@ -143,7 +143,7 @@ let RegisterFormComponent = (props) => {
       setCities(formattedData)
       if(city){
         const getCityInfo = formattedData.find(item => item.label === city)
-        dispatch(change('register', 'city', getCityInfo))
+        dispatch(change('register', 'custom:city', getCityInfo))
       }
     }
     setLoadingCities(false)
@@ -162,10 +162,10 @@ let RegisterFormComponent = (props) => {
         }
       } = response
       const findstateFieldValue = statesList.find(item => item.uf === uf)
-      dispatch(change('register', 'neighborhood', bairro))
+      dispatch(change('register', 'custom:neighborhood', bairro))
       // dispatch(change('register', 'city', localidade))
       dispatch(change('register', 'address', logradouro))
-      dispatch(change('register', 'state', findstateFieldValue))
+      dispatch(change('register', 'custom:state', findstateFieldValue))
       fetchCitiesInfo({ city: localidade, state: findstateFieldValue })
     }
   }
@@ -224,7 +224,7 @@ let RegisterFormComponent = (props) => {
           <Field
             type='text'
             placeholder='CEP'
-            name='cep'
+            name='custom:cep'
             component={InputComponent}
             mask='99999-999'
             required={[required, validCep]}
@@ -250,27 +250,27 @@ let RegisterFormComponent = (props) => {
           <Field
             type='text'
             placeholder='Número'
-            name='number'
+            name='custom:number'
             component={InputComponent}
             validate={[required]}
           />
           <Field
             type='text'
             placeholder='Complemento'
-            name='complement'
+            name='custom:complement'
             component={InputComponent}
           />
           <Field
             type='text'
             placeholder='Bairro'
-            name='neighborhood'
+            name='custom:neighborhood'
             component={InputComponent}
             validate={[required]}
           />
           <Field
             type='text'
             placeholder='Estado'
-            name='state'
+            name='custom:state'
             component={SelectComponent}
             options={statesList}
             validate={[required]}
@@ -282,7 +282,7 @@ let RegisterFormComponent = (props) => {
           <Field
             type='text'
             placeholder='Cidade'
-            name='city'
+            name='custom:city'
             component={SelectComponent}
             options={citiesList}
             isLoading={loadingCities}
@@ -295,13 +295,13 @@ let RegisterFormComponent = (props) => {
             component={InputComponent}
             validate={[required, minPassLength]}
           />
-          <Field
+          {/* <Field
             type='password'
             placeholder='Confirmar senha'
             name='confirm_password'
             component={InputComponent}
             validate={[required, minPassLength, validConfirmPassword]}
-          />
+          /> */}
           </InputsContainer>
           <FormButton
             type='submit'

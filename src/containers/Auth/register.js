@@ -18,7 +18,7 @@ const userPool = new CognitoUserPool(poolData)
 let attributeList = [];
 const dataEmail = {
   Name: 'email',
-  Value: 'example@email.com'
+  Value: 'example2@email.com'
 }
 const attributeEmail = new CognitoUserAttribute(dataEmail)
 const dataAddress = {
@@ -54,7 +54,7 @@ const RegisterContainer = () => {
   const formValues = getFormValues('register')(state)
   const isFormValid = isValid('register')(state)
   const registerUserMethod = () => {
-    userPool.signUp('example@email.com', 'senha123', attributeList, null, function(err, result) {
+    userPool.signUp('example2@email.com', 'senha123', attributeList, null, function(err, result) {
       if (err) {
         alert(err.message || JSON.stringify(err));
         return;
@@ -65,10 +65,14 @@ const RegisterContainer = () => {
   }
   const onSubmit= (data) => {
     console.log('onsubmit data', data)
+    const { password,  ...attr} = data
+    const username = attr['email']
     const formattedData = {
-      ...data,
-      state: data['state']['label'],
-      city: data['city']['label']
+      ...attr,
+      'custom:state': attr['custom:state']['label'],
+      'custom:city': attr['custom:city']['label'],
+      gender: attr['gender']['label'],
+      'phone_number': `+55${attr['phone_number'].replace(/\s/g, '').replace('(', '').replace(')', '').replace('-', '')}`
     }
     console.log('formateddata', formattedData)
     const attributeList = Object.keys(formattedData).map((item) => {
@@ -78,7 +82,14 @@ const RegisterContainer = () => {
       }
       return new CognitoUserAttribute(formattedAttributes)
     })
-    console.log('attribute list', attributeList)
+    userPool.signUp(username, password, attributeList, null, function(err, result) {
+      if (err) {
+        alert(err.message || JSON.stringify(err));
+        return;
+      }
+      var cognitoUser = result.user;
+      console.log('user name is ' + cognitoUser.getUsername());
+    })
   }
   return (
     <>
