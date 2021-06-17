@@ -27,21 +27,6 @@ const ProductsAreaPortrait = styled('div')`
 
 const Products = (props) => {
   const { products, isFetching } = props
-  const data = useStaticQuery(graphql`
-  {
-    allProduct {
-    nodes {
-      imageArray {
-        url
-        childImageSharp {
-          fluid(maxWidth: 150, maxHeight: 150) {
-            ...GatsbyImageSharpFluid
-          }
-        }
-      }
-    }
-  }
-}`)
   if(isFetching) {
     return (
       <div
@@ -53,25 +38,18 @@ const Products = (props) => {
       </div>
     )
   }
-  const ProductItems = ({items}) => items.map((item, index) => {
-    const formattedImageUrls = item.images.map(image => {
-      let urlPiece = image.key ? image.key : image
-      return `https://useverano.s3-sa-east-1.amazonaws.com/${urlPiece}`
-    })
-     const getImageArrayFromQuery = data['allProduct']['nodes'].map(queryItem => queryItem['imageArray']).find(queryItem => {
-       let getArrayOfUrls = queryItem.map(i => i.url)
-       return JSON.stringify(getArrayOfUrls) === JSON.stringify(formattedImageUrls)
-     })
-    const ThumbImg = getImageArrayFromQuery[0]['childImageSharp']['fluid']
+  console.log('products', products);
+  const ProductItems = ({items}) => items.map((product, index) => {
+
     return (
       <Thumbnail
-        key={item.name}
-        name={item.name}
-        price={item.price}
-        productId={item.ProductId}
-        img={ThumbImg}
-        isDeal={item.isDeal}
-        dealPrice={item.dealPrice}
+        key={product.name}
+        name={product.name}
+        price={product.price}
+        path={product.path}
+        img={product.images[0]['url']}
+        isDeal={product.isDeal}
+        dealPrice={product.deal_price}
       />
     )
   })

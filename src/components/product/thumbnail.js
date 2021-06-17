@@ -38,7 +38,7 @@ const CartButtonPortrait = styled('button')`
     width: 25vw;
 `
 
-const ProductThumb = ({ name, price, img, productId, isDeal, dealPrice }) => {
+const ProductThumb = ({ name, price, img, path, is_deal, deal_price }) => {
     return (
         <div
             style={{
@@ -52,10 +52,10 @@ const ProductThumb = ({ name, price, img, productId, isDeal, dealPrice }) => {
             key={name}
         >
             <Link
-                to={`/${productId}-${name.replace(/\s/g, '-')}`}
+                to={path}
             >
-                <Img
-                    fluid={img}
+                <img
+                    src={img}
                     alt={name}
                     style={{
                         width: '150px',
@@ -73,16 +73,16 @@ const ProductThumb = ({ name, price, img, productId, isDeal, dealPrice }) => {
                 >
                      <span
                         style={{
-                            color: isDeal ? '#8a8080' : '',
-                            textDecoration: isDeal ? 'line-through' : ''
+                            color: is_deal ? '#8a8080' : '',
+                            textDecoration: is_deal ? 'line-through' : ''
                         }}
                         >R$ {' '} {price}
                     </span>
-                     {isDeal && <span>R$ {' '} {dealPrice} </span>}
+                     {is_deal && <span>R$ {' '} {deal_price} </span>}
                  </span>
             <DesktopBreakpoint>
                 <Link
-                    to={`/${productId}-${name.replace(/\s/g, '-')}`}
+                    to={path}
                 >
                     <BuyNowButtonLandscape>
                         Detalhes
@@ -94,7 +94,7 @@ const ProductThumb = ({ name, price, img, productId, isDeal, dealPrice }) => {
             </DesktopBreakpoint>
             <PhoneBreakpoint>
                 <Link
-                    to={`/${productId}-${name.replace(/\s/g, '-')}`}
+                    to={path}
                 >
                     <BuyNowButtonPortrait>
                         Detalhes

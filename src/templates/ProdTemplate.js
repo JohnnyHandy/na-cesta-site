@@ -5,12 +5,13 @@ import SEO from "../components/seo"
 import ProductUnit from '../containers/Products/productUnit'
 import MenuComponent from '../components/menu/menuItems'
 
-const IndexPage = ({ pageContext: { product, productIndex } }) => {
+const IndexPage = ({ pageContext: { product, model } }) => {
+  console.log('product', product, 'model', model)
   return (
   <Layout>
       <SEO title={product.name} />
       <MenuComponent />
-      <ProductUnit product={product} productIndex={productIndex} />
+      <ProductUnit product={product} model={model} />
   </Layout>
 )}
 

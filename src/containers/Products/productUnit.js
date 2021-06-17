@@ -1,13 +1,11 @@
 import React from 'react'
-import { graphql, useStaticQuery } from 'gatsby'
-import Img from 'gatsby-image'
 import styled from '@emotion/styled'
+import { navigate } from 'gatsby'
 import { useDispatch } from 'react-redux'
 import { DesktopBreakpoint, PhoneBreakpoint } from '../../components/responsive/devices'
 
 import KeenSlider from '../../components/slider/keen'
 import { addToCart } from '../../store/cart'
-import { colorPallete } from '../../utils/colors'
 
 const ProductUnitWrapper = styled('div')`
     font-family: Quicksand;
@@ -166,17 +164,17 @@ const ImagesSlider = ({ images, setImageIndex, SlideRef }) => {
         <DesktopBreakpoint>
             <ImageSliderContainerDesktop>
                 {
-                    images.map((item, index) => (
+                    images.map((image, index) => (
                         <div
                             style={{
                                 cursor: 'pointer'
                             }}
                             onClick={() => setImageIndex(index)}
-                            key={item['childImageSharp']['fluid']['src']}
+                            key={image.filename}
                         >
-                            <Img
-                                fluid={item['childImageSharp']['fluid']}
-                                alt={item['childImageSharp']['fluid']['src']}
+                            <img
+                                src={image.url}
+                                alt={image.filename}
                                 style={{
                                     height: '75px',
                                     width: '75px'
@@ -193,18 +191,18 @@ const ImagesSlider = ({ images, setImageIndex, SlideRef }) => {
                 ? ( 
                     <KeenSlider>
                         {
-                            images.map((item, index) => (
+                            images.map((image, index) => (
                                 <div
                                     style={{
                                         margin: '0.5em 0',
                                     }}
                                     onClick={() => setImageIndex(index)}
-                                    key={item['childImageSharp']['fluid']['src']}
+                                    key={image.filename}
                                     className='keen-slider__slide'
                                 >
-                                    <Img
-                                        fluid={item['childImageSharp']['fluid']}
-                                        alt={item['childImageSharp']['fluid']['src']}
+                                    <img
+                                        src={image.url}
+                                        alt={image.filename}
                                         style={{
                                             height: '50px',
                                             width: '50px'
@@ -217,7 +215,7 @@ const ImagesSlider = ({ images, setImageIndex, SlideRef }) => {
                     
                 )
             : (
-                images.map((item, index) => (
+                images.map((image, index) => (
                     <div
                         style={{
                             cursor: 'pointer',
@@ -226,11 +224,11 @@ const ImagesSlider = ({ images, setImageIndex, SlideRef }) => {
                             width: '75px'
                         }}
                         onClick={() => setImageIndex(index)}
-                        key={item['childImageSharp']['fluid']['src']}
+                        key={image.filename}
                     >
-                        <Img
-                            fluid={item['childImageSharp']['fluid']}
-                            alt={item['childImageSharp']['fluid']['src']}
+                        <img
+                            src={image.url}
+                            alt={image.filename}
                         />
                     </div>
                 ))
@@ -242,11 +240,10 @@ const ImagesSlider = ({ images, setImageIndex, SlideRef }) => {
 }
 
 
-const SizeOptions = ({details, setSize, setColorIndex, sizeSelected}) => details.map((item, index) => (
+const SizeOptions = ({sizes, setSize, sizeSelected}) => sizes.map((item, index) => (
     <SizeWrapper
     key={item.size}
     onClick={() => {
-        setColorIndex(0)
         setSize(index)
     }}
     sizeSelected={sizeSelected === index}
@@ -255,42 +252,40 @@ const SizeOptions = ({details, setSize, setColorIndex, sizeSelected}) => details
     </SizeWrapper>
 ))
 
-const ColorOptions = ({ colors, setColorIndex, selectedColor }) => colors.map((item, index) => {
-    const colorHex = colorPallete.find(colorItem => colorItem.id === item.colorId)['hex']
-    return (
-        <ColorSquare
-            key={item.colorId}
-            colorHex={colorHex}
-            selectedColor = {selectedColor === index}
-            onClick={() => setColorIndex(index)}
-        />
-    )
-
+const ColorOptions = ({ model, setColorIndex, selectedColor }) => model.products.map((item, index) => {
+    const path = `/${model.ref}-${model.name.replace(/\s/g, '-')}-${item.ref}-${item.name.replace(/\s/g, '-')}`
+    if(item.color !== null){
+        return (
+            <ColorSquare
+                key={item.color}
+                colorHex={item.color}
+                selectedColor = {selectedColor === index}
+                onClick={() => {
+                    setColorIndex(index)
+                    navigate(path)
+                }}
+            />
+        )
+    } else {
+        return (
+            <ColorSquare>
+                <img src={item.images[0]['url']} style={{ width: '100%' }} />
+            </ColorSquare>
+        )
+    }
 })
 
 const ProductUnit = (props) => {
     const dispatch = useDispatch()
-    const { product, productIndex } = props
+    const { product, productIndex, model } = props
     const [sizeSelected, setSize] = React.useState(0)
     const [selectedImageIndex, setImageIndex] = React.useState(0)
     const [selectedColor, setColorIndex] = React.useState(0)
     const [quantity, setQuantity] = React.useState(1)
     const SlideRef = React.useRef(null)
-    const data = useStaticQuery(graphql`
-    {
-      allProduct {
-      nodes {
-        imageArray {
-          childImageSharp {
-            fluid(maxWidth: 500, maxHeight: 500) {
-              ...GatsbyImageSharpFluid
-            }
-          }
-        }
-      }
-    }
-  }`
-  )
+    React.useEffect(() => {
+        setColorIndex(model.products.findIndex(item => item.id === product.id))
+    }, [])
   const AddItemToCart = () => {
       const newCartItem = {
         quantity: quantity,
@@ -300,14 +295,10 @@ const ProductUnit = (props) => {
         code: product.ProductId,
         price: product.price,
         dealPrice: product.dealPrice,
-        isDeal: product.isDeal,
-        image: imagesArray[0]['childImageSharp']['fluid']
+        isDeal: product.isDeal
       }
       dispatch(addToCart(newCartItem))
   }
-    const disableButton = Boolean(product['details'][sizeSelected]['size'])
-    || product['details'][sizeSelected]['colors'][selectedColor]['colorId']
-    const imagesArray = data['allProduct']['nodes'][productIndex]['imageArray']
     return(
         <>
         <DesktopBreakpoint>
@@ -316,17 +307,28 @@ const ProductUnit = (props) => {
                 <ProductTitleDesktop> {product.name} </ProductTitleDesktop>
                     <ImagesSectionDesktop>
                         <ImagesSlider
-                            images={imagesArray}
+                            images={product.images}
                             setImageIndex={setImageIndex}
                             SlideRef={SlideRef}
                         />
-                        <Img
-                            fluid={imagesArray[selectedImageIndex]['childImageSharp']['fluid']}
-                            alt={imagesArray[selectedImageIndex]['childImageSharp']['fluid']['src']}
+                        <img
+                            src={product.images[selectedImageIndex]['url']}
+                            alt={product.images[selectedImageIndex]['filename']}
                             style={{ width: '400px', height: '400px' }}
                         />
                     </ImagesSectionDesktop>
                     <DetailsWrapperDesktop>
+                        <DetailsTitleDesktop>
+                            Cores
+                        </DetailsTitleDesktop>
+                        <DetailSection>
+                            <ColorOptions
+                                model={model}
+                                setColorIndex={setColorIndex}
+                                selectedColor={selectedColor}
+                            />
+                        </DetailSection>
+
                         <DetailsTitleDesktop>
                             Tamanhos
                         </DetailsTitleDesktop>
@@ -335,18 +337,8 @@ const ProductUnit = (props) => {
                                 sizeSelected={sizeSelected}
                                 setColorIndex={setColorIndex}
                                 setSize={setSize}
-                                details={product.details}
+                                sizes={product.stocks}
                             />  
-                        </DetailSection>
-                        <DetailsTitleDesktop>
-                            Cores
-                        </DetailsTitleDesktop>
-                        <DetailSection>
-                            <ColorOptions
-                                colors={product['details'][sizeSelected]['colors']}
-                                setColorIndex={setColorIndex}
-                                selectedColor={selectedColor}
-                            />
                         </DetailSection>
                         <DetailsTitleDesktop>
                             Quantidade
@@ -387,12 +379,12 @@ const ProductUnit = (props) => {
             <ProductUnitWrapper>
                 <ProductTitleMobile> {product.name} </ProductTitleMobile>
                 <ImageSectionMobile>
-                        <Img
-                            fluid={imagesArray[selectedImageIndex]['childImageSharp']['fluid']}
-                            alt={imagesArray[selectedImageIndex]['childImageSharp']['fluid']['src']}
+                        <img
+                            src={product.images[selectedImageIndex]['url']}
+                            alt={product.images[selectedImageIndex]['filename']}
                             style={{ width: '200px', height: '200px' }}
                         />
-                        <ImagesSlider images={imagesArray} setImageIndex={setImageIndex} SlideRef={SlideRef} />
+                        <ImagesSlider images={product.images} setImageIndex={setImageIndex} SlideRef={SlideRef} />
                 </ImageSectionMobile>
                 <DetailsWrapperMobile>
                     <DetailsTitleMobile>
@@ -411,7 +403,7 @@ const ProductUnit = (props) => {
                     </DetailsTitleMobile>
                     <DetailSection>
                         <ColorOptions
-                            colors={product['details'][sizeSelected]['colors']}
+                            colors={model.products}
                             setColorIndex={setColorIndex}
                             selectedColor={selectedColor}
                         />

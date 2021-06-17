@@ -29,19 +29,6 @@ module.exports = {
         icon: `src/images/veranosol.png`, // This path is relative to the root of the site.
       },
     },
-    {
-      resolve: `gatsby-plugin-remote-images`,
-      options: {
-        nodeType: 'Product',
-        name: 'imageArray',
-        imagePath: 'images',
-        prepareUrl: (url) => {
-          console.log('url', url)
-          return `https://useverano.s3-sa-east-1.amazonaws.com/${url}`
-        },
-        type: 'array'
-      }
-   },
     `gatsby-plugin-emotion`
     // this (optional) plugin enables Progressive Web App + Offline functionality
     // To learn more, visit: https://gatsby.dev/offline
