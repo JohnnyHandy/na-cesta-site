@@ -8,8 +8,12 @@ import storage from 'redux-persist/lib/storage';
 import ProductSagas from './products/sagas';
 import { ProductsReducer } from './products/index';
 import { CartReducer } from './cart/index'
-import { reducer as formReducer } from 'redux-form'
 import CartSagas from './cart/sagas'
+import { AuthReducer } from './auth';
+import AuthSaga from './auth/sagas';
+
+import { reducer as formReducer } from 'redux-form'
+
 
 const persistConfig = {
   key: 'root',
@@ -22,10 +26,13 @@ export function* rootSaga() {
   yield all([
     ProductSagas(),
     CartSagas(),
+    AuthSaga(),
   ]);
 }
 
 const rootReducer = combineReducers({
+
+  auth: AuthReducer,
   products: ProductsReducer,
   cart: CartReducer,
   form: formReducer

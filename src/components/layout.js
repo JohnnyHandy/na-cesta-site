@@ -14,7 +14,7 @@ import Menu from './menu'
 import Header from '../components/header/header'
 import "./layout.css"
 
-const Layout = ({ children }) => {
+const Layout = ({ children, ...rest }) => {
   const [height, setHeight] = React.useState(0)
   const [width, setWidth] = React.useState(0)
   const [menu, setMenu] = React.useState(false)

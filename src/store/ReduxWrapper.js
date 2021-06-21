@@ -5,7 +5,9 @@ import configureStore from './configureStore'
 
 const { store, persistor } = configureStore();
 
-export default ({ element }) => (
+export default ({ element, ...rest }) => {
+    console.log('rest', rest);
+    return (
     <Provider store={store}>
         <PersistGate
             persistor={persistor}
@@ -13,4 +15,4 @@ export default ({ element }) => (
             {element}
         </PersistGate>
     </Provider>
-);
+)};
