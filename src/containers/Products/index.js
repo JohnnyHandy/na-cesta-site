@@ -1,5 +1,5 @@
 import React from 'react'
-import { graphql, useStaticQuery } from 'gatsby'
+import { getImage } from 'gatsby-plugin-image'
 import styled from '@emotion/styled'
 
 import { PhoneBreakpoint, DesktopBreakpoint } from '../../components/responsive/devices'
@@ -38,18 +38,24 @@ const Products = (props) => {
       </div>
     )
   }
-  console.log('products', products);
   const ProductItems = ({items}) => items.map((product, index) => {
-
+    const thumbImg = getImage(product.imageArray[0])
+    console.log('product unit', product)
+    const price = product.is_deal
+    ? product.deal_price
+    : product.discount
+    ? product.price * (product.discount/100)
+    : product.price
     return (
       <Thumbnail
         key={product.name}
         name={product.name}
-        price={product.price}
+        price={price}
         path={product.path}
-        img={product.images[0]['url']}
-        isDeal={product.isDeal}
+        img={thumbImg}
+        isDeal={product.is_deal}
         dealPrice={product.deal_price}
+        discount={product.discount}
       />
     )
   })

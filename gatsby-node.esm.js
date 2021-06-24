@@ -37,6 +37,7 @@ exports.sourceNodes = async ({ actions, createNodeId, createContentDigest }) => 
       price: product.price,
       deal_price: product.deal_price,
       enabled: product.enabled,
+      imagesUrl: product.image_url,
       images: product.image_url,
       stocks: product.stocks,
       id: productNodeId,
@@ -105,8 +106,16 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
            discount
            productId
            images { id, filename, url }
+           imageArray {
+              childImageSharp {
+                 gatsbyImageData(
+                  placeholder: BLURRED
+                  layout: FULL_WIDTH
+                 ) 
+              }
+            }
            model_id
-           stocks { size, id }
+           stocks { size, id, quantity }
            created_at
            updated_at
          }
@@ -169,7 +178,7 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
     createPage({
       path: `/produtos/biquinis`,
       component: require.resolve('./src/templates/ProdListTemplate.js'),
-      context: { products: resultForBiquinis, title: 'Biquinis' }
+      context: { modelData: resultForBiquinis, title: 'Biquinis' }
     })
     const maioModels = await graphql(`
     {
@@ -201,7 +210,7 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
     createPage({
       path: `/produtos/maios`,
       component: require.resolve('./src/templates/ProdListTemplate.js'),
-      context: { products: resultForMaios, title: 'Maiôs' }
+      context: { modelData: resultForMaios, title: 'Maiôs' }
     })
     const saidaModels = await graphql(`
     {
@@ -233,7 +242,7 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
     createPage({
       path: `/produtos/saidas`,
       component: require.resolve('./src/templates/ProdListTemplate.js'),
-      context: { products: resultForSaidas, title: 'Saídas' }
+      context: { modelData: resultForSaidas, title: 'Saídas' }
     })
     const dealModels = await graphql(`
     {
@@ -265,7 +274,7 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
     createPage({
       path: '/produtos/ofertas',
       component: require.resolve('./src/templates/ProdListTemplate.js'),
-      context: { products: resultForDeals, title: 'Ofertas' }
+      context: { modelData: resultForDeals, title: 'Ofertas' }
     })
     createPage({
       path: '/carrinho',

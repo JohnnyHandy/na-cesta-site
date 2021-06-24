@@ -1,14 +1,18 @@
 import React from 'react'
 import styled from '@emotion/styled'
+import { navigate } from 'gatsby'
 import { FaUserCircle } from 'react-icons/fa'
 import { Helmet } from 'react-helmet'
 import { useMediaQuery } from 'react-responsive'
+import { useSelector } from 'react-redux'
 
 import { PhoneBreakpoint, DesktopBreakpoint } from '../responsive/devices'
+import UserDialog from './userDialog'
 
 const AnchorItem = styled('a')`
   color: black;
   text-decoration: underline;
+  cursor: pointer;
 `
 
 const AnchorItemPortrait = styled('a')`
@@ -36,7 +40,7 @@ const MenuPortraitContainer = styled('div')`
     width: 45vw;
 `
 
-const MenuItems = ({ isPortrait }) => {
+const MenuItems = ({ isPortrait, user }) => {
     const loginStyleProps = {
         iconProps: {
             size: isPortrait ? '8vw' : '2vw'
@@ -55,35 +59,39 @@ const MenuItems = ({ isPortrait }) => {
         description: 'Quem Somos',
         icon: null,
         iconProps: {},
-        style: {}
+        style: {},
+        enabled: true
     },
     {
         href: '/',
         description: 'Contato',
         icon: null,
         iconProps: {},
-        style: {}
+        style: {},
+        enabled: true,
     },
     {
         href: '/',
         description: 'Trocas e devoluções',
         icon: null,
         iconProps: {},
-        style: {}
+        style: {},
+        enabled: true
     },
     {
-        href: '/',
-        description: 'Entrar / Registrar',
+        href: '/entrar',
+        description: 'Acessar conta / Registrar',
         icon: FaUserCircle,
+        enabled: user === null,
         ...loginStyleProps
-    }
-    ].map(item =>(
+    },
+    ].filter(item => item.enabled).map(item =>(
         <React.Fragment
             key={item.description}
         >
         <DesktopBreakpoint>
             <AnchorItem
-                href={item.href}
+                onClick={() => navigate(item.href)}
                 style={item.style}
             >
                 {item.description} {item.icon && React.createElement(item.icon, {...item.iconProps})}
@@ -101,6 +109,7 @@ const MenuItems = ({ isPortrait }) => {
 ))}
 
 const Menu = ({setMenu, menu, MenuIconRef}) => {
+    const { user } = useSelector(state => state.auth)
     const MenuRef = React.useRef()
     useOutsideAlerter(MenuRef, MenuIconRef)
     const isPortrait = useMediaQuery({ query: '(orientation: portrait)' })
@@ -114,7 +123,6 @@ const Menu = ({setMenu, menu, MenuIconRef}) => {
                 setMenu(!menu)
               }
             }
-      
             document.addEventListener('mousedown', handleClickOutside)
             return () => {
               document.removeEventListener('mousedown', handleClickOutside)
@@ -135,7 +143,8 @@ const Menu = ({setMenu, menu, MenuIconRef}) => {
         <>
         <DesktopBreakpoint>
             <MenuLandscapeContainer>
-                <MenuItems />
+                <MenuItems user={user} />
+                <UserDialog user={user} />
             </MenuLandscapeContainer>
         </DesktopBreakpoint>
         <PhoneBreakpoint>
@@ -144,7 +153,7 @@ const Menu = ({setMenu, menu, MenuIconRef}) => {
         </Helmet>
             <Backdrop>
             <MenuPortraitContainer ref={MenuRef}>
-                <MenuItems isPortrait={isPortrait} />
+                <MenuItems user={user} isPortrait={isPortrait} />
             </MenuPortraitContainer>
             </Backdrop>
         </PhoneBreakpoint>

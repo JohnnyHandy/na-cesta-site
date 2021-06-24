@@ -1,6 +1,7 @@
 import {
   put, call, takeLatest, all,
 } from 'redux-saga/effects';
+import { navigate } from 'gatsby'
 import { success, error } from 'react-notification-system-redux';
 
 import * as actions from './index';
@@ -17,6 +18,7 @@ export function* signIn({ payload }) {
       }));
       yield put(actions.updateCredentialsRequest(response.headers));
       yield put(actions.SIGN_IN_SUCCESS(response.data.data));
+      navigate(-1)
     }
   } catch (err) {
     yield put(error({
@@ -64,6 +66,16 @@ export function* updateCredentials({ payload }) {
   }
 }
 
+export function * verifyCredentials () {
+  try {
+    const response = yield call(services.verifyCredentials)
+    console.log('response', response)
+    yield put(actions.verifyCredentialsSuccess())
+  } catch(error) {
+    yield put(actions.verifyCredentialsFailure())
+  }
+}
+
 export function* watchSignIn() {
   yield takeLatest(actions.SIGN_IN_REQUEST, signIn);
 }
@@ -76,10 +88,15 @@ export function* watchUpdateCredentials() {
   yield takeLatest(actions.updateCredentialsRequest, updateCredentials);
 }
 
+export function* watchVerifyCredentials() {
+  yield takeLatest(actions.verifyCredentialsRequest, verifyCredentials)
+}
+
 export default function* AuthSaga() {
   yield all([
     watchSignIn(),
     watchSignOut(),
     watchUpdateCredentials(),
+    watchVerifyCredentials()
   ]);
 }

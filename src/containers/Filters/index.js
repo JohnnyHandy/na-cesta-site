@@ -1,13 +1,13 @@
 import React from 'react'
 import styled from '@emotion/styled'
 import { BiDownArrow, BiUpArrow } from 'react-icons/bi'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai'
 
 import Checkbox from '../../components/inputs/checkbox/'
 import FilterCollapse from '../../components/filters/filterCollapse'
 import { DesktopBreakpoint, PhoneBreakpoint } from '../../components/responsive/devices'
-import { clearProductsList, filterProductsRequest } from '../../store/products'
+import { clearProductsList, filterProductsRequest, setFilters } from '../../store/products'
 
 const FiltersWrapper = styled('div')`
     display: -webkit-flex;
@@ -45,104 +45,26 @@ const PricesCheckboxContainer = styled('div')`
 `
 
 export const Filters = () => {
-    const [sizeFilters, setSizeFilters] = React.useState([])
-    const [priceFilters, setPriceFilters] = React.useState([])
+  const filters = useSelector(state => state.products.filters)
+    const sizeFilters = filters['size']
+    const priceFilters = filters['price']
     const dispatch = useDispatch()
-    React.useEffect(() => {
-        let expressionAttributeNames = {}
-        let defaultExpressionAttributeNames = {
-            "#NM": "name",
-            "#PD": "ProductId",
-            "#DP": "dealPrice",
-            "#PR": "price",
-            "#ID": "isDeal",
-            "#IM": 'images'
-        }
-        let defaultProjectionExpression = "#NM, #PD, #DP, #PR, #ID, #IM"
-        let sizeExpressionAttributeValues = {}
-        let priceExpressionAttributeValues = {}
-        let sizeFilterExpression = ''
-        let priceFilterExpression = ''
-        let paramAttributes = {}
-        if(sizeFilters.length){
-            expressionAttributeNames["#AS"] = 'availableSizes'
-            sizeFilters.forEach(size => {
-                sizeExpressionAttributeValues[`:${size.toLowerCase()}`] = {"S" : size}
-                sizeFilterExpression = sizeFilterExpression === ''
-                ? `contains(#AS, :${size.toLowerCase()})`
-                : sizeFilterExpression.concat(` OR contains(#AS, :${size.toLowerCase()})`)
-            })
-            paramAttributes["ExpressionAttributeNames"] = {
-                ...paramAttributes["ExpressionAttributeNames"],
-                ...defaultExpressionAttributeNames,
-                ...expressionAttributeNames
-            }
-            paramAttributes['ExpressionAttributeValues'] = {
-                ...paramAttributes['ExpressionAttributeValues'],
-                ...sizeExpressionAttributeValues,
-            }
-            paramAttributes['ProjectionExpression'] = defaultProjectionExpression
-        }
-        if(priceFilters.length) {
-            let defaultBooleanAttributes = {
-                ":b1": {
-                    "BOOL": true
-                  },
-                  ":b2": {
-                    "BOOL": false
-                  }
-            }        
-            priceFilters.forEach((price, index) => {
-                let splitenPrice = price.split('-')
-                let minPrice = splitenPrice[0]
-                let maxPrice = splitenPrice[1]
-                priceExpressionAttributeValues[`:p${index}1`] = { "N": minPrice }
-                priceExpressionAttributeValues[`:p${index}2`] = { "N" : maxPrice }
-                priceFilterExpression = priceFilterExpression === ''
-                    ? `((#ID = :b1) AND ((#DP >= :p${index}1) AND (#DP <= :p${index}2))OR ((#ID = :b2) AND ((#PR >= :p${index}1) AND (#PR <= :p${index}2))))`
-                    : priceFilterExpression.concat(` OR ((#ID = :b1) AND ((#DP >= :p${index}1) AND (#DP <= :p${index}2))OR ((#ID = :b2) AND ((#PR >= :p${index}1) AND (#PR <= :p${index}2))))`)    
-                
-            })
 
-            paramAttributes["ExpressionAttributeNames"] = {
-                ...paramAttributes["ExpressionAttributeNames"],
-                ...defaultExpressionAttributeNames,
-                ...expressionAttributeNames
-            }
-
-            paramAttributes['ExpressionAttributeValues'] = {
-                ...defaultBooleanAttributes,
-                ...paramAttributes['ExpressionAttributeValues'],
-                ...priceExpressionAttributeValues,
-            }
-            paramAttributes['ProjectionExpression'] = defaultProjectionExpression
-        }
-        paramAttributes['FilterExpression'] = (sizeFilters.length && !priceFilters.length)
-        ? sizeFilterExpression
-        : (!sizeFilters.length && priceFilters.length)
-        ? priceFilterExpression
-        : (sizeFilters.length && priceFilters.length)
-        ? `${sizeFilterExpression} AND ${priceFilterExpression}`
-        : ''
-        if(sizeFilters.length || priceFilters.length) {
-            dispatch(filterProductsRequest({ paramAttributes }))
-        } else {
-            dispatch(clearProductsList())
-        }
-    }, [sizeFilters, priceFilters])
     const handleFilterChange = (type, value) => {
         if(type === 'size') {
             let newSizeFilter
             sizeFilters.includes(value)
             ? newSizeFilter = sizeFilters.filter(item => item !== value)
             : newSizeFilter = sizeFilters.concat(value)
-            setSizeFilters(newSizeFilter)
+            dispatch(setFilters({value: newSizeFilter, filter: 'size'}))
+            // setSizeFilters(newSizeFilter)
         } else if(type === 'price') {
             let newPriceFilter
             priceFilters.includes(value)
             ? newPriceFilter = priceFilters.filter(item => item !== value)
             : newPriceFilter = priceFilters.concat(value)
-            setPriceFilters(newPriceFilter)
+            dispatch(setFilters({value: newPriceFilter, filter: 'price'}))
+            // setPriceFilters(newPriceFilter)
         }
     }
     return(

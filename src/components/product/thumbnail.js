@@ -1,5 +1,5 @@
 import React from 'react'
-import Img from 'gatsby-image'
+import { GatsbyImage } from 'gatsby-plugin-image'
 import { Link } from 'gatsby'
 import styled from '@emotion/styled'
 
@@ -54,8 +54,8 @@ const ProductThumb = ({ name, price, img, path, is_deal, deal_price }) => {
             <Link
                 to={path}
             >
-                <img
-                    src={img}
+                <GatsbyImage
+                    image={img}
                     alt={name}
                     style={{
                         width: '150px',

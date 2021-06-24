@@ -18,6 +18,18 @@ export const updateCredentialsFailure = createAction(
   'auth: UPDATE_CREDENTIALS_FAILURE',
 );
 
+export const verifyCredentialsRequest = createAction(
+  'auth: VERIFY_CREDENTIALS_REQUEST'
+);
+
+export const verifyCredentialsSuccess = createAction(
+  'auth: VERIFY_CREDENTIALS_SUCCESS'
+)
+
+export const verifyCredentialsFailure = createAction(
+  'auth: VERIFY_CREDENTIALS_FAILURE'
+)
+
 export const initialState = {
   isLoggedIn: false,
   error: null,

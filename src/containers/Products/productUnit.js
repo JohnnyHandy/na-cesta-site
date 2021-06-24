@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from '@emotion/styled'
 import { navigate } from 'gatsby'
+import { GatsbyImage } from 'gatsby-plugin-image'
 import { useDispatch } from 'react-redux'
 import { DesktopBreakpoint, PhoneBreakpoint } from '../../components/responsive/devices'
 
@@ -172,8 +173,8 @@ const ImagesSlider = ({ images, setImageIndex, SlideRef }) => {
                             onClick={() => setImageIndex(index)}
                             key={image.filename}
                         >
-                            <img
-                                src={image.url}
+                            <GatsbyImage
+                                image={image.image}
                                 alt={image.filename}
                                 style={{
                                     height: '75px',
@@ -200,8 +201,8 @@ const ImagesSlider = ({ images, setImageIndex, SlideRef }) => {
                                     key={image.filename}
                                     className='keen-slider__slide'
                                 >
-                                    <img
-                                        src={image.url}
+                                    <GatsbyImage
+                                        image={image.image}
                                         alt={image.filename}
                                         style={{
                                             height: '50px',
@@ -226,8 +227,8 @@ const ImagesSlider = ({ images, setImageIndex, SlideRef }) => {
                         onClick={() => setImageIndex(index)}
                         key={image.filename}
                     >
-                        <img
-                            src={image.url}
+                        <GatsbyImage
+                            image={image.image}
                             alt={image.filename}
                         />
                     </div>
@@ -269,7 +270,7 @@ const ColorOptions = ({ model, setColorIndex, selectedColor }) => model.products
     } else {
         return (
             <ColorSquare>
-                <img src={item.images[0]['url']} style={{ width: '100%' }} />
+                <GatsbyImage image={item.images[0]['image']} style={{ width: '100%' }} />
             </ColorSquare>
         )
     }
@@ -278,6 +279,7 @@ const ColorOptions = ({ model, setColorIndex, selectedColor }) => model.products
 const ProductUnit = (props) => {
     const dispatch = useDispatch()
     const { product, productIndex, model } = props
+    console.log('product', product)
     const [sizeSelected, setSize] = React.useState(0)
     const [selectedImageIndex, setImageIndex] = React.useState(0)
     const [selectedColor, setColorIndex] = React.useState(0)
@@ -311,8 +313,8 @@ const ProductUnit = (props) => {
                             setImageIndex={setImageIndex}
                             SlideRef={SlideRef}
                         />
-                        <img
-                            src={product.images[selectedImageIndex]['url']}
+                        <GatsbyImage
+                            image={product.images[selectedImageIndex]['image']}
                             alt={product.images[selectedImageIndex]['filename']}
                             style={{ width: '400px', height: '400px' }}
                         />
@@ -379,8 +381,8 @@ const ProductUnit = (props) => {
             <ProductUnitWrapper>
                 <ProductTitleMobile> {product.name} </ProductTitleMobile>
                 <ImageSectionMobile>
-                        <img
-                            src={product.images[selectedImageIndex]['url']}
+                        <GatsbyImage
+                            image={product.images[selectedImageIndex]['image']}
                             alt={product.images[selectedImageIndex]['filename']}
                             style={{ width: '200px', height: '200px' }}
                         />

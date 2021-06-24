@@ -45,20 +45,21 @@ const SubmitButton = styled('button')`
 const LoginLink = styled(Link)`
   color: #1A4350;
   font-size: 1.5em;
+  margin: 0.5em 0;
 `
 
-const InputComponent = (props) => {
-  console.log('props', props)
-  const { input, placeholder, ...rest } = props
+const InputComponent = ({ input, meta, ...rest }) => {
+  console.log('input', input, 'rest', rest)
+  const { name } = input
   return (
     <InputWrapper>
-      <FormLabel htmlFor={input.name} >{placeholder}</FormLabel>
-      <input placeholder={placeholder} {...input}/>
+      <FormLabel htmlFor={name} >{rest.placeholder}</FormLabel>
+      <input {...input} {...rest} />
     </InputWrapper>
   )
 }
 
-const LoginFormComponent = () => {
+const LoginFormComponent = ({ handleSubmit, onSubmit }) => {
   return (
     <div
       style={{
@@ -72,16 +73,13 @@ const LoginFormComponent = () => {
         style={{
           background: '#f1d6ce',
           margin: 'auto',
-          padding: '1em',
+          padding: '1.5em',
           textAlign: 'center'
         }}
       >
         <FormTitle> Acesse sua conta </FormTitle>
         <FormComponent
-          onSubmit={(e) => {
-            e.preventDefault()
-            console.log('e', e)
-          }}
+          onSubmit={handleSubmit(onSubmit)}
         >
           <InputsContainer>
           <Field
@@ -90,10 +88,11 @@ const LoginFormComponent = () => {
             name='email'
             component={InputComponent}                   
           />
-          <InputComponent
+          <Field
             type='password'
+            name='password'
             placeholder='Senha'
-            name='password'          
+            component={InputComponent}
           />
           </InputsContainer>
           <SubmitButton
@@ -108,7 +107,7 @@ const LoginFormComponent = () => {
           }}
         >
           <LoginLink to='/'>Esqueci a senha</LoginLink>
-          <LoginLink to='/registrar'>Ainda não tem uma conta? Registre-se</LoginLink>
+          <LoginLink to='/registrar'>Registre-se</LoginLink>
         </div>
       </div>
     </div>

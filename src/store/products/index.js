@@ -8,11 +8,17 @@ export const filterProductsRequest = createAction('Products/FILTER_PRODUCTS_REQU
 export const filterProductsSuccess = createAction('Products/FILTER_PRODUCTS_SUCCESS');
 export const filterProductsFailure = createAction('Products/FILTER_PRODUCTS_FAILURE');
 
+export const setFilters = createAction('Products/SET_FILTERS')
+
 export const clearProductsList = createAction('Products/CLEAR_PRODUCTS_LIST');
 
 export const initialState = {
     items: [],
     isFetching: false,
+    filters: {
+     price:[],
+     size: []
+    },
     error: null,
 }
 
@@ -48,5 +54,12 @@ export const ProductsReducer = createReducer(initialState, {
     }),
     [clearProductsList]: (state) => ({
         ...initialState
+    }),
+    [setFilters]: (state, action) => ({
+      ...state,
+      filters: {
+        ...state.filters,
+        [action.payload.filter]: action.payload.value
+      }
     })
 })
