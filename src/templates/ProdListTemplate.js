@@ -72,7 +72,6 @@ const ProdListTemplate = ({ pageContext: { modelData, title } }) => {
   return (
     <Layout>
         <SEO title={title} />
-        <MenuComponent />
         <StoreContainer products={formatShowcase} />
     </Layout>
   )

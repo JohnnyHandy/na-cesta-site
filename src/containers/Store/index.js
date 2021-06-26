@@ -1,16 +1,18 @@
 import React from 'react'
 import styled from '@emotion/styled'
+import { StaticImage } from 'gatsby-plugin-image'
 
 import { DesktopBreakpoint, PhoneBreakpoint } from '../../components/responsive/devices'
 import Products from '../Products'
 import Filters from '../Filters'
+import MenuComponent from '../../components/menu/menuItems'
 
 
 const StoreLandscapeContainer = styled('div')`
     display: grid;
-    grid-template-columns: 30% 70%;
+    grid-template-columns: 10% 90%;
     justify-content: space-evenly;
-    padding: 3vh 0;
+    position: relative
 `
 const StorePortraitContainer = styled('div')`
     display: flex;
@@ -25,7 +27,10 @@ const StoreArea = (props) => {
         <DesktopBreakpoint>
             <StoreLandscapeContainer>
                 <Filters {...props} />
+                <div>
+                <MenuComponent />
                 <Products {...props} />
+                </div>
             </StoreLandscapeContainer>
         </DesktopBreakpoint>
         <PhoneBreakpoint>

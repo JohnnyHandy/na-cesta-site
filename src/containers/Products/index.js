@@ -13,6 +13,7 @@ const ProductsAreaLandscape = styled('div')`
   justify-content: space-evenly;
   width: 100%;
   height: 100%;
+  overflow: auto;
   row-gap: 5vh;
 `
 
@@ -40,28 +41,28 @@ const Products = (props) => {
   }
   const ProductItems = ({items}) => items.map((product, index) => {
     const thumbImg = getImage(product.imageArray[0])
-    console.log('product unit', product)
     const price = product.is_deal
     ? product.deal_price
     : product.discount
-    ? product.price * (product.discount/100)
+    ? (product.price - product.price * (product.discount/100))
     : product.price
     return (
       <Thumbnail
         key={product.name}
         name={product.name}
-        price={price}
+        showPrice={(price * 1).toFixed(2)}
+        price={product.price}
         path={product.path}
         img={thumbImg}
-        isDeal={product.is_deal}
-        dealPrice={product.deal_price}
+        is_deal={product.is_deal}
+        deal_price={product.deal_price}
         discount={product.discount}
       />
     )
   })
     return(
         <div
-          style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', paddingTop: '2em' }}
+          style={{ display: 'flex', alignItems: 'center', flexDirection: 'column'}}
         >
             <PhoneBreakpoint>
               <Filters />

@@ -7,7 +7,7 @@ import { DesktopBreakpoint, PhoneBreakpoint } from '../responsive/devices'
 
 const CarouselLandscapeContainer = styled('div')`
     align-items: center;
-    background-color: lightgoldenrodyellow;
+    background-color: rgba(0,0,0, 0.4);
     column-gap: 1vw;
     display: grid;
     grid-template-columns: 23% 23% 23% 23%;

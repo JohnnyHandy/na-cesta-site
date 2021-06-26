@@ -6,11 +6,12 @@ const SpanItem = styled(Link)`
   font-family: Quicksand;
   color: black;
   cursor: pointer;
-  font-size: 0.8em;
+  font-size: 1.5em;
 `
 
 
 const MenuContainer = styled('div')`
+background: white;
     border-bottom: 1px solid #c4c4c4;
     display: flex;
     justify-content: space-around;

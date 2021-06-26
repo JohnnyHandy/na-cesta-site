@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from '@emotion/styled'
+import { css } from '@emotion/core'
 import { navigate } from 'gatsby'
 import { GatsbyImage } from 'gatsby-plugin-image'
 import { useDispatch } from 'react-redux'
@@ -11,6 +12,9 @@ import { addToCart } from '../../store/cart'
 const ProductUnitWrapper = styled('div')`
     font-family: Quicksand;
     min-height: 75vh;
+    background: rgb(222 219 219 / 90%);
+    padding: 1em;
+
 `
 
 const UpperWrapper = styled('div')`
@@ -20,8 +24,9 @@ const UpperWrapper = styled('div')`
 `
 const ProductTitleDesktop = styled('span')`
     font-size: 1.5em;
+    font-weight: bold;
     left: 6em;
-    position: absolute;
+    margin-bottom: 1em;
 `
 
 const ProductTitleMobile = styled('span')`
@@ -98,6 +103,7 @@ const DetailSection = styled('div')`
     color: white;
     display: flex;
     justify-content: center;
+    margin: 0.5em 0;
     padding: 0.5em 0;
     width: 100%;
 `
@@ -132,10 +138,7 @@ const BuyButtonMobile = styled('div')`
     text-align: center;
 `
 
-const DescriptionWrapper = styled('div')`
-    border: 1px solid;
-    marginTop: 2em;
-    minHeight: 5em;
+const DescriptionWrapper = styled('span')`
 `
 
 const SizeWrapper = styled('div')`
@@ -157,6 +160,38 @@ const ColorSquare = styled('div')`
     margin: 0 0.5em;
     width: 1.5em;
 `
+const InfoSection = styled('div')`
+  display: flex;
+  flex-direction: column; 
+`
+const SliderImageCss = css`
+  height: 75px;
+  width: 75px;
+  &:hover {
+    outline: 1px solid black;
+  }
+`
+const Badges = styled('div')`
+  display:grid;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+`
+
+const OfferBadge = styled('span')`
+  background: red;
+  color: white;
+  font-weight: bold;
+  padding: 0.3em;
+`
+const DiscountBadge = styled('span')`
+background: green;
+color: white;
+font-weight: bold;
+padding: 0.3em;
+`
+
 
 const ImagesSlider = ({ images, setImageIndex, SlideRef }) => {
 
@@ -174,12 +209,10 @@ const ImagesSlider = ({ images, setImageIndex, SlideRef }) => {
                             key={image.filename}
                         >
                             <GatsbyImage
+
                                 image={image.image}
                                 alt={image.filename}
-                                style={{
-                                    height: '75px',
-                                    width: '75px'
-                                }}
+                                css={SliderImageCss}
                             />
                         </div>
                     ))
@@ -279,7 +312,11 @@ const ColorOptions = ({ model, setColorIndex, selectedColor }) => model.products
 const ProductUnit = (props) => {
     const dispatch = useDispatch()
     const { product, productIndex, model } = props
-    console.log('product', product)
+    const showPrice = ((product.is_deal
+    ? product.deal_price
+    : product.discount
+    ? (product.price - product.price * (product.discount/100))
+    : product.price) * 1).toFixed(2)
     const [sizeSelected, setSize] = React.useState(0)
     const [selectedImageIndex, setImageIndex] = React.useState(0)
     const [selectedColor, setColorIndex] = React.useState(0)
@@ -294,10 +331,10 @@ const ProductUnit = (props) => {
         size: product['details'][sizeSelected]['size'],
         color: product['details'][sizeSelected]['colors'][selectedColor]['colorId'],
         name: product.name,
-        code: product.ProductId,
+        code: product.id,
         price: product.price,
-        dealPrice: product.dealPrice,
-        isDeal: product.isDeal
+        dealPrice: product.deal_price,
+        isDeal: product.is_deal
       }
       dispatch(addToCart(newCartItem))
   }
@@ -306,18 +343,43 @@ const ProductUnit = (props) => {
         <DesktopBreakpoint>
             <ProductUnitWrapper>
                 <UpperWrapper>
-                <ProductTitleDesktop> {product.name} </ProductTitleDesktop>
+                  <InfoSection>
+                  <ProductTitleDesktop> {product.name} </ProductTitleDesktop>
+                  <DescriptionWrapper>
+                      {product.description || model.description}
+                    </DescriptionWrapper>
+                  </InfoSection>
                     <ImagesSectionDesktop>
                         <ImagesSlider
                             images={product.images}
                             setImageIndex={setImageIndex}
                             SlideRef={SlideRef}
                         />
-                        <GatsbyImage
+                                      <div
+                style={{ position: 'relative' }}
+              >
+                <Badges>
+                {(product.is_deal || (product.discount > 0 && !product.is_deal)) && 
+                <OfferBadge>
+                  Oferta
+                </OfferBadge>
+                }
+                {
+                  product.discount > 0 && !product.is_deal && (
+                    <DiscountBadge>
+                      {product.discount}% OFF
+                    </DiscountBadge>
+                  )
+                }
+                </Badges>
+                
+                <GatsbyImage
                             image={product.images[selectedImageIndex]['image']}
                             alt={product.images[selectedImageIndex]['filename']}
                             style={{ width: '400px', height: '400px' }}
                         />
+              </div>
+
                     </ImagesSectionDesktop>
                     <DetailsWrapperDesktop>
                         <DetailsTitleDesktop>
@@ -360,6 +422,40 @@ const ProductUnit = (props) => {
                                 - 
                             </QuantityControl>
                         </DetailSection>
+                        <DetailsTitleDesktop> Preço unitário </DetailsTitleDesktop>
+                        <DetailSection>
+                        <span
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-evenly',
+                        flexDirection: 'column'
+                    }}
+                >
+                  <div
+                    style={{ margin: '0.5em 0' }}
+                  >
+                  {(product.is_deal || product.discount > 0) && (
+                     <span
+                        style={{
+                            color:'#8a8080',
+                            textDecoration:'line-through' ,
+                            margin: '0 0.5em'
+                        }}
+                        >R$ {' '} {product.price}
+                    </span>
+                  )}
+                  {
+                  product.discount > 0 && !product.is_deal && (
+                    <DiscountBadge>
+                      {product.discount}% OFF
+                    </DiscountBadge>
+                  )
+                  }
+                  </div>
+                     <span style={{ fontWeight: 'bold', fontSize: '2em' }}>R$ {' '} {showPrice} </span>
+                 </span>
+
+                        </DetailSection>
                         <DetailSection>
                             <BuyButtonDesktop>
                                 Comprar Agora
@@ -372,9 +468,6 @@ const ProductUnit = (props) => {
                         </DetailSection>
                     </DetailsWrapperDesktop>
                 </UpperWrapper>
-                <DescriptionWrapper>
-                    {product.description}
-                </DescriptionWrapper>
             </ProductUnitWrapper>
         </DesktopBreakpoint>
         <PhoneBreakpoint>

@@ -11,11 +11,11 @@ import 'rc-dropdown/assets/index.css';
 import { SIGN_OUT_REQUEST } from '../../store/auth'
 
 function onSelect({ key }) {
-  console.log(`${key} selected`);
+  // console.log(`${key} selected`);
 }
 
 function onVisibleChange(visible) {
-  console.log(visible);
+  // console.log(visible);
 }
 
 const dropdownCss = css`

@@ -19,26 +19,19 @@ const FiltersArea = styled('div')`
     background-color: #DE6E52;
     display: flex;
     flex-direction: column;
-    padding: 1vh 1vw;
     font-family: Quicksand;
 `
 
-const SizesFilter = styled('div')`
+const FilterBox = styled('div')`
     align-self: center;
+    margin: 1em 0;
     text-align: center;
-    width: 15vw;
 `
 const SizesCheckboxContainer = styled('div')`
     display: grid;
-    grid-template-columns: 45% 45%;
     justify-content: space-between;
 `
 
-const PricesFilter = styled('div')`
-    align-self: center;
-    width: 80%;
-    text-align: center;
-`
 const PricesCheckboxContainer = styled('div')`
     display: grid;
     grid-template-columns: auto;
@@ -69,9 +62,6 @@ export const Filters = () => {
     }
     return(
         <FiltersWrapper>
-            <DesktopBreakpoint>
-                <span style={{ alignSelf: 'center', padding: '1vh 1vw' }} >Filtrar</span>
-            </DesktopBreakpoint>
             <PhoneBreakpoint>
                 <FilterCollapse
                     icons={[<BiUpArrow />, <BiDownArrow/>]}
@@ -164,7 +154,7 @@ export const Filters = () => {
             </PhoneBreakpoint>
             <DesktopBreakpoint>
             <FiltersArea>
-                <SizesFilter>
+                <FilterBox>
                     <span>Tamanhos</span>
                     <SizesCheckboxContainer>
                     <Checkbox
@@ -196,8 +186,8 @@ export const Filters = () => {
                         handleFilterChange={handleFilterChange}
                     />
                     </SizesCheckboxContainer>
-                </SizesFilter>
-                <PricesFilter>
+                </FilterBox>
+                <FilterBox>
                     <span>Preços</span>
                     <PricesCheckboxContainer>
                     <Checkbox
@@ -222,7 +212,7 @@ export const Filters = () => {
                         handleFilterChange={handleFilterChange}                        
                     />
                     </PricesCheckboxContainer>
-                </PricesFilter>
+                </FilterBox>
             </FiltersArea>
             </DesktopBreakpoint>
         </FiltersWrapper>

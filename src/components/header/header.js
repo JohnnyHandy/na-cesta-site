@@ -26,6 +26,7 @@ const Header = ({ siteTitle, toggleMenu, reference }) => {
       <div
         id='header'
         style={{
+          background: 'white',
           margin: `0 auto`,
           display: 'flex',
           alignItems: 'center',

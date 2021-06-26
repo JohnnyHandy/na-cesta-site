@@ -8,6 +8,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 import { useStaticQuery, graphql } from "gatsby"
+import { StaticImage } from 'gatsby-plugin-image'
 
 import { PhoneBreakpoint } from './responsive/devices'
 import Menu from './menu'
@@ -44,7 +45,24 @@ const Layout = ({ children, ...rest }) => {
       setMenu(!menu)
   }
   return (
-    <>
+    <div style={{ position: 'relative' }}>
+      <div
+        style={{
+          position: 'fixed',
+          zIndex: '-2',
+          width: '100%',
+          height: '100vh'
+        }}
+      >
+        <StaticImage
+          aspectRatio={2280/1500}
+          style={{ width: '100%', height: '100%' }}
+          imgStyle={{ width: '100%', height: '100%' }}
+          src='../../images/bg-main.jpeg'
+          alt='Use Verano'
+        />
+      </div>
+
       <Header reference={MenuIconRef} siteTitle={data.site.siteMetadata?.title || `Title`} toggleMenu={toggleMenu} />
       <div
         style={{
@@ -53,6 +71,7 @@ const Layout = ({ children, ...rest }) => {
           padding: `0 1.0875rem 1.45rem`,
         }}
       >
+
         <PhoneBreakpoint>
           {menu && <Menu height={height} menu={menu} MenuIconRef={MenuIconRef} setMenu={setMenu} />}
         </PhoneBreakpoint>
@@ -69,7 +88,7 @@ const Layout = ({ children, ...rest }) => {
           <a href="https://www.github.com/JohnnyHandy">JohnnyHandy</a>
         </footer>
       </div>
-    </>
+    </div>
   )
 }
 

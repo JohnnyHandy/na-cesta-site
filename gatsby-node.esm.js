@@ -63,6 +63,7 @@ exports.sourceNodes = async ({ actions, createNodeId, createContentDigest }) => 
         deal_price: model.deal_price,
         is_deal: model.is_deal,
         discount: model.discount,
+        description: model.description,
         id: modelNodeId,
         internal: {
           type: "Model",
@@ -84,8 +85,10 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
             ref
             price
             deal_price
+            description
             is_deal
             discount
+            description
             category_id,
             modelId
           }
@@ -100,6 +103,7 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
            name
            ref
            price
+           description
            color
            deal_price
            is_deal

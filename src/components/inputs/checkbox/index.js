@@ -15,7 +15,6 @@ const CheckboxLabelPortrait = styled('span')`
 `
 
 const CheckboxLabelLandscape = styled('span')`
-    font-size: 2vw
 `
 
 const Checkbox = ({ label, checkedValue = false, handleFilterChange, type, value }) => {
@@ -36,7 +35,7 @@ const Checkbox = ({ label, checkedValue = false, handleFilterChange, type, value
                 </CheckboxLabelPortrait>
                 <CheckboxComponent
                 onClick={handleCheckboxClick}
-                size='6vw'
+                size='1em'
                 style={{ cursor: 'pointer' }}
             />
             </PhoneBreakpoint>
@@ -46,7 +45,7 @@ const Checkbox = ({ label, checkedValue = false, handleFilterChange, type, value
                 </CheckboxLabelLandscape>
                 <CheckboxComponent
                 onClick={handleCheckboxClick}
-                size='4vw'
+                size='1vw'
                 style={{ cursor: 'pointer' }}
             />
             </DesktopBreakpoint>

@@ -76,7 +76,6 @@ const IndexPage = ({ pageContext: { modelData } }) => {
       title="Home"
     />
     <LandingCarousel />
-    <MenuComponent />
     <StoreContainer
       isFetching={isFetching}
       products={formatShowcase}

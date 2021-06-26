@@ -18,7 +18,6 @@ const BuyNowButtonLandscape = styled('button') `
     cursor: pointer;
     font-family: Quicksand;
     margin: 1vh auto ;
-    width: 12vw;
 `
 const BuyNowButtonPortrait = styled('button')`
     color: #1A4350;
@@ -38,7 +37,28 @@ const CartButtonPortrait = styled('button')`
     width: 25vw;
 `
 
-const ProductThumb = ({ name, price, img, path, is_deal, deal_price }) => {
+const Badges = styled('div')`
+  display:grid;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+`
+
+const OfferBadge = styled('span')`
+  background: red;
+  color: white;
+  font-weight: bold;
+  padding: 0.3em;
+`
+const DiscountBadge = styled('span')`
+background: green;
+color: white;
+font-weight: bold;
+padding: 0.3em;
+`
+
+const ProductThumb = ({ name, price, img, path, is_deal, deal_price, showPrice, discount }) => {
     return (
         <div
             style={{
@@ -46,39 +66,58 @@ const ProductThumb = ({ name, price, img, path, is_deal, deal_price }) => {
                 flexDirection: 'column',
                 alignItems: 'center',
                 backgroundColor: '#F3ECEC',
-                padding: '3vh 1vw',
-                justifyContent: 'space-evenly'
+                justifyContent: 'space-between',
+                width: 'fit-content'
             }}
             key={name}
         >
             <Link
                 to={path}
             >
-                <GatsbyImage
+              <div
+                style={{ position: 'relative' }}
+              >
+                <Badges>
+                {(is_deal || (discount > 0 && !is_deal)) && 
+                <OfferBadge>
+                  Oferta
+                </OfferBadge>
+                }
+                {
+                  discount > 0 && !is_deal && (
+                    <DiscountBadge>
+                      {discount}% OFF
+                    </DiscountBadge>
+                  )
+                }
+                </Badges>
+                
+              <GatsbyImage
                     image={img}
                     alt={name}
                     style={{
-                        width: '150px',
-                        height: '150px'
+                        width: '250px',
+                        height: '250px'
                     }}
                 />
+              </div>
             </Link>
             <span> {name} </span>
                 <span
                     style={{
-                        width: '50%',
                         display: 'flex',
                         justifyContent: 'space-evenly'
                     }}
                 >
+                     {(is_deal || discount > 0) && 
                      <span
                         style={{
-                            color: is_deal ? '#8a8080' : '',
-                            textDecoration: is_deal ? 'line-through' : ''
+                            color:'#8a8080',
+                            textDecoration:'line-through' 
                         }}
                         >R$ {' '} {price}
-                    </span>
-                     {is_deal && <span>R$ {' '} {deal_price} </span>}
+                    </span>}
+                     <span>R$ {' '} {showPrice} </span>
                  </span>
             <DesktopBreakpoint>
                 <Link
