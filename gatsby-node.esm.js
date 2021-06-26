@@ -22,36 +22,8 @@ const fetchProducts = () => {
 }
 
 exports.sourceNodes = async ({ actions, createNodeId, createContentDigest }) => {
-  const {data: products} = await fetchProducts()
-  await products.forEach(product => {
-    const productNodeId = createNodeId(`${product.ref}-${product.name}`)
-    const productNode = {
-      name: product.name,
-      productId: product.id,
-      model_id: product.model_id,
-      ref: product.ref,
-      color: product.color,
-      description: product.description,
-      is_deal: product.is_deal,
-      discount: product.discount,
-      price: product.price,
-      deal_price: product.deal_price,
-      enabled: product.enabled,
-      imagesUrl: product.image_url,
-      images: product.image_url,
-      stocks: product.stocks,
-      id: productNodeId,
-      created_at: product.created_at,
-      updated_at: product.updated_at,
-      internal: {
-        mediaType: 'application/json',
-        type: "Product",
-        contentDigest: createContentDigest(product)
-      }
-    }
-    actions.createNode(productNode)
-  })
     const { data: models } = await fetchModelsData()
+    let modelNodeArray = []
     await models.forEach(async model => {
       const modelNodeId = createNodeId(`${model.ref}-${model.name}`)
       const node = {
@@ -70,8 +42,42 @@ exports.sourceNodes = async ({ actions, createNodeId, createContentDigest }) => 
           contentDigest: createContentDigest(model),
         },
       }
+      modelNodeArray.push(node)
       actions.createNode(node)
     })
+    const {data: products} = await fetchProducts()
+    await products.forEach(product => {
+      const productNodeId = createNodeId(`${product.ref}-${product.name}`)
+      const findParentModelNode = modelNodeArray.find(model => model.modelId === product.model_id)
+      const productNode = {
+        name: product.name,
+        productId: product.id,
+        model_id: product.model_id,
+        ref: product.ref,
+        color: product.color,
+        description: product.description,
+        is_deal: product.is_deal,
+        discount: product.discount,
+        price: product.price,
+        deal_price: product.deal_price,
+        enabled: product.enabled,
+        imagesUrl: product.image_url,
+        images: product.image_url,
+        stocks: product.stocks,
+        id: productNodeId,
+        created_at: product.created_at,
+        updated_at: product.updated_at,
+        internal: {
+          mediaType: 'application/json',
+          type: "Product",
+          contentDigest: createContentDigest(product)
+        }
+      }
+
+      actions.createNode(productNode)
+      actions.createParentChildLink({ parent: findParentModelNode, child: productNode })
+    })
+  
 
 }
 
@@ -91,52 +97,46 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
             description
             category_id,
             modelId
+            childrenProduct {
+              id
+              name
+              ref
+              price
+              description
+              color
+              deal_price
+              is_deal
+              discount
+              productId
+              images { id, filename, url }
+              imageArray {
+                 childImageSharp {
+                    gatsbyImageData(
+                     placeholder: BLURRED
+                     layout: FULL_WIDTH
+                    ) 
+                 }
+               }
+              model_id
+              stocks { size, id, quantity }
+              created_at
+              updated_at
+   
+            }
           }
         }
       }
     `)
-    const products = await graphql(`
-    {
-       allProduct {
-         nodes {
-           id
-           name
-           ref
-           price
-           description
-           color
-           deal_price
-           is_deal
-           discount
-           productId
-           images { id, filename, url }
-           imageArray {
-              childImageSharp {
-                 gatsbyImageData(
-                  placeholder: BLURRED
-                  layout: FULL_WIDTH
-                 ) 
-              }
-            }
-           model_id
-           stocks { size, id, quantity }
-           created_at
-           updated_at
-         }
-       }
-     }
-   `)
    const formattedModelData = models.data.allModel.nodes.map(model => {
-     const getModelProducts = products.data.allProduct.nodes.filter(product => product.model_id === model.modelId)
-     return ({
-       ...model,
-       products: getModelProducts
-     })
-   })
+    const  { childrenProduct, ...rest } = model
+      return ({
+        ...rest,
+        products: childrenProduct
+      })
+    })
     createPage({
         path: '/',
         component: require.resolve('./src/templates/MainTemplate.js'),
-        context: { modelData: formattedModelData }
     })
     createPage({
       path: '/produtos',
@@ -145,10 +145,12 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
     })
     formattedModelData.forEach((model, index) => {
       model.products.forEach((product, productIndex) => {
+        const modelNodeId = model.id
+        const productNodeId = product.id
         createPage({
           path: `${model.ref}-${model.name.replace(/\s/g, '-')}-${product.ref}-${product.name.replace(/\s/g, '-')}`,
           component: require.resolve('./src/templates/ProdTemplate.js'),
-          context: {model, product}
+          context: {model, product, modelNodeId, productNodeId}
         })
       })
     })
@@ -166,6 +168,31 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
             discount
             category_id,
             modelId
+            childrenProduct {
+              id
+              name
+              ref
+              price
+              description
+              color
+              deal_price
+              is_deal
+              discount
+              productId
+              images { id, filename, url }
+              imageArray {
+                 childImageSharp {
+                    gatsbyImageData(
+                     placeholder: BLURRED
+                     layout: FULL_WIDTH
+                    ) 
+                 }
+               }
+              model_id
+              stocks { size, id, quantity }
+              created_at
+              updated_at   
+            }
           }
         }
       }
@@ -173,10 +200,10 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
   `)
     console.log('biquini', biquiniModels.data.allModel.edges);
     const resultForBiquinis = biquiniModels.data.allModel.edges.map(({node: model}) => {
-      const getModelProducts = products.data.allProduct.nodes.filter(product => product.model_id === model.modelId)
+      const  { childrenProduct, ...rest } = model
       return ({
-        ...model,
-        products: getModelProducts
+        ...rest,
+        products: childrenProduct
       })
     })
     createPage({
@@ -198,6 +225,31 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
             discount
             category_id,
             modelId
+            childrenProduct {
+              id
+              name
+              ref
+              price
+              description
+              color
+              deal_price
+              is_deal
+              discount
+              productId
+              images { id, filename, url }
+              imageArray {
+                 childImageSharp {
+                    gatsbyImageData(
+                     placeholder: BLURRED
+                     layout: FULL_WIDTH
+                    ) 
+                 }
+               }
+              model_id
+              stocks { size, id, quantity }
+              created_at
+              updated_at   
+            }
           }
         }
       }
@@ -205,10 +257,10 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
   `)
 
     const resultForMaios = maioModels.data.allModel.edges.map(({node: model}) => {
-      const getModelProducts = products.data.allProduct.nodes.filter(product => product.model_id === model.modelId)
+      const  { childrenProduct, ...rest } = model
       return ({
-        ...model,
-        products: getModelProducts
+        ...rest,
+        products: childrenProduct
       })
     })
     createPage({
@@ -230,16 +282,41 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
             discount
             category_id,
             modelId
+            childrenProduct {
+              id
+              name
+              ref
+              price
+              description
+              color
+              deal_price
+              is_deal
+              discount
+              productId
+              images { id, filename, url }
+              imageArray {
+                 childImageSharp {
+                    gatsbyImageData(
+                     placeholder: BLURRED
+                     layout: FULL_WIDTH
+                    ) 
+                 }
+               }
+              model_id
+              stocks { size, id, quantity }
+              created_at
+              updated_at   
+            }
           }
         }
       }
     }
   `)
   const resultForSaidas = saidaModels.data.allModel.edges.map(({node: model}) => {
-    const getModelProducts = products.data.allProduct.nodes.filter(product => product.model_id === model.modelId)
+    const  { childrenProduct, ...rest } = model
     return ({
-      ...model,
-      products: getModelProducts
+      ...rest,
+      products: childrenProduct
     })
   })
 
@@ -262,18 +339,43 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
             discount
             category_id,
             modelId
+            childrenProduct {
+              id
+              name
+              ref
+              price
+              description
+              color
+              deal_price
+              is_deal
+              discount
+              productId
+              images { id, filename, url }
+              imageArray {
+                 childImageSharp {
+                    gatsbyImageData(
+                     placeholder: BLURRED
+                     layout: FULL_WIDTH
+                    ) 
+                 }
+               }
+              model_id
+              stocks { size, id, quantity }
+              created_at
+              updated_at   
+            }
           }
         }
       }
     }
     `)
     const resultForDeals = dealModels.data.allModel.edges.map(({node: model}) => {
-      const getModelProducts = products.data.allProduct.nodes.filter(product => product.model_id === model.modelId)
-      return ({
-        ...model,
-        products: getModelProducts
+        const  { childrenProduct, ...rest } = model
+        return ({
+          ...rest,
+          products: childrenProduct
+        })
       })
-    })
   
     createPage({
       path: '/produtos/ofertas',

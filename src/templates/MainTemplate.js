@@ -1,5 +1,6 @@
 import React from "react"
 import { useSelector } from 'react-redux'
+import { useStaticQuery, graphql } from 'gatsby'
 
 
 import Layout from "../components/layout"
@@ -8,7 +9,65 @@ import LandingCarousel from "../components/carousel"
 import StoreContainer from '../containers/Store'
 import MenuComponent from '../components/menu/menuItems'
 
-const IndexPage = ({ pageContext: { modelData } }) => {
+const IndexPage = () => {
+  const data = useStaticQuery(
+    graphql`
+      query {
+        allModel {
+          nodes{
+            id
+            name
+            ref
+            price
+            deal_price
+            description
+            is_deal
+            discount
+            description
+            category_id,
+            modelId,
+            childrenProduct {
+              id
+              name
+              ref
+              price
+              description
+              color
+              deal_price
+              is_deal
+              discount
+              productId
+              images { id, filename, url }
+              imageArray {
+                 childImageSharp {
+                    gatsbyImageData(
+                     placeholder: BLURRED
+                     layout: FULL_WIDTH
+                    ) 
+                 }
+               }
+              model_id
+              stocks { size, id, quantity }
+              created_at
+              updated_at
+   
+            }
+          }
+        }
+      }
+    `
+  ) 
+ const { allModel: { nodes: allModels } } = data
+ console.log('allModels', allModels);
+
+const modelData = allModels.map(model => {
+  const  { childrenProduct, ...rest } = model
+  return ({
+    ...rest,
+    products: childrenProduct
+  })
+})
+
   const { isFetching, filters } = useSelector(state => state.products)
   const formatShowcase = modelData.map(model => {
     const { products } = model

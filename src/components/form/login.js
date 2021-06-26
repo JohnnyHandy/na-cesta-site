@@ -49,7 +49,6 @@ const LoginLink = styled(Link)`
 `
 
 const InputComponent = ({ input, meta, ...rest }) => {
-  console.log('input', input, 'rest', rest)
   const { name } = input
   return (
     <InputWrapper>

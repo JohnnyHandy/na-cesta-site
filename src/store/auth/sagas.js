@@ -51,6 +51,26 @@ export function* signOut() {
   }
 }
 
+export function * signUp({ payload }) {
+  try {
+    const response = yield call(services.signUp, payload)
+    if(response.status === 200){
+      yield put(success({
+        title: 'Criar conta',
+        message: 'Successo!',
+        autoDismiss: 1,
+      }));
+      yield put(actions.SIGN_UP_SUCCESS())
+    }
+  } catch (err) {
+    yield put(error({
+      title: 'Criar conta',
+      message: 'Erro ao criar conta',
+      autoDismiss: 1,
+    }));
+  }
+}
+
 export function* updateCredentials({ payload }) {
   try {
     const headers = payload;
@@ -69,7 +89,6 @@ export function* updateCredentials({ payload }) {
 export function * verifyCredentials () {
   try {
     const response = yield call(services.verifyCredentials)
-    console.log('response', response)
     yield put(actions.verifyCredentialsSuccess())
   } catch(error) {
     yield put(actions.verifyCredentialsFailure())
@@ -82,6 +101,10 @@ export function* watchSignIn() {
 
 export function* watchSignOut() {
   yield takeLatest(actions.SIGN_OUT_REQUEST, signOut);
+}
+
+export function*  watchSignUp() {
+  yield takeLatest(actions.SIGN_UP_REQUEST, signUp)
 }
 
 export function* watchUpdateCredentials() {
@@ -97,6 +120,7 @@ export default function* AuthSaga() {
     watchSignIn(),
     watchSignOut(),
     watchUpdateCredentials(),
-    watchVerifyCredentials()
+    watchVerifyCredentials(),
+    watchSignUp()
   ]);
 }

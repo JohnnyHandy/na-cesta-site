@@ -58,7 +58,7 @@ const Layout = ({ children, ...rest }) => {
           aspectRatio={2280/1500}
           style={{ width: '100%', height: '100%' }}
           imgStyle={{ width: '100%', height: '100%' }}
-          src='../../images/bg-main.jpeg'
+          src='../images/bg-main.jpeg'
           alt='Use Verano'
         />
       </div>

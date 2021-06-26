@@ -7,7 +7,6 @@ import MenuComponent from '../components/menu/menuItems'
 import StoreContainer from '../containers/Store'
 
 const ProdListTemplate = ({ pageContext: { modelData, title } }) => {
-  console.log('modelData', modelData);
   const { isFetching, filters } = useSelector(state => state.products)
   const formatShowcase = modelData.map(model => {
     const { products } = model

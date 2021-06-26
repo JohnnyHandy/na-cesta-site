@@ -4,6 +4,10 @@ export const SIGN_IN_REQUEST = createAction('auth/SIGN_IN_REQUEST');
 export const SIGN_IN_SUCCESS = createAction('auth/SIGN_IN_SUCCESS');
 export const SIGN_IN_FAILURE = createAction('auth/SIGN_IN_FAILURE');
 
+export const SIGN_UP_REQUEST = createAction('auth/SIGN_UP_REQUEST');
+export const SIGN_UP_SUCCESS = createAction('auth/SIGN_UP_SUCCESS');
+export const SIGN_UP_FAILURE = createAction('auth/SIGN_UP_FAILURE');
+
 export const SIGN_OUT_REQUEST = createAction('auth/SIGN_OUT_REQUEST');
 export const SIGN_OUT_SUCCESS = createAction('auth/SIGN_OUT_SUCCESS');
 export const SIGN_OUT_FAILURE = createAction('auth/SIGN_OUT_FAILURE');
