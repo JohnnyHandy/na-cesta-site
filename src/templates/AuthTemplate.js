@@ -5,16 +5,19 @@ import SEO from "../components/seo"
 import MenuComponent from '../components/menu/menuItems'
 import RegisterContainer from '../containers/Auth/register'
 import LoginContainer from '../containers/Auth/login'
+import ConfirmAccountContainer from '../containers/Auth/confirm'
 
-const AuthTemplate = ({ pageContext: { auth } }) => {
+const AuthTemplate = ({ pageContext: { auth , title}, ...rest }) => {
 
   return (
     <Layout>
-        <SEO title={auth === 'register'  ? 'Registre-se' : 'Entrar'} />
+        <SEO title={title} />
         <MenuComponent />
         { auth === 'register'
-        ? <RegisterContainer />
-        : <LoginContainer /> }
+        ? <RegisterContainer {...rest} />
+        : auth === 'login'
+        ? <LoginContainer {...rest} />
+        : <ConfirmAccountContainer {...rest}  /> }
     </Layout>
   )  
 }

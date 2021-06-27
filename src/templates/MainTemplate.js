@@ -7,9 +7,8 @@ import Layout from "../components/layout"
 import SEO from "../components/seo"
 import LandingCarousel from "../components/carousel"
 import StoreContainer from '../containers/Store'
-import MenuComponent from '../components/menu/menuItems'
 
-const IndexPage = () => {
+const IndexPage = (props) => {
   const data = useStaticQuery(
     graphql`
       query {

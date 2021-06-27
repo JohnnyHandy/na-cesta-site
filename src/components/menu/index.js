@@ -79,7 +79,7 @@ const MenuItems = ({ isPortrait, user }) => {
         enabled: true
     },
     {
-        href: '/entrar',
+        href: '/login',
         description: 'Acessar conta / Registrar',
         icon: FaUserCircle,
         enabled: user === null,

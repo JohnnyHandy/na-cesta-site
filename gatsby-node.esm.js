@@ -389,12 +389,17 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
     createPage({
       path: '/registrar',
       component: require.resolve('./src/templates/AuthTemplate.js'),
-      context: { auth: 'register' }
+      context: { auth: 'register', title: 'Registre-se' }
     })
     createPage({
-      path: '/entrar',
+      path: '/auth/confirmation',
       component: require.resolve('./src/templates/AuthTemplate.js'),
-      context: { auth: 'login' }
+      context: { auth: 'confirm', title: 'Confirmar conta' }
+    })
+    createPage({
+      path: '/login',
+      component: require.resolve('./src/templates/AuthTemplate.js'),
+      context: { auth: 'login', title: 'Entrar' }
     })
 }
 

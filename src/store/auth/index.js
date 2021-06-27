@@ -12,6 +12,10 @@ export const SIGN_OUT_REQUEST = createAction('auth/SIGN_OUT_REQUEST');
 export const SIGN_OUT_SUCCESS = createAction('auth/SIGN_OUT_SUCCESS');
 export const SIGN_OUT_FAILURE = createAction('auth/SIGN_OUT_FAILURE');
 
+export const CONFIRM_ACCOUNT_REQUEST = createAction('auth/CONFIRM_ACCOUNT_REQUEST')
+export const CONFIRM_ACCOUNT_SUCCESS = createAction('auth/CONFIRM_ACCOUNT_SUCCESS')
+export const CONFIRM_ACCOUNT_FAILURE = createAction('auth/CONFIRM_ACCOUNT_FAILURE')
+ 
 export const updateCredentialsRequest = createAction(
   'auth: UPDATE_CREDENTIALS_REQUEST',
 );

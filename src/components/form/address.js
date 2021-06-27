@@ -310,7 +310,7 @@ let RegisterFormComponent = (props) => {
             Registrar
           </FormButton>
         </FormComponent>
-        <LoginLink to='/entrar'>Já tenho uma conta</LoginLink>
+        <LoginLink to='/login'>Já tenho uma conta</LoginLink>
       </div>
     </div>
   )

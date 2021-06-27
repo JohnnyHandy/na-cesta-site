@@ -4,9 +4,11 @@ import { Field, reduxForm, change, clearFields } from 'redux-form'
 import InputMask from 'react-input-mask'
 import Select from 'react-select'
 import styled from '@emotion/styled'
-import axios from 'axios'
 
-import { required, minBRPhoneNumberLength, minPassLength, validEmail, validCep, validConfirmPassword } from './validation'
+import Loading from '../loading'
+
+import { required, minPassLength, validEmail, validConfirmPassword } from './validation'
+
 
 const FormComponent = styled('form')`
   display: grid;
@@ -82,20 +84,9 @@ const InputComponent = (props) => {
     </InputWrapper>
   )
 }
-const SelectComponent = (props) => {
-  const { input, placeholder, style, ...rest } = props
-
-  return (
-    <InputWrapper style={style}>
-      <FormLabel htmlFor={input.name} >{placeholder}</FormLabel>
-      <StyledSelect {...input} {...rest} onBlur={() => input.onBlur(input.value)} placeholder={placeholder}  />
-    </InputWrapper>
-  )
-}
 
 let RegisterFormComponent = (props) => {
-  const {dispatch, formValues, isFormValid, onSubmit, handleSubmit} = props
-  const passwordValue = formValues && formValues['password']
+  const {dispatch, formValues, isFormValid, onSubmit, handleSubmit, errors, status} = props
   return (
     <div
       style={{
@@ -113,6 +104,9 @@ let RegisterFormComponent = (props) => {
           textAlign: 'center'
         }}
       >
+        {status === 'waiting'
+        ? (<>
+          
         <FormTitle> Registre-se </FormTitle>
         <FormComponent
           onSubmit={handleSubmit(onSubmit)}
@@ -133,14 +127,6 @@ let RegisterFormComponent = (props) => {
             validate={[required, validEmail]}
           />
           <Field
-            type='text'
-            placeholder='Genêro'
-            name='gender'
-            component={SelectComponent}
-            options={genderOptions}
-            validate={[required]}
-          />
-          <Field
             type='password'
             placeholder='Senha'
             name='password'
@@ -154,6 +140,11 @@ let RegisterFormComponent = (props) => {
             component={InputComponent}
             validate={[required, minPassLength, validConfirmPassword]}
           />
+          {errors.map(error => (
+            <span style={{ color: 'red', margin:'0.2em 0' }} key={error}>
+              {error}
+            </span>
+          ))}
           </InputsContainer>
           <FormButton
             type='submit'
@@ -162,7 +153,18 @@ let RegisterFormComponent = (props) => {
             Registrar
           </FormButton>
         </FormComponent>
-        <LoginLink to='/entrar'>Já tenho uma conta</LoginLink>
+        </>)
+         : status === 'loading' ? (
+          <Loading />
+        ) : status === 'confirmed' ? (
+          <InputsContainer>
+            <FormTitle>Conta registrada</FormTitle>
+            <span> Para continuar, confirme o seu email através das instruções enviadas par ao email cadastrado! </span>
+            <Link to='/'> Ir para o login </Link>
+          </InputsContainer>
+        ) : null
+        }
+        <LoginLink to='/login'>Já tenho uma conta</LoginLink>
       </div>
     </div>
   )
