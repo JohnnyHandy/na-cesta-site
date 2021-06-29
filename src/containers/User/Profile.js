@@ -3,7 +3,8 @@ import { css } from '@emotion/core'
 import { useSelector } from 'react-redux'
 
 import UserTemplate from '../../templates/UserTemplate'
-import { colors } from '../../utils/colors'
+import { colors } from '../../utils/constants'
+import { navigate } from 'gatsby'
 
 const genderOptions = [
   {
@@ -55,7 +56,7 @@ const UserProfileContainer = (props) => {
   const { user } = useSelector(state => state.auth)
   const birthdayDate = new Date(user.birthday)
   const year = birthdayDate.getFullYear();
-  const month = birthdayDate.getMonth()+1;
+  let month = birthdayDate.getMonth()+1;
   let dt = birthdayDate.getDate();
 
   if (dt < 10) {
@@ -82,7 +83,7 @@ const UserProfileContainer = (props) => {
           <span css={spanCss} > Gênero: {genderOptions.find(gender => gender.value === user.gender)['label']} </span>
           <span css={spanCss} > Data de nascimento: {year+'-' + month + '-'+dt} </span>
           <span css={spanCss} > CPF: {user.document} </span>
-          <button css={Button}>Alterar dados pessoais</button>
+          <button css={Button} onClick={() => navigate('/user/edit/personal')} >Alterar dados pessoais</button>
         </div>
         <div
           style={{ display: 'grid', padding: '1em' }}

@@ -6,6 +6,9 @@ const isEmpty = value => {
   )
 }
 
+export const minCpfLength = value =>
+  value.replace(/[&/\\._-]/g, '').length === 11 ? undefined : 'CPF inválido'
+
 export const required = value =>
   !isEmpty(value) ? undefined : 'Campo requerido!'
 export const minPassLength = value => {

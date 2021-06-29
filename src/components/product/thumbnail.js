@@ -4,7 +4,7 @@ import { Link } from 'gatsby'
 import styled from '@emotion/styled'
 
 import { PhoneBreakpoint, DesktopBreakpoint } from '../responsive/devices'
-import { colors } from '../../utils/colors'
+import { colors } from '../../utils/constants'
 
 const CartButtonLandscape = styled('button')`
     color: ${colors.veranoBronze};

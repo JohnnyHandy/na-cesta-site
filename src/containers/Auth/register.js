@@ -16,20 +16,14 @@ const SignUpErrorMsgs = {
       label: 'Email já está sendo usado.'
     }
   },
-  document_number: {
+  document: {
     blank: {
       value: "Document number can't be blank",
       label: 'Número do documento não pode estar em branco'
     },
     taken: {
       value: 'Document number is being used already',
-      label: 'Numero do documento já está sendo usado'
-    }
-  },
-  document_type: {
-    blank: {
-      value: "Document type can't be blank",
-      label: 'Tipo do documento não pode estar em branco.'
+      label: 'O CPF já está sendo utilizado'
     }
   },
   password: {
@@ -50,18 +44,30 @@ const RegisterContainer = () => {
   const [errors, setErrors] = React.useState([])
 
   const onSubmit = async (data) => {
+    const { cep, city, complement, neighbourhood, number, state, street, password_confirmation, ...rest } = data
     const formattedData = {
-      ...data,
+      ...rest,
+      birthday: rest?.birthday.toISOString(),
+      gender: rest?.gender.value,
+      addresses_attributes: [{
+        city: city.label,
+        state: state.label,
+        number,
+        neighbourhood,
+        street,
+        cep,
+        complement
+      }]
     }
     setStatus('loading')
     await signUp(formattedData).then(res => {
-      if(res.status === 200 || res.status === 201){
+      if(res.status === 200 || res.status === 201 || res.status === 204){
         setStatus('confirmed')
       } 
     }).catch(res => {
       if (res.response.status === 422) {
         setStatus('waiting')
-        const { response: {data: { errors: resError }} } = res
+        const { response: { data: resError }} = res
         const errorMessages = Object.keys(resError).filter(item => Object.keys(SignUpErrorMsgs).includes(item)).reduce((ac, item) => {
           let newError = ac
           Object.keys(SignUpErrorMsgs).forEach(key => {

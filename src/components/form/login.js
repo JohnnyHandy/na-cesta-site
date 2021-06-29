@@ -3,7 +3,7 @@ import { Link } from 'gatsby'
 import { Field, reduxForm } from 'redux-form'
 import styled from '@emotion/styled'
 
-import { colors } from '../../utils/colors'
+import { colors } from '../../utils/constants'
 
 const FormComponent = styled('form')`
   display: grid;

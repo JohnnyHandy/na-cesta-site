@@ -6,9 +6,7 @@ import styled from '@emotion/styled'
 import Loading from '../loading'
 
 import { colors } from '../../utils/constants'
-import AddressForm from './Address'
 import UserDataForm from './UserData'
-import AccessDataForm from './AccessData'
 
 const FormComponent = styled('form')`
   display: grid;
@@ -67,11 +65,11 @@ const ErrorSpan = styled('span')`
 
 
 let RegisterFormComponent = (props) => {
-  const { formValues, isFormValid, onSubmit, handleSubmit, errors, status} = props
+  const { isFormValid, onSubmit, handleSubmit, errors, status } = props
   return (
     <div
       style={{
-        color: '${colors.veranoBlue}',
+        color: colors.veranoBlue,
         display: 'flex',
         fontFamily: 'Quicksand',
         minHeight: '70vh'
@@ -88,24 +86,15 @@ let RegisterFormComponent = (props) => {
         {status === 'waiting'
         ? (<>
           
-        <FormTitle> Registre-se </FormTitle>
+        <FormTitle> Alterar dados pessoais </FormTitle>
         <FormComponent
           onSubmit={handleSubmit(onSubmit)}
         >
           <div
-            style={{ display: 'flex' }}
+            style={{ display: 'flex', justifyContent: 'center' }}
           >
           <InputsContainer>
-            <FormSectionTitle> Dados de acesso </FormSectionTitle>
-            <AccessDataForm />
-          </InputsContainer>
-          <InputsContainer>
-            <FormSectionTitle> Dados Pessoais </FormSectionTitle>
             <UserDataForm />
-          </InputsContainer>
-          <InputsContainer>
-            <FormSectionTitle> Endereço </FormSectionTitle>
-            <AddressForm formValues={formValues} />
           </InputsContainer>
           </div>
           {errors.map(error => (
@@ -119,7 +108,7 @@ let RegisterFormComponent = (props) => {
             type='submit'
             disabled={!isFormValid}
           >
-            Registrar
+            Alterar dados
           </FormButton>
         </FormComponent>
         </>)
@@ -127,18 +116,16 @@ let RegisterFormComponent = (props) => {
           <Loading />
         ) : status === 'confirmed' ? (
           <InputsContainer>
-            <FormTitle>Conta registrada</FormTitle>
-            <span> Para continuar, confirme o seu email através das instruções enviadas par ao email cadastrado! </span>
-            <Link to='/'> Ir para o login </Link>
+            <FormTitle>Dados alterados!</FormTitle>
           </InputsContainer>
         ) : null
         }
-        <LoginLink to='/login'>Já tenho uma conta</LoginLink>
+        <LoginLink to='/user/profile'>Voltar para meus dados</LoginLink>
       </div>
     </div>
   )
 }
 
-RegisterFormComponent = reduxForm({ form: 'register' })(RegisterFormComponent)
+RegisterFormComponent = reduxForm({ form: 'editUserData' })(RegisterFormComponent)
 
 export default RegisterFormComponent

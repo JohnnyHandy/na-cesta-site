@@ -8,7 +8,7 @@ import { DesktopBreakpoint, PhoneBreakpoint } from '../../components/responsive/
 
 import KeenSlider from '../../components/slider/keen'
 import { addToCart } from '../../store/cart'
-import { colors } from '../../utils/colors'
+import { colors } from '../../utils/constants'
 
 const ProductUnitWrapper = styled('div')`
     font-family: Quicksand;

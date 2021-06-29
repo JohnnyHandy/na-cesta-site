@@ -15,6 +15,8 @@ export const SIGN_OUT_FAILURE = createAction('auth/SIGN_OUT_FAILURE');
 export const CONFIRM_ACCOUNT_REQUEST = createAction('auth/CONFIRM_ACCOUNT_REQUEST')
 export const CONFIRM_ACCOUNT_SUCCESS = createAction('auth/CONFIRM_ACCOUNT_SUCCESS')
 export const CONFIRM_ACCOUNT_FAILURE = createAction('auth/CONFIRM_ACCOUNT_FAILURE')
+
+export const updateUserInfo = createAction('auth/UPDATE_USER_INFO')
  
 export const updateCredentialsRequest = createAction(
   'auth: UPDATE_CREDENTIALS_REQUEST',
@@ -68,5 +70,9 @@ export const AuthReducer = createReducer(initialState, {
   [updateCredentialsSuccess]: (state, action) => ({
     ...state,
     credentials: action.payload.headers,
+  }),
+  [updateUserInfo]: (state, action) => ({
+    ...state,
+    user: action.payload.user
   })
 });

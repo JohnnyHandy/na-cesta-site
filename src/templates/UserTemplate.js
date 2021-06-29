@@ -4,7 +4,7 @@ import Menu, { Item as MenuItem, Divider } from 'rc-menu'
 import { css } from '@emotion/core'
 import styled from '@emotion/styled'
 
-import { colors } from '../utils/colors'
+import { colors } from '../utils/constants'
 
 const StyledMenuItem = styled(MenuItem)`
   cursor: pointer;
