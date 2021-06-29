@@ -68,5 +68,5 @@ export const AuthReducer = createReducer(initialState, {
   [updateCredentialsSuccess]: (state, action) => ({
     ...state,
     credentials: action.payload.headers,
-  }),
+  })
 });

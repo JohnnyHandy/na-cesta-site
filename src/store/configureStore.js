@@ -4,7 +4,7 @@ import { reducer as formReducer } from 'redux-form'
 import { persistStore, persistReducer } from 'redux-persist';
 import { all } from 'redux-saga/effects';
 import { combineReducers } from 'redux';
-import storage from 'redux-persist/lib/storage';
+import storage from './storage';
 import { reducer as notifications } from 'react-notification-system-redux';
 
 import ProductSagas from './products/sagas';
@@ -20,7 +20,7 @@ import { addTokenToRequest } from './middlewares'
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['cart'],
+  whitelist: ['cart', 'auth'],
 };
 
 const sagaMiddleware = createSagaMiddleware();

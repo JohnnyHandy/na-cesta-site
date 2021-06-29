@@ -57,7 +57,6 @@ const IndexPage = (props) => {
     `
   ) 
  const { allModel: { nodes: allModels } } = data
- console.log('allModels', allModels);
 
 const modelData = allModels.map(model => {
   const  { childrenProduct, ...rest } = model

@@ -64,13 +64,10 @@ const RegisterContainer = () => {
         const { response: {data: { errors: resError }} } = res
         const errorMessages = Object.keys(resError).filter(item => Object.keys(SignUpErrorMsgs).includes(item)).reduce((ac, item) => {
           let newError = ac
-          console.log('item', item)
           Object.keys(SignUpErrorMsgs).forEach(key => {
             if (item === key) {
               Object.keys(SignUpErrorMsgs[key]).forEach(msg => {
-                console.log('msg', msg)
                  resError[item].forEach(errorMsg => {
-                   console.log('errorMsg', errorMsg)
                   if(errorMsg.includes(msg)){
                     newError =
                     !errors.includes(SignUpErrorMsgs[key][msg]['label']) &&
@@ -86,7 +83,6 @@ const RegisterContainer = () => {
       }
     })
   }
-  errors.length && console.log('erorrs', errors);
   return (
     <RegisterForm
       dispatch={dispatch}

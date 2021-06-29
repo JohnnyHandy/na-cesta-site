@@ -1,4 +1,5 @@
 import React from 'react'
+import { navigate } from 'gatsby'
 import Menu, { Item as MenuItem, Divider } from 'rc-menu'
 import { css } from '@emotion/core'
 import { useDispatch } from 'react-redux'
@@ -10,26 +11,22 @@ import 'rc-dropdown/assets/index.css';
 
 import { SIGN_OUT_REQUEST } from '../../store/auth'
 
-function onSelect({ key }) {
-  // console.log(`${key} selected`);
-}
-
-function onVisibleChange(visible) {
-  // console.log(visible);
-}
-
 const dropdownCss = css`
+  cursor: pointer;
+`
+
+const MenuItemCss = css`
   cursor: pointer;
 `
 
 const UserDialog = ({user}) => {
   const MenuOverlay =  (
-    <Menu onSelect={onSelect}>
-      <MenuItem key="1">Minha Conta</MenuItem>
+    <Menu>
+      <MenuItem css={MenuItemCss} onClick={() => navigate('/user/profile')} key="profile">Minha Conta</MenuItem>
       <Divider />
-      <MenuItem key="2">Meus Pedidos</MenuItem>
+      <MenuItem css={MenuItemCss} onClick={() => navigate('/user/orders')} key="orders">Meus Pedidos</MenuItem>
       <Divider />
-      <MenuItem key="3" onClick={() => dispatch(SIGN_OUT_REQUEST())} > Sair </MenuItem>
+      <MenuItem css={MenuItemCss} key="3" onClick={() => dispatch(SIGN_OUT_REQUEST())} > Sair </MenuItem>
     </Menu>
   );
   const dispatch = useDispatch()
@@ -43,7 +40,6 @@ const UserDialog = ({user}) => {
         trigger={['click']}
         overlay={MenuOverlay}
         animation="slide-up"
-        onVisibleChange={onVisibleChange}
       >
         <div>
           <FaUserCircle />

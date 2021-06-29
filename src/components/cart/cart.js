@@ -5,6 +5,7 @@ import Img from 'gatsby-image'
 import CustomRadio from '../inputs/radio'
 import { clearCart, registerOrderRequest } from '../../store/cart'
 import { generateId } from '../../utils/functions'
+import { colors } from '../../utils/colors'
 
 const CartWrapper = styled('div')`
     font-family: Quicksand;
@@ -32,7 +33,7 @@ const DetailSectionDesktop = styled('div')`
 `
 
 const SummaryWrapperDesktop = styled('div')`
-    background: #D0775D;
+    background: ${colors.veranoBronze};
     border: 1px solid;
     display: flex;
     flex-direction: column;
@@ -49,7 +50,7 @@ const SummaryTitleDesktop = styled('span')`
 
 const SummarySection = styled('div')`
     align-items: center;
-    background: #1A4350;
+    background: ${colors.veranoBlue};
     color: white;
     display: flex;
     justify-content: center;

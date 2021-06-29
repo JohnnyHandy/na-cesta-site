@@ -92,6 +92,7 @@ export function * verifyCredentials () {
     yield put(actions.verifyCredentialsSuccess())
   } catch(error) {
     yield put(actions.verifyCredentialsFailure())
+    yield put(actions.SIGN_OUT_SUCCESS())
   }
 }
 

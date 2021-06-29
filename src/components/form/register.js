@@ -8,6 +8,7 @@ import styled from '@emotion/styled'
 import Loading from '../loading'
 
 import { required, minPassLength, validEmail, validConfirmPassword } from './validation'
+import { colors } from '../../utils/colors'
 
 
 const FormComponent = styled('form')`
@@ -38,7 +39,7 @@ const StyledSelect = styled(Select)`
 `
 
 const FormButton = styled('button')`
-  background: #1A4350;
+  background: ${colors.veranoBlue};
   border: none;
   color: white;
   cursor: pointer;
@@ -49,12 +50,12 @@ const FormButton = styled('button')`
   padding: 0.5em;
   & :disabled {
     background: white;
-    color: #1A4350;
+    color: ${colors.veranoBlue};
     cursor: not-allowed;
   }
 `
 const LoginLink = styled(Link)`
-  color: #1A4350;
+  color: ${colors.veranoBlue};
   font-size: 1.5em;
 `
 
@@ -90,7 +91,7 @@ let RegisterFormComponent = (props) => {
   return (
     <div
       style={{
-        color: '#1A4350',
+        color: '${colors.veranoBlue}',
         display: 'flex',
         fontFamily: 'Quicksand',
         minHeight: '70vh'

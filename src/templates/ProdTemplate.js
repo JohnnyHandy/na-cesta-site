@@ -59,8 +59,6 @@ export const query = graphql`
 `
 
 const IndexPage = ({ pageContext: { product, model, productNodeId, modelNodeId }, data }) => {
-  console.log('data', data)
-  console.log('productNodeId', productNodeId, 'modelNodeId', modelNodeId)
   const formattedProducts = {
     ...product,
     images: product.imageArray.map(image => {

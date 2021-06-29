@@ -8,6 +8,7 @@ import { DesktopBreakpoint, PhoneBreakpoint } from '../../components/responsive/
 
 import KeenSlider from '../../components/slider/keen'
 import { addToCart } from '../../store/cart'
+import { colors } from '../../utils/colors'
 
 const ProductUnitWrapper = styled('div')`
     font-family: Quicksand;
@@ -70,7 +71,7 @@ const ImageSliderContainerMobile = styled('div')`
 `
 
 const DetailsWrapperDesktop = styled('div')`
-    background: #D0775D;
+    background: ${colors.veranoBronze};
     border: 1px solid;
     display: flex;
     flex-direction: column;
@@ -80,7 +81,7 @@ const DetailsWrapperDesktop = styled('div')`
 `
 
 const DetailsWrapperMobile = styled('div')`
-    background: #D0775D;
+    background: ${colors.veranoBronze};
     padding: 1em 0;
 `
 
@@ -99,7 +100,7 @@ const DetailsTitleMobile = styled('span')`
 
 const DetailSection = styled('div')`
     align-items: center;
-    background: #1A4350;
+    background: ${colors.veranoBlue};
     color: white;
     display: flex;
     justify-content: center;

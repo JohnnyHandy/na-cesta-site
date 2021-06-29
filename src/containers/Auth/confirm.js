@@ -38,19 +38,22 @@ const RegisterContainer = ({ location }) => {
   const [status, setStatus] = React.useState('waiting')
   const [errors, setErrors] = React.useState([])
   const confirmUser = async token => {
-    const response = await confirmUserRequest(token)
-    if (response.status === 302 || response.status === 200) {
-      setStatus('confirmed')
-      setTimeout(() => {
+    const response = await confirmUserRequest(token).then(res => {
+      if (response.status === 302 || response.status === 200) {
+        setStatus('confirmed')
+        setTimeout(() => {
+          navigate('/login')
+        }, 1500)
+      }
+    }).catch(err => {
+      if (err?.response?.status === 422) {
+        setStatus('already')
+      } else {
+        const errorMsg = 'Erro ao confirmar conta.'
+        !errors.includes(errorMsg) && setErrors(errors.concat(errorMsg))
         navigate('/login')
-      }, 1500)
-    } else if (response.status === 422) {
-      setStatus('already')
-    } else {
-      const errorMsg = 'Erro ao confirmar conta.'
-      !errors.includes(errorMsg) && setErrors(errors.concat(errorMsg))
-      setStatus('waiting')
-    }
+      }
+    })
   }
 
   React.useState(async () => {

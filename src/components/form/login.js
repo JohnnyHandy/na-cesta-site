@@ -3,6 +3,8 @@ import { Link } from 'gatsby'
 import { Field, reduxForm } from 'redux-form'
 import styled from '@emotion/styled'
 
+import { colors } from '../../utils/colors'
+
 const FormComponent = styled('form')`
   display: grid;
 `
@@ -28,7 +30,7 @@ const InputWrapper = styled('div')`
   text-align: initial
 `
 const SubmitButton = styled('button')`
-  background: #1A4350;
+  background: ${colors.veranoBlue};
   border: none;
   color: white;
   cursor: pointer;
@@ -38,12 +40,12 @@ const SubmitButton = styled('button')`
   margin: auto;
   padding: 0.5em;
   & :hover {
-    color: #1A4350;
+    color: ${colors.veranoBlue};
     background: white
   }
 `
 const LoginLink = styled(Link)`
-  color: #1A4350;
+  color: ${colors.veranoBlue};
   font-size: 1.5em;
   margin: 0.5em 0;
 `
@@ -62,7 +64,7 @@ const LoginFormComponent = ({ handleSubmit, onSubmit }) => {
   return (
     <div
       style={{
-        color: '#1A4350',
+        color: '${colors.veranoBlue}',
         display: 'flex',
         fontFamily: 'Quicksand',
         minHeight: '70vh'

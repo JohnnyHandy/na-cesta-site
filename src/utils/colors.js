@@ -1,38 +1,5 @@
-export const colorPallete = [
-    {
-      id: 'vermelho',
-      hex: '#F70907',
-    },
-    {
-      id: 'laranja',
-      hex: '#E99619',
-    },
-    {
-      id: 'amarelo',
-      hex: '#EFEE1E',
-    },
-    {
-      id: 'verde',
-      hex: '#38B140',
-    },
-    {
-      id: 'azul',
-      hex: '#24A4E3',
-    },
-    {
-      id: 'anil',
-      hex: '#2D328F',
-    },
-    {
-      id: 'violeta',
-      hex: '#622E8C',
-    },
-    {
-      id: 'branco',
-      hex: '#FFFFFF',
-    },
-    {
-      id: 'preto',
-      hex: '#000000',
-    },
-  ];
+export const colors = {
+  veranoBlue: '#1A4350',
+  veranoSun: 'rgb(241, 214, 206)',
+  veranoBronze: '#D0775D'
+}

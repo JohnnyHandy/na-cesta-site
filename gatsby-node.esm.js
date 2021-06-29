@@ -198,7 +198,6 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
       }
     }
   `)
-    console.log('biquini', biquiniModels.data.allModel.edges);
     const resultForBiquinis = biquiniModels.data.allModel.edges.map(({node: model}) => {
       const  { childrenProduct, ...rest } = model
       return ({

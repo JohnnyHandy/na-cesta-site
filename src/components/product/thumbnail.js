@@ -4,9 +4,10 @@ import { Link } from 'gatsby'
 import styled from '@emotion/styled'
 
 import { PhoneBreakpoint, DesktopBreakpoint } from '../responsive/devices'
+import { colors } from '../../utils/colors'
 
 const CartButtonLandscape = styled('button')`
-    color: #DE6E52;
+    color: ${colors.veranoBronze};
     cursor: pointer;
     font-family: Quicksand;
     font-size: 1vw;
@@ -14,13 +15,13 @@ const CartButtonLandscape = styled('button')`
     width: 12vw;
 `
 const BuyNowButtonLandscape = styled('button') `
-    color: #1A4350;
+    color: ${colors.veranoBlue};
     cursor: pointer;
     font-family: Quicksand;
     margin: 1vh auto ;
 `
 const BuyNowButtonPortrait = styled('button')`
-    color: #1A4350;
+    color: ${colors.veranoBlue};
     cursor: pointer;
     font-family: Quicksand;
     margin: 1vh auto;
@@ -29,7 +30,7 @@ const BuyNowButtonPortrait = styled('button')`
 `
 
 const CartButtonPortrait = styled('button')`
-    color: #DE6E52;
+    color: ${colors.veranoBronze};
     cursor: pointer;
     font-family: Quicksand;
     font-size: 4vw;
