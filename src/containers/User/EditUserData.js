@@ -1,14 +1,12 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { isValid } from 'redux-form'
-import { success } from 'react-notification-system-redux';
 
 import EditUserForm from '../../components/form/EditUserData'
-
-import { updateUser } from '../../store/user/services'
-import { updateCredentialsRequest, updateUserInfo } from '../../store/auth'
+import Loading from '../../components/loading'
+import { UPDATE_USER_REQUEST } from '../../store/user/'
 import { genderOptions } from '../../utils/constants'
-import { navigate } from 'gatsby'
+import {FormContainer, FormArea, FormTitle, LoginLink, FormErrorSpan } from '../../components/form/form.styles'
 
 const EditUserDataContainer = () => {
   const [initialValues, setInitialValues] = React.useState()
@@ -31,38 +29,43 @@ const EditUserDataContainer = () => {
     }
   }, [])
   const onSubmit = async (data) => {
-    setStatus('loading')
     const formattedData = {
       ...data,
       birthday: data?.birthday.toISOString(),
       gender: data?.gender.value,
     }
-    await updateUser({params: formattedData, id: state.auth.user.id}).then(res => {
-      if(res.status === 200) {
-        setStatus('confirmed')
-        dispatch(success(
-          {
-            title: 'Sucesso!',
-            message: 'Dados alterados com sucesso',
-            autoDismiss: 1,      
-          }
-        ))
-        dispatch(updateCredentialsRequest(res.headers))
-        dispatch(updateUserInfo({ user: res.data }))
-        navigate('/user/profile')
-      }
-    }).catch(err => {
-      setErrors(['Não foi possível atualizar os dados. Por favor tente novamente em instantes.'])
-    })
+    dispatch(UPDATE_USER_REQUEST({ data: formattedData, id: state.auth.user.id, setStatus, setErrors }))
   }
   return(
-    <EditUserForm
-      initialValues={initialValues}
-      onSubmit={onSubmit}
-      status={status}
-      errors={errors}
-      isFormValid={isFormValid}
-    />
+    <FormContainer>
+      <FormArea>
+        {
+          status === 'waiting'
+          ? (
+          <>
+            <FormTitle> Alterar dados pessoais </FormTitle>
+            <EditUserForm
+              initialValues={initialValues}
+              onSubmit={onSubmit}
+              status={status}
+              errors={errors}
+              isFormValid={isFormValid}
+            />
+            {errors.map(error => (
+              <FormErrorSpan
+                key={error}
+              >
+                {error}
+              </FormErrorSpan>
+            ))}
+            <LoginLink to='/user/profile'>Voltar para meus dados</LoginLink>
+          </>
+        ) : status === 'loading'
+        ? (
+          <Loading />
+        ) : null}
+      </FormArea>
+    </FormContainer>
   )
 }
 

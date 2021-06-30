@@ -8,8 +8,10 @@ import * as actions from './index';
 import * as services from './services';
 
 export function* signIn({ payload }) {
+  const { data, setErrors, setStatus } = payload
   try {
-    const response = yield call(services.signIn, payload);
+    setStatus('loading')
+    const response = yield call(services.signIn, data);
     if (response.status === 200) {
       yield put(success({
         title: 'Login',
@@ -21,6 +23,11 @@ export function* signIn({ payload }) {
       navigate(-1)
     }
   } catch (err) {
+    if(err.response.status === 401){
+      const { data: { errors } } = err.response
+      setErrors(errors)
+    }
+    setStatus('waiting')
     yield put(error({
       title: 'Login',
       message: 'Erro',
@@ -52,8 +59,10 @@ export function* signOut() {
 }
 
 export function * signUp({ payload }) {
+  const { data, setErrors, setStatus } = payload
   try {
-    const response = yield call(services.signUp, payload)
+    setStatus('loading')
+    const response = yield call(services.signUp, data)
     if(response.status === 200){
       yield put(success({
         title: 'Criar conta',
@@ -63,11 +72,26 @@ export function * signUp({ payload }) {
       yield put(actions.SIGN_UP_SUCCESS())
     }
   } catch (err) {
+    if (err.response.status === 422) {
+      setStatus('waiting')
+      const { response: { data: resError }} = err
+      const errorMessages = Object.keys(resError).reduce((ac, error) => {
+        let newMessages = []
+        resError[error].forEach(msg => {
+          if(!ac.includes(msg)){
+            newMessages.push(msg)
+          }
+        })
+        return ac.concat(newMessages)
+      }, [])
+      setErrors(errorMessages)
+    }
     yield put(error({
       title: 'Criar conta',
       message: 'Erro ao criar conta',
       autoDismiss: 1,
     }));
+    yield put(actions.SIGN_UP_FAILURE())
   }
 }
 

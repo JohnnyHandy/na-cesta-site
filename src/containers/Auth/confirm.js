@@ -1,9 +1,11 @@
 import React from 'react'
 import { navigate } from 'gatsby'
+import { useDispatch, useSelector } from 'react-redux'
 import styled from '@emotion/styled'
 import http from '../../utils/http'
 
 import Loading from '../../components/loading'
+import { SIGN_OUT_REQUEST } from '../../store/auth'
 
 const Container = styled('div')`
   background: rgb(241, 214, 206);
@@ -37,6 +39,8 @@ const confirmUserRequest = token => {
 const RegisterContainer = ({ location }) => {
   const [status, setStatus] = React.useState('waiting')
   const [errors, setErrors] = React.useState([])
+  const dispatch = useDispatch()
+  const { isLoggedIn } = useSelector(state => state.auth)
   const confirmUser = async token => {
     const response = await confirmUserRequest(token).then(res => {
       if (response.status === 302 || response.status === 200) {
@@ -60,6 +64,7 @@ const RegisterContainer = ({ location }) => {
     const queryString = 'confirmation_token'
     const queryparams = new URLSearchParams(location.search)
     if (queryparams.has(queryString)) {
+      isLoggedIn && dispatch(SIGN_OUT_REQUEST())
       confirmUser(queryparams.get(queryString))
     } else {
       const errorMsg = 'Erro ao confirmar conta'

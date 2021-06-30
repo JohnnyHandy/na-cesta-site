@@ -90,8 +90,8 @@ const UserProfileContainer = (props) => {
         >
           <span css={spanTitleCss} > Dados de acesso </span>
           <span css={spanCss} >Email: {user.email} </span>
-          <button css={Button}>Alterar Email</button>
-          <button css={Button}>Alterar senha</button>
+          <button css={Button} onClick={() => navigate('/user/edit/email')}>Alterar Email</button>
+          <button css={Button} onClick={() => navigate('/user/edit/password')}>Alterar senha</button>
         </div>
 
       </div>

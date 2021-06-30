@@ -1,50 +1,14 @@
 import React from 'react'
 import { Field, change, clearFields } from 'redux-form'
+import { css } from '@emotion/core'
 import { useDispatch } from 'react-redux'
-import InputMask from 'react-input-mask'
-import Select from 'react-select'
-import styled from '@emotion/styled'
 import axios from 'axios'
 
 import { required,validCep } from './validation'
-import { colors } from '../../utils/constants'
+import { InputsContainer, FormButton } from './form.styles'
+import InputComponent from '../inputs/text/InputComponent'
+import SelectComponent from '../inputs/select/SelectComponent'
 
-const InputsContainer = styled('div')`
-  align-items: flex-start;
-  display: grid;
-  grid-column-gap: 1em; 
-  grid-template-columns: repeat(2,0.8fr);
-  padding: 1em;
-`
-const FormLabel = styled('label')`
-  color: ${colors.veranoBlue};
-  font-size: 1em;
-  padding: 0.2em;
-` 
-const InputWrapper = styled('div')`
-  display: inline-grid;
-  text-align: initial
-`
-const StyledSelect = styled(Select)`
-
-`
-
-const FormButton = styled('button')`
-  background: ${colors.veranoBlue};
-  border: none;
-  color: white;
-  cursor: pointer;
-  font-family: Quicksand;
-  font-size: 2em;
-  font-weight: bold;
-  margin: auto;
-  padding: 0.5em;
-  & :disabled {
-    background: white;
-    color: ${colors.veranoBlue};
-    cursor: not-allowed;
-  }
-`
 
 const zipcodeUrl = zipcode => `https://viacep.com.br/ws/${zipcode}/json/`
 const fetchStatesUrl = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados'
@@ -52,26 +16,7 @@ const fetchCitiesUrl = (id) => `https://servicodados.ibge.gov.br/api/v1/localida
 const fetchCepInfo = (cep) => {
   return axios.get(zipcodeUrl(cep)).then(res => res).catch(err => err.response)
 }
-const InputComponent = (props) => {
-  const { input, placeholder, style, meta, ...rest } = props
-  return (
-    <InputWrapper style={style}>
-      <FormLabel htmlFor={input.name} >{placeholder}</FormLabel>
-      <InputMask placeholder={placeholder} {...input} {...rest} />
-      { meta && meta.error && meta.touched && meta.visited && <span style={{ color: 'red' }}> {meta.error} </span> }
-    </InputWrapper>
-  )
-}
-const SelectComponent = (props) => {
-  const { input, placeholder, style, ...rest } = props
 
-  return (
-    <InputWrapper style={style}>
-      <FormLabel htmlFor={input.name} >{placeholder}</FormLabel>
-      <StyledSelect {...input} {...rest} onBlur={() => input.onBlur(input.value)} placeholder={placeholder}  />
-    </InputWrapper>
-  )
-}
 
 let AddressFormComponent = (props) => {
   const { formValues } = props
@@ -141,7 +86,11 @@ let AddressFormComponent = (props) => {
     }
   }
   return (
-          <InputsContainer>
+          <InputsContainer css={css`
+              grid-template-columns: 50% 50%;
+              column-gap: 1em;
+            `
+          }>
           <Field
             type='text'
             placeholder='CEP'
@@ -153,7 +102,7 @@ let AddressFormComponent = (props) => {
             <FormButton
               style={{
                 fontSize: '1em',
-                margin: '0 auto 0 0',
+                margin: '0.2em auto',
                 alignSelf: 'flex-end'
               }}
               disabled={(!cepFieldValue) || (cepFieldValue && cepFieldValue.replace(/[^0-9]/g, '').length !== 8)}

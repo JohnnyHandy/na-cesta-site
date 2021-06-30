@@ -1,39 +1,12 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getFormValues, isValid, submit } from 'redux-form'
+import { getFormValues, isValid } from 'redux-form'
+import { navigate } from 'gatsby'
 
-import { signUp } from '../../store/auth/services'
+import { SIGN_UP_REQUEST } from '../../store/auth/'
+import { FormTitle, LoginLink, FormErrorSpan, FormContainer, FormArea } from '../../components/form/form.styles'
 import RegisterForm from '../../components/form/register'
-
-const SignUpErrorMsgs = {
-  email: {
-    blank: {
-      value: "Email can't be blank",
-      label: 'Email não pode estar vazio'
-    },
-    taken: {
-      value: 'Email is being used already',
-      label: 'Email já está sendo usado.'
-    }
-  },
-  document: {
-    blank: {
-      value: "Document number can't be blank",
-      label: 'Número do documento não pode estar em branco'
-    },
-    taken: {
-      value: 'Document number is being used already',
-      label: 'O CPF já está sendo utilizado'
-    }
-  },
-  password: {
-    short: {
-      value: 'Password must have at least 6 characters',
-      label: 'Senha tem que ter no mínimo 6 caracteres'
-    }
-  }
-}
-
+import Loading from '../../components/loading'
 
 const RegisterContainer = () => {
   const dispatch = useDispatch()
@@ -42,6 +15,11 @@ const RegisterContainer = () => {
   const isFormValid = isValid('register')(state)
   const [status, setStatus] = React.useState('waiting')
   const [errors, setErrors] = React.useState([])
+  React.useEffect(() => {
+    if(state.auth.isLoggedIn){
+      navigate('/')
+    }
+  }, [])
 
   const onSubmit = async (data) => {
     const { cep, city, complement, neighbourhood, number, state, street, password_confirmation, ...rest } = data
@@ -59,45 +37,47 @@ const RegisterContainer = () => {
         complement
       }]
     }
-    setStatus('loading')
-    await signUp(formattedData).then(res => {
-      if(res.status === 200 || res.status === 201 || res.status === 204){
-        setStatus('confirmed')
-      } 
-    }).catch(res => {
-      if (res.response.status === 422) {
-        setStatus('waiting')
-        const { response: { data: resError }} = res
-        const errorMessages = Object.keys(resError).filter(item => Object.keys(SignUpErrorMsgs).includes(item)).reduce((ac, item) => {
-          let newError = ac
-          Object.keys(SignUpErrorMsgs).forEach(key => {
-            if (item === key) {
-              Object.keys(SignUpErrorMsgs[key]).forEach(msg => {
-                 resError[item].forEach(errorMsg => {
-                  if(errorMsg.includes(msg)){
-                    newError =
-                    !errors.includes(SignUpErrorMsgs[key][msg]['label']) &&
-                    newError.concat(SignUpErrorMsgs[key][msg]['label'])
-                  }
-                })
-              })
-            }
-          })
-          return newError
-        }, [])
-        setErrors(errorMessages)
-      }
-    })
+    dispatch(SIGN_UP_REQUEST({ data: formattedData, setStatus, setErrors }))
   }
   return (
-    <RegisterForm
-      dispatch={dispatch}
-      formValues={formValues}
-      isFormValid={isFormValid}
-      onSubmit={onSubmit}
-      errors={errors}
-      status={status}
-    />
+    <FormContainer>
+      <FormArea>
+        {status === 'waiting'
+        ? (
+          <>
+          <FormTitle> Registre-se </FormTitle>
+          <RegisterForm
+            dispatch={dispatch}
+            formValues={formValues}
+            isFormValid={isFormValid}
+            onSubmit={onSubmit}
+            errors={errors}
+            status={status}
+          />
+          {errors.map(error => (
+            <FormErrorSpan
+            key={error}
+            >
+              {error}
+            </FormErrorSpan>
+          ))}
+          <LoginLink to='/login'>Já tenho uma conta</LoginLink>
+            </>
+        )
+        : status === 'loading'
+        ? (
+          <Loading />
+        ) : status === 'confirmed'
+        ? (
+          <>
+            <FormTitle>Conta registrada</FormTitle>
+            <span> Para continuar, confirme o seu email através das instruções enviadas par ao email cadastrado! </span>
+            <LoginLink to='/'> Ir para o login </LoginLink>
+          </>
+        ) : null
+        }
+      </FormArea>
+    </FormContainer>
   )
 }
 
