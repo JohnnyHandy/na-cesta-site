@@ -36,7 +36,7 @@ const LoginContainer = (props) => {
                 {error}
               </FormErrorSpan>
               ))}
-              <LoginLink to='/'>Esqueci a senha</LoginLink>
+              <LoginLink to='/forgot'>Esqueci a senha</LoginLink>
               <LoginLink to='/registrar'>Registre-se</LoginLink>
             </>
           )

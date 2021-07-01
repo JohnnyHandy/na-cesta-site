@@ -1,27 +1,29 @@
 import React from 'react'
 import { Provider } from 'react-redux'
-import { navigate } from 'gatsby'
 import { PersistGate } from 'redux-persist/integration/react';
+import Notifications from '../components/notifications'
 import configureStore from './configureStore'
 
 import { verifyCredentialsRequest } from '../store/auth'
 
 const { store, persistor } = configureStore();
 
-export const OnRouteChange = ({ location, ...rest}) => {
-    if(store.getState().auth.isLogged) {
-        navigate('/')
+export const OnRouteChange = ({ location }) => {
+    if(store.getState().auth.isLoggedIn) {
+      store.dispatch(verifyCredentialsRequest())
     }
-    store.dispatch(verifyCredentialsRequest())
 }
 
-export default ({ element, ...rest }) => {
+const ReduxWrapper =  ({ element }) => {
     return (
     <Provider store={store}>
         <PersistGate
             persistor={persistor}
         >
+          <Notifications />
             {element}
         </PersistGate>
     </Provider>
 )};
+
+export default ReduxWrapper

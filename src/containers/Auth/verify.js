@@ -1,11 +1,9 @@
 import React from 'react'
-import { navigate } from 'gatsby'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from '@emotion/styled'
-import http from '../../utils/http'
 
 import Loading from '../../components/loading'
-import { SIGN_OUT_REQUEST, CONFIRM_ACCOUNT_REQUEST } from '../../store/auth'
+import { SIGN_OUT_REQUEST, VERIFY_RESET_REQUEST } from '../../store/auth'
 
 const Container = styled('div')`
   background: rgb(241, 214, 206);
@@ -28,24 +26,27 @@ const InnerContainer=styled('div')`
   text-align: center;
 `
 
-const RegisterContainer = ({ location }) => {
+
+
+const VerifyUserContainer = ({ location }) => {
   const [status, setStatus] = React.useState('waiting')
   const [errors, setErrors] = React.useState([])
   const dispatch = useDispatch()
   const { isLoggedIn } = useSelector(state => state.auth)
 
+
   React.useEffect(() => {
-    isLoggedIn && dispatch(SIGN_OUT_REQUEST())
-    const queryString = 'confirmation_token'
+    const queryString = 'reset_password_token'
     const queryparams = new URLSearchParams(location.search)
     if (queryparams.has(queryString)) {
-      dispatch(CONFIRM_ACCOUNT_REQUEST({
+      isLoggedIn && dispatch(SIGN_OUT_REQUEST())
+      dispatch(VERIFY_RESET_REQUEST({
         token: queryparams.get(queryString),
-        setStatus,
-        setErrors
+        setErrors,
+        setStatus
       }))
     } else {
-      const errorMsg = 'Erro ao confirmar conta'
+      const errorMsg = 'Erro ao resetar senha'
       !errors.includes(errorMsg) && setErrors(errors.concat(errorMsg))
     }
   }, [])
@@ -61,13 +62,13 @@ const RegisterContainer = ({ location }) => {
           ))}
           {status === 'waiting' ? (
             <>
-              <ContainerTitle> Confirmando conta... </ContainerTitle>
+              <ContainerTitle> Carregando... </ContainerTitle>
               <Loading />
             </>
           ) : status === 'confirmed' ? (
             <>
-              <ContainerTitle> Conta confirmada com sucesso! </ContainerTitle>
-              <span> Redirecionando para a página de login... </span>
+              <ContainerTitle> Verificação concluída </ContainerTitle>
+              <span> Redirecionando para a página de alteração de senha... </span>
             </>
           ) : status === 'already' ? (
             <>
@@ -80,4 +81,4 @@ const RegisterContainer = ({ location }) => {
     )
 }
 
-export default RegisterContainer
+export default VerifyUserContainer

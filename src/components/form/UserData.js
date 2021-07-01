@@ -13,7 +13,7 @@ import SelectComponent from '../inputs/select/SelectComponent'
 
 
 
-let RegisterFormComponent = () => {
+let RegisterFormComponent = ({ edit = false }) => {
   return (
     <InputsContainer>
       <Field
@@ -52,6 +52,7 @@ let RegisterFormComponent = () => {
         component={InputComponent}
         mask='999.999.999-99'
         validate={[required, minCpfLength]}
+        disabled={edit}
       />
     </InputsContainer>
   )

@@ -4,7 +4,7 @@ import { useStaticQuery, graphql } from 'gatsby'
 
 
 import Layout from "../components/layout"
-import SEO from "../components/seo"
+import Seo from "../components/seo"
 import LandingCarousel from "../components/carousel"
 import StoreContainer from '../containers/Store'
 
@@ -129,7 +129,7 @@ const modelData = allModels.map(model => {
   }).filter(item => item !== null)
   return (
   <Layout>
-    <SEO
+    <Seo
       title="Home"
     />
     <LandingCarousel />

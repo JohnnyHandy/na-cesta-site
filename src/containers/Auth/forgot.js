@@ -2,34 +2,31 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { isValid } from 'redux-form'
 
-import EditEmailForm from '../../components/form/EmailForm'
+import { host } from '../../utils/http'
+import EmailForm from '../../components/form/EmailForm'
 import Loading from '../../components/loading'
-import { UPDATE_USER_REQUEST } from '../../store/user'
+import { SEND_PASSWORD_RESET_REQUEST } from '../../store/auth'
 import { FormContainer, FormArea, FormTitle, LoginLink, FormErrorSpan } from '../../components/form/form.styles'
 
-const EditUserDataContainer = () => {
-  const [initialValues, setInitialValues] = React.useState()
+const ForgotPassword = ({ location }) => {
   const [status, setStatus] = React.useState('waiting')
   const [errors, setErrors] = React.useState([])
   const state = useSelector(state => state)
   const dispatch = useDispatch()
   const isFormValid = isValid('emailForm')(state)
-  React.useEffect(() => {
-    if(state.auth.user) {
-      const { email } = state.auth.user
-      const userDataValues = {
-        email
-      }
-      setInitialValues(userDataValues)
-    }
-  }, [state.auth.user])
   const onSubmit = async (data) => {
     setStatus('loading')
     const formattedData = {
       ...data,
+      redirect_url: `${host}/reset`
     }
-    dispatch(UPDATE_USER_REQUEST({ data: formattedData, id: state.auth.user.id, setErrors, setStatus }))
+    dispatch(SEND_PASSWORD_RESET_REQUEST({ data: formattedData, setErrors, setStatus }))
   }
+  React.useEffect(() => {
+    if(location?.state?.reset?.success === false){
+      setErrors([location.state.reset.error])
+    }
+  }, [])
   return(
     <FormContainer>
       <FormArea>
@@ -37,9 +34,8 @@ const EditUserDataContainer = () => {
           status === 'waiting'
           ? (
             <>
-          <FormTitle> Alterar Email </FormTitle>
-          <EditEmailForm
-            initialValues={initialValues}
+          <FormTitle> Recuperar senha </FormTitle>
+          <EmailForm
             onSubmit={onSubmit}
             isFormValid={isFormValid}
           />
@@ -56,6 +52,17 @@ const EditUserDataContainer = () => {
           : status === 'loading'
           ? (
             <Loading />
+          )
+          : status ==='confirmed'
+          ? (
+            <div
+              style={{ display: 'grid' }}
+            >
+            <FormTitle>Recuperar senha</FormTitle>
+              <span> Instruções para recuperação de senha enviadas para o email informado! </span>
+              <LoginLink to='/login'> Ir para o login </LoginLink>
+            </div>
+
           ) : null
           }
       </FormArea>
@@ -63,4 +70,4 @@ const EditUserDataContainer = () => {
   )
 }
 
-export default EditUserDataContainer
+export default ForgotPassword

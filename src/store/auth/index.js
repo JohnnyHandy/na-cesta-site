@@ -40,6 +40,19 @@ export const verifyCredentialsFailure = createAction(
   'auth: VERIFY_CREDENTIALS_FAILURE'
 )
 
+export const SEND_PASSWORD_RESET_REQUEST = createAction('auth: SEND_PASSWORD_RESET_REQUEST')
+export const SEND_PASSWORD_RESET_SUCCESS = createAction('auth: SEND_PASSWORD_RESET_SUCCESS')
+export const SEND_PASSWORD_RESET_FAILURE = createAction('auth: SEND_PASSWORD_RESET_FAILURE')
+
+export const PASSWORD_RESET_REQUEST = createAction('auth: PASSWORD_RESET_REQUEST')
+export const PASSWORD_RESET_SUCCESS = createAction('auth: PASSWORD_RESET_SUCCESS')
+export const PASSWORD_RESET_FAILURE = createAction('auth: PASSWORD_RESET_FAILURE')
+
+export const VERIFY_RESET_REQUEST = createAction('auth: VERIFY_RESET_REQUEST')
+export const VERIFY_RESET_SUCCESS= createAction('auth: VERIFY_RESET_SUCCESS')
+export const VERIFY_RESET_FAILURE = createAction('auth: VERIFY_RESET_FAILURE')
+
+
 export const initialState = {
   isLoggedIn: false,
   error: null,

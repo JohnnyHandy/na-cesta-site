@@ -396,10 +396,26 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
       context: { auth: 'confirm', title: 'Confirmar conta' }
     })
     createPage({
+      path: '/reset',
+      component: require.resolve('./src/templates/AuthTemplate.js'),
+      context: { auth: 'reset', title: 'Resetar senha' }
+    })
+    createPage({
       path: '/login',
       component: require.resolve('./src/templates/AuthTemplate.js'),
       context: { auth: 'login', title: 'Entrar' }
     })
+    createPage({
+      path: '/forgot',
+      component: require.resolve('./src/templates/AuthTemplate.js'),
+      context: { auth: 'forgot', title: 'Recuperar senha' }
+    })
+    createPage({
+      path: '/auth/password/edit',
+      component: require.resolve('./src/templates/AuthTemplate.js'),
+      context: { auth: 'verify', title: 'Verificar usuário' }
+    })
+
 }
 
 

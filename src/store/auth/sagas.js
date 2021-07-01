@@ -63,12 +63,13 @@ export function * signUp({ payload }) {
   try {
     setStatus('loading')
     const response = yield call(services.signUp, data)
-    if(response.status === 200){
+    if(response.status === 201){
       yield put(success({
         title: 'Criar conta',
-        message: 'Successo!',
+        message: 'Verifique instruções enviadas para o seu email!',
         autoDismiss: 1,
       }));
+      setStatus('confirmed')
       yield put(actions.SIGN_UP_SUCCESS())
     }
   } catch (err) {
@@ -112,12 +113,126 @@ export function* updateCredentials({ payload }) {
 
 export function * verifyCredentials () {
   try {
-    const response = yield call(services.verifyCredentials)
+    yield call(services.verifyCredentials)
     yield put(actions.verifyCredentialsSuccess())
   } catch(error) {
     yield put(actions.verifyCredentialsFailure())
     yield put(actions.SIGN_OUT_SUCCESS())
   }
+}
+
+export function * sendPasswordReset ({ payload }) {
+  const { data, setStatus, setErrors } = payload
+  try {
+    setStatus('loading')
+    yield call(services.sendPasswordReset, data)
+    yield put(actions.SEND_PASSWORD_RESET_SUCCESS())
+    yield put(success({
+      title: 'Recuperar senha',
+      message: 'Verifique instruções enviadas para o seu email!',
+      autoDismiss: 1,
+    }));
+    setStatus('confirmed')
+  } catch(err) {
+    setStatus('waiting')
+    setErrors(['Falha ao enviar email. Favor tentar novamente em instantes.'])
+    yield put(error({
+      title: 'Recuperar senha',
+      message: 'Falha ao enviar email. Favor tentar novamente em instantes.',
+      autoDismiss: 1,
+    }));
+
+    yield put(actions.SEND_PASSWORD_RESET_FAILURE())
+  }
+}
+
+export function * resetPassword ({ payload }) {
+  const { setStatus, setErrors, ...rest} = payload
+  try {
+    setStatus('loading')
+    yield call(services.resetPassword, {...rest})
+    yield put(actions.PASSWORD_RESET_SUCCESS())
+    yield put(success({
+      title: 'Alterar senha',
+      message: 'Senha alterada com sucesso!',
+      autoDismiss: 1,
+    }));
+    navigate('/login')
+  } catch(err) {
+    navigate('/forgot',  { state: {
+      reset: {
+        success: false,
+        error: 'Erro ao resetar senha, favor tentar novamente.'
+      }
+    }})
+    yield put(error({
+      title: 'Alterar senha',
+      message: 'Erro ao resetar senha, favor tentar novamente.',
+      autoDismiss: 1,
+    }));
+    yield put(actions.PASSWORD_RESET_FAILURE())
+  }
+}
+
+export function * confirmAccount ({ payload }){
+  const { token, setStatus, setErrors } = payload
+  try {
+    const response = yield call(services.confirmAccount, token)
+    const redirectUrl = response.request.responseURL
+    var newURL = redirectUrl.replace (/^[a-z]{4,5}\:\/{2}[a-z]{1,}\:[0-9]{1,4}.(.*)/, '$1'); 
+    navigate(`/${newURL}`)
+    yield put(success({
+      title: 'Confirmação de conta',
+      message: 'Conta confirmada com sucesso!',
+      autoDismiss: 1,
+    }));
+    yield put(actions.CONFIRM_ACCOUNT_REQUEST())
+  } catch (err) {
+    yield put(actions.CONFIRM_ACCOUNT_FAILURE())
+    if (err?.response?.status === 422) {
+      setStatus('already')
+    } else {
+      const errorMsg = 'Erro ao confirmar conta.'
+      yield put(success({
+        title: 'Confirmação de conta',
+        message: 'Conta confirmada com sucesso!',
+        autoDismiss: 1,
+      }));
+        setErrors([errorMsg])
+      navigate('/login')
+    }
+  }
+}
+
+export function * verifyReset ({payload}){
+  const { token, setErrors } = payload
+  try {
+    const response = yield call(services.verifyReset, token)
+    const redirectUrl = response.request.responseURL
+    var newURL = redirectUrl.replace (/^[a-z]{4,5}\:\/{2}[a-z]{1,}\:[0-9]{1,4}.(.*)/, '$1'); 
+    navigate(`/${newURL}`)
+    yield put(success({
+      title: 'Recuperação de senha',
+      message: 'Verificação feita com sucesso!',
+      autoDismiss: 1,
+    }));
+    yield put(actions.VERIFY_RESET_SUCCESS())
+  } catch(err) {
+    yield put(actions.VERIFY_RESET_FAILURE())
+    const errorMsg = 'Erro ao resetar senha.'
+    setErrors([errorMsg])
+    yield put(error({
+      title: 'Recuperação de senha',
+      message: 'Erro ao resetar senha, favor tentar novamente',
+      autoDismiss: 1,
+    }));
+    navigate('/forgot',  { state: {
+      reset: {
+        success: false,
+        error: 'Erro ao resetar senha, favor tentar novamente.'
+      }
+    }})
+}
 }
 
 export function* watchSignIn() {
@@ -140,12 +255,32 @@ export function* watchVerifyCredentials() {
   yield takeLatest(actions.verifyCredentialsRequest, verifyCredentials)
 }
 
+export function* watchSendPasswordReset () {
+  yield takeLatest(actions.SEND_PASSWORD_RESET_REQUEST, sendPasswordReset)
+}
+
+export function * watchPasswordReset () {
+  yield takeLatest(actions.PASSWORD_RESET_REQUEST, resetPassword)
+}
+
+export function * watchConfirmUser () {
+  yield takeLatest(actions.CONFIRM_ACCOUNT_REQUEST, confirmAccount)
+}
+
+export function * watchVerifyReset () {
+  yield takeLatest(actions.VERIFY_RESET_REQUEST, verifyReset)
+}
+
 export default function* AuthSaga() {
   yield all([
     watchSignIn(),
     watchSignOut(),
     watchUpdateCredentials(),
     watchVerifyCredentials(),
-    watchSignUp()
+    watchSignUp(),
+    watchSendPasswordReset(),
+    watchPasswordReset(),
+    watchConfirmUser(),
+    watchVerifyReset()
   ]);
 }

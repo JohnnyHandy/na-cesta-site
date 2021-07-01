@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from '@emotion/styled'
-import { StaticImage } from 'gatsby-plugin-image'
 
 import { DesktopBreakpoint, PhoneBreakpoint } from '../../components/responsive/devices'
 import Products from '../Products'

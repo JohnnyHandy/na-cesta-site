@@ -27,7 +27,7 @@ const EditUserDataContainer = () => {
       }
       setInitialValues(userDataValues)
     }
-  }, [])
+  }, [state.auth.user])
   const onSubmit = async (data) => {
     const formattedData = {
       ...data,

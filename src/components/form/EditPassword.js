@@ -6,19 +6,21 @@ import { minPassLength, required, validConfirmPassword, validEmail } from './val
 import InputComponent from '../inputs/text/InputComponent'
 
 let EditEmailComponent = (props) => {
-  const { isFormValid, onSubmit, handleSubmit } = props
+  const { isFormValid, onSubmit, handleSubmit, reset = false } = props
   return (
         <FormComponent
           onSubmit={handleSubmit(onSubmit)}
         >
           <InputsContainer>
-            <Field
-              type='password'
-              placeholder='Senha atual'
-              name='current_password'
-              component={InputComponent} 
-              validate={[required]}
-            />
+            {!reset && 
+              <Field
+                type='password'
+                placeholder='Senha atual'
+                name='current_password'
+                component={InputComponent} 
+                validate={[required]}
+              />
+            }
             <Field
               type='password'
               placeholder='Nova senha'

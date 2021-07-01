@@ -72,5 +72,5 @@ export const FormArea = styled('div')`
   background: #f1d6ce;
   margin: auto;
   padding: 1.5em;
-  textAlign: center;
+  text-align: center;
 `

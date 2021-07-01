@@ -2,6 +2,7 @@ import { navigate } from 'gatsby';
 import {
   put, call, takeLatest, all,
 } from 'redux-saga/effects';
+import { success, error } from 'react-notification-system-redux';
 
 import { updateCredentialsRequest, updateUserInfo } from '../auth'
 import * as actions from './index'
@@ -16,11 +17,21 @@ export function * updateUser({ payload }){
       yield put(updateCredentialsRequest(response.headers))
       yield put(updateUserInfo({ user: response.data }))
       yield put(actions.UPDATE_USER_SUCCESS())
+      yield put(success({
+        title: 'Alterar dados',
+        message: 'Dados alterados com sucesso!',
+        autoDismiss: 1,
+      }));  
       navigate('/user/profile')
     }
   } catch (err) {
     setErrors(['Não foi possível atualizar os dados. Por favor tente novamente em instantes.'])
     setStatus('waiting')
+    yield put(error({
+      title: 'Alterar dados',
+      message: 'Não foi possível atualizar os dados. Por favor tente novamente em instantes.',
+      autoDismiss: 1,
+    }));  
     yield put(actions.UPDATE_USER_FAILURE())
   }
 }
@@ -33,6 +44,11 @@ export function * updatePassword({payload}) {
     if(response.status === 200){
       yield put(updateCredentialsRequest(response.headers))
       yield put(actions.UPDATE_PASSWORD_SUCCESS())
+      yield put(success({
+        title: 'Alterar senha',
+        message: 'Senha alterada com sucesso',
+        autoDismiss: 1,
+      }));  
       navigate('/user/profile')
     }
   } catch (err) {
@@ -50,6 +66,11 @@ export function * updatePassword({payload}) {
       }, [])
       setErrors(errorMessages)
     } else {
+      yield put(error({
+        title: 'Alterar senha',
+        message: 'Não foi possível atualizar a senha. Por favor tente novamente em instantes.',
+        autoDismiss: 1,
+      }));  
       setErrors(['Não foi possível atualizar a senha. Por favor tente novamente em instantes.'])
     }
     yield put(actions.UPDATE_PASSWORD_FAILURE())

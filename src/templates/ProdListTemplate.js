@@ -2,12 +2,11 @@ import React from "react"
 import { useSelector } from 'react-redux'
 
 import Layout from "../components/layout"
-import SEO from "../components/seo"
-import MenuComponent from '../components/menu/menuItems'
+import Seo from "../components/seo"
 import StoreContainer from '../containers/Store'
 
 const ProdListTemplate = ({ pageContext: { modelData, title } }) => {
-  const { isFetching, filters } = useSelector(state => state.products)
+  const { filters } = useSelector(state => state.products)
   const formatShowcase = modelData.map(model => {
     const { products } = model
     let filteredProducts = products
@@ -70,7 +69,7 @@ const ProdListTemplate = ({ pageContext: { modelData, title } }) => {
   }).filter(item => item !== null)
   return (
     <Layout>
-        <SEO title={title} />
+        <Seo title={title} />
         <StoreContainer products={formatShowcase} />
     </Layout>
   )

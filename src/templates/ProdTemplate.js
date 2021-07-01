@@ -1,9 +1,9 @@
 import React from "react"
-import { graphql, useStaticQuery } from 'gatsby'
+import { graphql } from 'gatsby'
 import { getImage } from 'gatsby-plugin-image'
 
 import Layout from "../components/layout"
-import SEO from "../components/seo"
+import Seo from "../components/seo"
 import ProductUnit from '../containers/Products/productUnit'
 import MenuComponent from '../components/menu/menuItems'
 
@@ -82,7 +82,7 @@ const IndexPage = ({ pageContext: { product, model, productNodeId, modelNodeId }
   }
   return (
   <Layout>
-      <SEO title={product.name} />
+      <Seo title={product.name} />
       <MenuComponent />
       <ProductUnit product={formattedProducts} model={model} />
   </Layout>

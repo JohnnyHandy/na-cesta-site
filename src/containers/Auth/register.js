@@ -69,11 +69,11 @@ const RegisterContainer = () => {
           <Loading />
         ) : status === 'confirmed'
         ? (
-          <>
+          <div style={{ display: 'grid' }}>
             <FormTitle>Conta registrada</FormTitle>
             <span> Para continuar, confirme o seu email através das instruções enviadas par ao email cadastrado! </span>
-            <LoginLink to='/'> Ir para o login </LoginLink>
-          </>
+            <LoginLink to='/login'> Ir para o login </LoginLink>
+          </div>
         ) : null
         }
       </FormArea>
