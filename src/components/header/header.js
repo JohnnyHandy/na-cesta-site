@@ -31,7 +31,8 @@ const Header = ({ siteTitle, toggleMenu, reference }) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          border: '1px solid black'
+          border: '1px solid black',
+          maxHeight: '20vh'
         }}
       >
         <DesktopBreakpoint>

@@ -1,10 +1,9 @@
 import React from 'react'
-import { css } from '@emotion/core'
 import { useSelector } from 'react-redux'
 
 import UserTemplate from '../../templates/UserTemplate'
-import { colors } from '../../utils/constants'
 import { navigate } from 'gatsby'
+import { Container, Wrapper , spanCss, spanTitleCss, Button} from './UserContainer.styles'
 
 const genderOptions = [
   {
@@ -22,36 +21,6 @@ const genderOptions = [
   
 ]
 
-const spanCss = css`
-  font-size: 1em;
-  margin: 0.2em 0;
-  padding: 0.2em;
-`
-
-const spanTitleCss = css`
-font-size: 1.5em;
-margin: 0.5em 0;
-padding: 0.5em;
-
-`
-
-const Button = css`
-  background: ${colors.veranoBlue};
-  border: none;
-  color: white;
-  cursor: pointer;
-  font-family: Quicksand;
-  font-size: 1.5em;
-  font-weight: bold;
-  margin: 1em auto;
-  padding: 0.5em;
-  & :hover {
-    color: ${colors.veranoBlue};
-    background: white
-  }
-
-`
-
 const UserProfileContainer = (props) => {
   const { user } = useSelector(state => state.auth)
   const birthdayDate = new Date(user.birthday)
@@ -67,16 +36,8 @@ const UserProfileContainer = (props) => {
   }
   return (
     <UserTemplate {...props}>
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'flex'
-        }}
-      >
-        <div
-          style={{ margin: 'auto', display: 'grid', padding: '1em' }}
-        >
+      <Container>
+        <Wrapper>
           <span css={spanTitleCss} > Dados Pessoais </span>
           <span css={spanCss} > Nome: {user.name} </span>
           <span css={spanCss} > Telefone: { user.phone } </span>
@@ -84,17 +45,14 @@ const UserProfileContainer = (props) => {
           <span css={spanCss} > Data de nascimento: {year+'-' + month + '-'+dt} </span>
           <span css={spanCss} > CPF: {user.document} </span>
           <button css={Button} onClick={() => navigate('/user/edit/personal')} >Alterar dados pessoais</button>
-        </div>
-        <div
-          style={{ display: 'grid', padding: '1em' }}
-        >
+        </Wrapper>
+        <Wrapper>
           <span css={spanTitleCss} > Dados de acesso </span>
           <span css={spanCss} >Email: {user.email} </span>
           <button css={Button} onClick={() => navigate('/user/edit/email')}>Alterar Email</button>
           <button css={Button} onClick={() => navigate('/user/edit/password')}>Alterar senha</button>
-        </div>
-
-      </div>
+        </Wrapper>
+      </Container>
     </UserTemplate>
   )
 }

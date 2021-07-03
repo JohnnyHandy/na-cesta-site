@@ -19,7 +19,7 @@ const fetchCepInfo = (cep) => {
 
 
 let AddressFormComponent = (props) => {
-  const { formValues } = props
+  const { formValues, formName = 'register', initialValues } = props
   const dispatch = useDispatch()
   const cepFieldValue = formValues && formValues['cep']
   const stateFieldValue = formValues && formValues['state']
@@ -30,7 +30,7 @@ let AddressFormComponent = (props) => {
     const fetchStatesInfo = async () => {
       const response = await axios.get(fetchStatesUrl).then(res => res).catch(err => err.response)
       if (response.status === 200) {
-        const formattedData = response.data.map(item => ({
+        const formattedStateData = response.data.map(item => ({
           value: item.id,
           label: `${item.sigla} - ${item.nome}`,
           uf: item.sigla
@@ -39,10 +39,18 @@ let AddressFormComponent = (props) => {
           if(a.label > b.label) { return 1; }
           return 0;
       })
-        setStates(formattedData)
+        setStates(formattedStateData)
+        if(initialValues?.state) {
+          const initialStateValue = formattedStateData.find(state => state.label === initialValues.state)
+          if(initialValues?.city){
+            fetchCitiesInfo({ state: initialStateValue, city:initialValues.city })
+          }
+          dispatch(change(formName, 'state', initialStateValue))
+        }
       }
     }
     fetchStatesInfo()
+    
   }, [])
   const fetchCitiesInfo = async ({ city, state }) => {
     setLoadingCities(true)
@@ -60,7 +68,7 @@ let AddressFormComponent = (props) => {
       setCities(formattedData)
       if(city){
         const getCityInfo = formattedData.find(item => item.label === city)
-        dispatch(change('register', 'city', getCityInfo))
+        dispatch(change(formName, 'city', getCityInfo))
       }
     }
     setLoadingCities(false)
@@ -79,9 +87,9 @@ let AddressFormComponent = (props) => {
         }
       } = response
       const findstateFieldValue = statesList.find(item => item.uf === uf)
-      dispatch(change('register', 'neighbourhood', bairro))
-      dispatch(change('register', 'street', logradouro))
-      dispatch(change('register', 'state', findstateFieldValue))
+      dispatch(change(formName, 'neighbourhood', bairro))
+      dispatch(change(formName, 'street', logradouro))
+      dispatch(change(formName, 'state', findstateFieldValue))
       fetchCitiesInfo({ city: localidade, state: findstateFieldValue })
     }
   }

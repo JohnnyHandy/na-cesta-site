@@ -13,6 +13,7 @@ const StyledMenuItem = styled(MenuItem)`
   padding: 1em;
   margin: 0;
   outline: 1px solid black;
+  white-space: pre;
   & :hover {
     background: ${colors.veranoBlue};
     color: white;
@@ -23,21 +24,23 @@ const StyledMenu = styled(Menu)`
   margin: 0;
   text-align: center;
   padding: 1em;
-  font-size: 1.5em;
 `
 
 const UserContainerCss = css`
   display: flex;
   width: 100%;
   height: 100vh;
+  
 `
 
 const UserWrapperCss = css`
   background: ${colors.veranoSun};
   display: flex;
+  height: 60%;
+  justify-content: space-between;
   margin: auto;
   padding: 2em;
-
+  width: 60%;
 `
 
 const UserTemplate = ({ children, ...rest }) => {
@@ -66,9 +69,17 @@ const UserTemplate = ({ children, ...rest }) => {
               Meus Pedidos
           </StyledMenuItem>
           <Divider />
-          <StyledMenuItem key="3" > Meus endereços </StyledMenuItem>
+          <StyledMenuItem
+            onClick={() => navigate('/user/addresses')}
+            selected={location.pathname === '/user/addresses'}            
+            key="addresses"
+          >
+            Meus endereços
+          </StyledMenuItem>
         </StyledMenu>
-      <div>
+      <div
+        style={{ flexGrow: '1' }}
+      >
         {children}
       </div>
     </div>

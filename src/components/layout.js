@@ -77,7 +77,7 @@ const Layout = ({ children, ...rest }) => {
         </PhoneBreakpoint>
         <main
           style={{
-            // overflow: menu ? 'hidden' : 'scroll'
+            maxHeight: '80vh'
           }}
         >{children}</main>
         <footer style={{

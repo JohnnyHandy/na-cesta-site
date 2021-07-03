@@ -113,8 +113,9 @@ export function* updateCredentials({ payload }) {
 
 export function * verifyCredentials () {
   try {
-    yield call(services.verifyCredentials)
+    const response = yield call(services.verifyCredentials)
     yield put(actions.verifyCredentialsSuccess())
+    yield put(actions.updateUserInfo({ user: response.data.data }))
   } catch(error) {
     yield put(actions.verifyCredentialsFailure())
     yield put(actions.SIGN_OUT_SUCCESS())

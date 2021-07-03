@@ -4,7 +4,7 @@ import {
 } from 'redux-saga/effects';
 import { success, error } from 'react-notification-system-redux';
 
-import { updateCredentialsRequest, updateUserInfo } from '../auth'
+import { updateCredentialsRequest, updateUserInfo, verifyCredentialsRequest } from '../auth'
 import * as actions from './index'
 import * as services from './services'
 
@@ -77,6 +77,60 @@ export function * updatePassword({payload}) {
   }
 }
 
+export function * createAddress ({ payload }) {
+  const { data, setErrors, setStatus } = payload
+  try {
+    setStatus('loading')
+    const response = yield call(services.createAddress, data)
+    if(response.status === 201){
+      yield put(verifyCredentialsRequest())
+      yield put(success({
+        title: 'Criar endereço',
+        message: 'Endereço criado com sucesso',
+        autoDismiss: 1,
+      }));
+      yield put(actions.CREATE_ADDRESS_SUCCESS())
+    }
+  } catch (err) {
+    yield put(actions.CREATE_ADDRESS_FAILURE())
+    yield put(error({
+      title: 'Criar endereço',
+      message: 'Não foi possível criar o endereço. Por favor tente novamente em instantes.',
+      autoDismiss: 1,
+    }));  
+    setErrors(['Não foi possível criar o endereço. Por favor tente novamente em instantes.'])
+  } finally {
+    navigate('/user/addresses')
+  }
+}
+
+export function * updateAddress ({ payload }) {
+  const { data, setErrors, setStatus, addressId } = payload
+  try {
+    setStatus('loading')
+    const response = yield call(services.updateAddress, { params: data, addressId })
+    if(response.status === 201){
+      yield put(verifyCredentialsRequest())
+      yield put(success({
+        title: 'Editar endereço',
+        message: 'Endereço editado com sucesso',
+        autoDismiss: 1,
+      }));
+      yield put(actions.UPDATE_ADDRESS_SUCCESS())
+    }
+  } catch (err) {
+    yield put(actions.UPDATE_ADDRESS_FAILURE())
+    yield put(error({
+      title: 'Editar endereço',
+      message: 'Não foi possível editar o endereço. Por favor tente novamente em instantes.',
+      autoDismiss: 1,
+    }));  
+    setErrors(['Não foi possível editar o endereço. Por favor tente novamente em instantes.'])
+  } finally {
+    navigate('/user/addresses')
+  }
+}
+
 export function* watchUpdateUserData() {
   yield takeLatest(actions.UPDATE_USER_REQUEST, updateUser)
 }
@@ -85,9 +139,19 @@ export function* watchUpdatePassword(){
   yield takeLatest(actions.UPDATE_PASSWORD_REQUEST, updatePassword)
 }
 
+export function* watchCreateAddress(){
+  yield takeLatest(actions.CREATE_ADDRESS_REQUEST, createAddress)
+}
+
+export function* watchUpdateAddress() {
+  yield takeLatest(actions.UPDATE_ADDRESS_REQUEST, updateAddress)
+}
+
 export default function* userSaga() {
   yield all([
     watchUpdateUserData(),
-    watchUpdatePassword()
+    watchUpdatePassword(),
+    watchCreateAddress(),
+    watchUpdateAddress()
   ])
 }
