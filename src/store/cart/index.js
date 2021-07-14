@@ -22,7 +22,7 @@ export const CartReducer = createReducer(initialState, {
   }),
   [removeFromCart]: (state, action) => ({
     ...state,
-    items: state.items.filter(item => item.info.ProductId !== action.payload.id)
+    items: state.items.filter(item => item.product_id !== action.payload.id)
   }),
   [clearCart]: () => ({
     ...initialState

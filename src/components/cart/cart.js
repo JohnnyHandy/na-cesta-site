@@ -1,7 +1,9 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import styled from '@emotion/styled'
-import Img from 'gatsby-image'
+import { GatsbyImage } from 'gatsby-plugin-image'
 
+import { spanCss } from '../../containers/User/UserContainer.styles'
 import CustomRadio from '../inputs/radio'
 import { clearCart, registerOrderRequest } from '../../store/cart'
 import { generateId } from '../../utils/functions'
@@ -78,6 +80,7 @@ const ClearCartButton = styled('div')`
 `
 
 const CartItems = ({cartItems}) => cartItems.map(product => {
+  console.log('product', product)
   return (
     <div
     key={product.name}
@@ -90,9 +93,9 @@ const CartItems = ({cartItems}) => cartItems.map(product => {
       padding: '1em'
     }}
     >
-      <Img
-        fluid={product.image}
-        alt={product.image.src}
+      <GatsbyImage
+        image={product.image.image}
+        alt={product.name}
         style={{ width: '100px', height: '100px', margin: '0' }}
       />
       <div
@@ -110,15 +113,17 @@ const CartItems = ({cartItems}) => cartItems.map(product => {
             display: 'grid',
             gridTemplateColumns: '50% 50%',
             margin: '0 2em',
-            width: '15em'
+            columnGap: '2em'
           }}
         >
-          <span> Código: {product.code} </span>
-          <span> Quantidade: {product.quantity} </span>
-          <span> Tamanho: {product.size} </span>
-          <span> Cor: {product.colors} </span>
+          <span css={spanCss} style={{ whiteSpace: 'pre' }}> Código: {product.ref} </span>
+          <span css={spanCss}> Quantidade: {product.quantity} </span>
+          <span css={spanCss}> Tamanho: {product.size} </span>
+          <span css={spanCss} style={{ display: 'flex', alignItems: 'center' }}>
+            Cor:  <div style={{ background: product.color, width: '15px', height: '15px' }} />
+          </span>
         </div>
-        <span> Subtotal: R${product.isDeal ? product.dealPrice : product.price} </span>
+        <span> Subtotal: R${product.subtotal} </span>
         </div>
       </div>
     </div>
@@ -127,40 +132,21 @@ const CartItems = ({cartItems}) => cartItems.map(product => {
 
 
 const CartComponent = ({ cartItems, dispatch }) => {
+  const { id } = useSelector(state => state.auth.user)
   const subtotal = cartItems?.reduce((ac, item) => {
-    const { isDeal, dealPrice, price, quantity } = item
-    const finalPrice = isDeal ? dealPrice : price
-    return ac + (finalPrice * quantity)
+    return ac + item.subtotal
   }, 0)
   const deliverPrice = 0
   const discount = 0
   const total = subtotal + discount + deliverPrice
   const registerOrder = () => {
     const orderParams = {
-      ProductIds: cartItems.map(item => item.code),
-      UserId: 'test',
-      OrderId: generateId(7),
-      created_at: (new Date()).toISOString(),
-      orderDetails: {
-        discount: 0,
-        discountCode: '',
-        deliverMethod: '',
-        paymentMethod: '',
-        deliverCost: 0,
-        totalCost: total
-      },
-      products: cartItems.map(item => ({
-        ProductId: item.code,
-        color: item.color,
-        dealPrice: item.dealPrice,
-        isDeal: item.isDeal,
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity,
-        size: item.size
-      })),
-      totalPrice: total.toString(),
-      status: '0'
+      status: 0,
+      user_id: id,
+      ref: generateId(10),
+      order_items_attributes: cartItems,
+      coupon: 'coupon',
+      discount: null
     }
     dispatch(registerOrderRequest(orderParams))
   }

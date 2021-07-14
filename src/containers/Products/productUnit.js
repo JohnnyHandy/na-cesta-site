@@ -329,13 +329,17 @@ const ProductUnit = (props) => {
   const AddItemToCart = () => {
       const newCartItem = {
         quantity: quantity,
-        size: product['details'][sizeSelected]['size'],
-        color: product['details'][sizeSelected]['colors'][selectedColor]['colorId'],
+        size: product.stocks[sizeSelected]['size'],
+        color: product.color,
         name: product.name,
-        code: product.id,
-        price: product.price,
-        dealPrice: product.deal_price,
-        isDeal: product.is_deal
+        ref: product.ref,
+        subtotal: showPrice * quantity,
+        deal_price: product.deal_price,
+        is_deal: product.is_deal,
+        discount: product.discount,
+        description: product.description,
+        product_id: product.productId,
+        image: product.images[0]
       }
       dispatch(addToCart(newCartItem))
   }
@@ -375,10 +379,10 @@ const ProductUnit = (props) => {
                 </Badges>
                 
                 <GatsbyImage
-                            image={product.images[selectedImageIndex]['image']}
-                            alt={product.images[selectedImageIndex]['filename']}
-                            style={{ width: '400px', height: '400px' }}
-                        />
+                  image={product.images[selectedImageIndex]['image']}
+                  alt={product.images[selectedImageIndex]['filename']}
+                  style={{ width: '400px', height: '400px' }}
+                />
               </div>
 
                     </ImagesSectionDesktop>
@@ -458,9 +462,6 @@ const ProductUnit = (props) => {
 
                         </DetailSection>
                         <DetailSection>
-                            <BuyButtonDesktop>
-                                Comprar Agora
-                            </BuyButtonDesktop>
                             <BuyButtonDesktop
                                 onClick={AddItemToCart}
                             >
