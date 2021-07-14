@@ -7,7 +7,7 @@ import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai'
 import Checkbox from '../../components/inputs/checkbox/'
 import FilterCollapse from '../../components/filters/filterCollapse'
 import { DesktopBreakpoint, PhoneBreakpoint } from '../../components/responsive/devices'
-import { clearProductsList, filterProductsRequest, setFilters } from '../../store/products'
+import { setFilters } from '../../store/products'
 
 const FiltersWrapper = styled('div')`
     display: -webkit-flex;
@@ -50,14 +50,12 @@ export const Filters = () => {
             ? newSizeFilter = sizeFilters.filter(item => item !== value)
             : newSizeFilter = sizeFilters.concat(value)
             dispatch(setFilters({value: newSizeFilter, filter: 'size'}))
-            // setSizeFilters(newSizeFilter)
         } else if(type === 'price') {
             let newPriceFilter
             priceFilters.includes(value)
             ? newPriceFilter = priceFilters.filter(item => item !== value)
             : newPriceFilter = priceFilters.concat(value)
             dispatch(setFilters({value: newPriceFilter, filter: 'price'}))
-            // setPriceFilters(newPriceFilter)
         }
     }
     return(

@@ -207,7 +207,10 @@ const ImagesSlider = ({ images, setImageIndex, SlideRef }) => {
                                 cursor: 'pointer'
                             }}
                             onClick={() => setImageIndex(index)}
+                            onKeyDown={() => setImageIndex(index)}
+                            role='button'
                             key={image.filename}
+                            tabIndex={index}
                         >
                             <GatsbyImage
 
@@ -232,8 +235,11 @@ const ImagesSlider = ({ images, setImageIndex, SlideRef }) => {
                                         margin: '0.5em 0',
                                     }}
                                     onClick={() => setImageIndex(index)}
+                                    onKeyDown={() => setImageIndex(index)}
                                     key={image.filename}
                                     className='keen-slider__slide'
+                                    role='button'
+                                    tabIndex={index}
                                 >
                                     <GatsbyImage
                                         image={image.image}
@@ -259,7 +265,10 @@ const ImagesSlider = ({ images, setImageIndex, SlideRef }) => {
                             width: '75px'
                         }}
                         onClick={() => setImageIndex(index)}
+                        onKeyDown={() => setImageIndex(index)}
                         key={image.filename}
+                        role='button'
+                        tabIndex={index}
                     >
                         <GatsbyImage
                             image={image.image}
@@ -281,6 +290,9 @@ const SizeOptions = ({sizes, setSize, sizeSelected}) => sizes.map((item, index) 
     onClick={() => {
         setSize(index)
     }}
+    onKeyDown={() => {
+      setSize(index)
+    }}
     sizeSelected={sizeSelected === index}
     >
         <span style={{ margin: 'auto' }}> {item.size} </span>
@@ -299,6 +311,10 @@ const ColorOptions = ({ model, setColorIndex, selectedColor }) => model.products
                     setColorIndex(index)
                     navigate(path)
                 }}
+                onKeyDown={() => {
+                  setColorIndex(index)
+                  navigate(path)
+              }}
             />
         )
     } else {
@@ -312,7 +328,7 @@ const ColorOptions = ({ model, setColorIndex, selectedColor }) => model.products
 
 const ProductUnit = (props) => {
     const dispatch = useDispatch()
-    const { product, productIndex, model } = props
+    const { product, model } = props
     const showPrice = ((product.is_deal
     ? product.deal_price
     : product.discount
@@ -325,6 +341,7 @@ const ProductUnit = (props) => {
     const SlideRef = React.useRef(null)
     React.useEffect(() => {
         setColorIndex(model.products.findIndex(item => item.id === product.id))
+         // eslint-disable-next-line react-hooks/exhaustive-deps   
     }, [])
   const AddItemToCart = () => {
       const newCartItem = {
@@ -415,6 +432,7 @@ const ProductUnit = (props) => {
                         <DetailSection>
                             <QuantityControl
                                 onClick={() => setQuantity(quantity + 1)}
+                                onKeyDown={() => setQuantity(quantity + 1)}
                             >
                                 +
                             </QuantityControl>
@@ -423,6 +441,7 @@ const ProductUnit = (props) => {
                             </QuantityDisplay>
                             <QuantityControl
                                 onClick={() => quantity > 1 && setQuantity(quantity - 1)}
+                                onKeyDown={() => quantity > 1 && setQuantity(quantity - 1)}
                             >
                                 - 
                             </QuantityControl>
@@ -464,6 +483,7 @@ const ProductUnit = (props) => {
                         <DetailSection>
                             <BuyButtonDesktop
                                 onClick={AddItemToCart}
+                                onKeyDown={AddItemToCart}
                             >
                                 Adicionar à sacola
                             </BuyButtonDesktop>
@@ -511,6 +531,7 @@ const ProductUnit = (props) => {
                     <DetailSection>
                         <QuantityControl
                             onClick={() => setQuantity(quantity + 1)}
+                            onKeyDown={() => setQuantity(quantity + 1)}
                         >
                             +
                         </QuantityControl>
@@ -519,6 +540,7 @@ const ProductUnit = (props) => {
                         </QuantityDisplay>
                         <QuantityControl
                             onClick={() => quantity > 1 && setQuantity(quantity - 1)}
+                            onKeyDown={() => quantity > 1 && setQuantity(quantity - 1)}
                         >
                             - 
                         </QuantityControl>

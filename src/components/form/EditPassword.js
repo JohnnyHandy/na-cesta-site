@@ -2,7 +2,7 @@ import React from 'react'
 import { reduxForm, Field } from 'redux-form'
 
 import { InputsContainer, FormButton, FormComponent } from './form.styles'
-import { minPassLength, required, validConfirmPassword, validEmail } from './validation'
+import { minPassLength, required, validConfirmPassword } from './validation'
 import InputComponent from '../inputs/text/InputComponent'
 
 let EditEmailComponent = (props) => {

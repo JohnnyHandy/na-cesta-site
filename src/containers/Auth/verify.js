@@ -49,6 +49,7 @@ const VerifyUserContainer = ({ location }) => {
       const errorMsg = 'Erro ao resetar senha'
       !errors.includes(errorMsg) && setErrors(errors.concat(errorMsg))
     }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

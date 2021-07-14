@@ -11,6 +11,10 @@ const CustomRadio = ({ label }) => {
     >
     <div
       onClick={() => setChecked(!checked)}
+      onKeyDown={() => setChecked(!checked)}
+      role='checkbox'
+      aria-checked={checked}
+      tabIndex={0}
       style={{
         alignItems: 'center',
         border: '1px solid',

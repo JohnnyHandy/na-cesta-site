@@ -1,8 +1,6 @@
 import React from 'react'
-import { navigate } from 'gatsby'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from '@emotion/styled'
-import http from '../../utils/http'
 
 import Loading from '../../components/loading'
 import { SIGN_OUT_REQUEST, CONFIRM_ACCOUNT_REQUEST } from '../../store/auth'
@@ -48,6 +46,7 @@ const RegisterContainer = ({ location }) => {
       const errorMsg = 'Erro ao confirmar conta'
       !errors.includes(errorMsg) && setErrors(errors.concat(errorMsg))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

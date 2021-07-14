@@ -16,9 +16,11 @@ const RegisterContainer = () => {
   const [status, setStatus] = React.useState('waiting')
   const [errors, setErrors] = React.useState([])
   React.useEffect(() => {
-    if(state.auth.isLoggedIn){
+    const { isLoggedIn } = state.auth
+    if(isLoggedIn){
       navigate('/')
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const onSubmit = async (data) => {

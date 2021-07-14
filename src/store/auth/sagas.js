@@ -180,8 +180,8 @@ export function * confirmAccount ({ payload }){
   try {
     const response = yield call(services.confirmAccount, token)
     const redirectUrl = response.request.responseURL
-    var newURL = redirectUrl.replace (/^[a-z]{4,5}\:\/{2}[a-z]{1,}\:[0-9]{1,4}.(.*)/, '$1'); 
-    navigate(`/${newURL}`)
+    var newURL = new URL(redirectUrl)
+    navigate(newURL.pathname)
     yield put(success({
       title: 'Confirmação de conta',
       message: 'Conta confirmada com sucesso!',
@@ -210,8 +210,8 @@ export function * verifyReset ({payload}){
   try {
     const response = yield call(services.verifyReset, token)
     const redirectUrl = response.request.responseURL
-    var newURL = redirectUrl.replace (/^[a-z]{4,5}\:\/{2}[a-z]{1,}\:[0-9]{1,4}.(.*)/, '$1'); 
-    navigate(`/${newURL}`)
+    var newURL = new URL(redirectUrl)
+    navigate(newURL.pathname)
     yield put(success({
       title: 'Recuperação de senha',
       message: 'Verificação feita com sucesso!',

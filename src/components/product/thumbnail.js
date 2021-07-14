@@ -6,14 +6,7 @@ import styled from '@emotion/styled'
 import { PhoneBreakpoint, DesktopBreakpoint } from '../responsive/devices'
 import { colors } from '../../utils/constants'
 
-const CartButtonLandscape = styled('button')`
-    color: ${colors.veranoBronze};
-    cursor: pointer;
-    font-family: Quicksand;
-    font-size: 1vw;
-    margin: 1vh auto ;
-    width: 12vw;
-`
+
 const BuyNowButtonLandscape = styled('button') `
     color: ${colors.veranoBlue};
     cursor: pointer;
@@ -27,15 +20,6 @@ const BuyNowButtonPortrait = styled('button')`
     margin: 1vh auto;
     width: 25vw;
 }
-`
-
-const CartButtonPortrait = styled('button')`
-    color: ${colors.veranoBronze};
-    cursor: pointer;
-    font-family: Quicksand;
-    font-size: 4vw;
-    margin: 1vh auto;
-    width: 25vw;
 `
 
 const Badges = styled('div')`

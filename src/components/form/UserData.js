@@ -1,8 +1,5 @@
 import React from 'react'
-import { Field, reduxForm } from 'redux-form'
-import InputMask from 'react-input-mask'
-import Select from 'react-select'
-import styled from '@emotion/styled'
+import { Field } from 'redux-form'
 
 import { required,  minBRPhoneNumberLength, minCpfLength } from './validation'
 import { InputsContainer } from './form.styles'

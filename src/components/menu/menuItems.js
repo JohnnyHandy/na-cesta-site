@@ -69,11 +69,12 @@ const MenuItems = () => [
   </SpanItem>
 ))
 
-
-
-export default () => (
+const ExportableMenu = () => (
   <MenuContainer>
     <MenuItems />
   </MenuContainer>
 )
+
+
+export default ExportableMenu
 

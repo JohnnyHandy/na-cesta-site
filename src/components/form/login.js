@@ -1,7 +1,7 @@
 import React from 'react'
 import { Field, reduxForm } from 'redux-form'
 
-import { FormComponent, InputsContainer, FormTitle, LoginLink, FormButton} from './form.styles'
+import { FormComponent, InputsContainer, FormButton} from './form.styles'
 import InputComponent from '../inputs/text/InputComponent'
 
 

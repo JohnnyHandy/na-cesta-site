@@ -1,3 +1,5 @@
+
+/* eslint-disable react/style-prop-object */
 import React from 'react'
 import styled from '@emotion/styled'
 import { navigate } from 'gatsby'
@@ -127,7 +129,7 @@ const Menu = ({setMenu, menu, MenuIconRef}) => {
             return () => {
               document.removeEventListener('mousedown', handleClickOutside)
             }
-          }, [ref])    
+          }, [ref, MenuIconRef])    
     }
   
 

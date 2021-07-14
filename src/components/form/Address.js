@@ -50,7 +50,7 @@ let AddressFormComponent = (props) => {
       }
     }
     fetchStatesInfo()
-    
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const fetchCitiesInfo = async ({ city, state }) => {
     setLoadingCities(true)

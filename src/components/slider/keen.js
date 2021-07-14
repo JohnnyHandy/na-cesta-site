@@ -4,7 +4,7 @@ import { BiLeftArrow, BiRightArrow, BiUpArrow, BiDownArrow } from 'react-icons/b
 import "keen-slider/keen-slider.min.css"
 
 const KeenSlider = ({ children, vertical }) => {
-  const [currentSlide, setCurrentSlide] = React.useState(0)
+  const [, setCurrentSlide] = React.useState(0)
   const [sliderRef, slider] = useKeenSlider({
     initial: 0,
     slidesPerView: 4,

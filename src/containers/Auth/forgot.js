@@ -26,6 +26,7 @@ const ForgotPassword = ({ location }) => {
     if(location?.state?.reset?.success === false){
       setErrors([location.state.reset.error])
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return(
     <FormContainer>
