@@ -17,7 +17,7 @@ const LoginContainer = (props) => {
       navigate('/')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [isLoggedIn])
   const onSubmit = (data) => {
     dispatch(SIGN_IN_REQUEST({ data: data, setErrors, setStatus }))
   }

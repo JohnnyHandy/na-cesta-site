@@ -1,27 +1,30 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
+import { navigate } from 'gatsby'
 import styled from '@emotion/styled'
 import { GatsbyImage } from 'gatsby-plugin-image'
 
-import { spanCss } from '../../containers/User/UserContainer.styles'
-import CustomRadio from '../inputs/radio'
+import { spanCss, Button } from '../../containers/User/UserContainer.styles'
 import { clearCart, registerOrderRequest } from '../../store/cart'
 import { generateId } from '../../utils/functions'
 import { colors } from '../../utils/constants'
 
 const CartWrapper = styled('div')`
-    font-family: Quicksand;
-    min-height: 75vh;
+  display: flex;
+  font-family: Quicksand;
+  max-height:75vh;
+  min-height: 75vh;
 `
 
 const UpperWrapper = styled('div')`
     display: flex;
+    flex-grow: 1;
     justify-content: space-around;
     position: relative;
 `
 
 const CartTitleDesktop = styled('span')`
-    font-size: 2em;
+    font-size: 1.5em;
     font-weight: bolder;
 `
 const DetailSectionDesktop = styled('div')`
@@ -30,7 +33,7 @@ const DetailSectionDesktop = styled('div')`
     border: 1px solid;
     display: flex;
     flex-direction: column;
-    flex-grow: 0.8;
+    flex-grow: 1;
     padding: 1em;
 `
 
@@ -39,9 +42,9 @@ const SummaryWrapperDesktop = styled('div')`
     border: 1px solid;
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    flex-grow: 1;
+    justify-content: space-between;
     padding: 0.5em 0;
-    width: 25%;
 `
 const SummaryTitleDesktop = styled('span')`
     color: white;
@@ -56,6 +59,7 @@ const SummarySection = styled('div')`
     color: white;
     display: flex;
     justify-content: center;
+    margin: 0.5em 0;
     padding: 0.5em 0;
     width: 100%;
 `
@@ -80,13 +84,11 @@ const ClearCartButton = styled('div')`
 `
 
 const CartItems = ({cartItems}) => cartItems.map(product => {
-  console.log('product', product)
   return (
     <div
     key={product.name}
     style={{
       alignItems: 'center',
-      background: '#eaeaea',
       borderBottom: '1px solid white',
       borderRadius: '1em',
       display: 'flex',
@@ -132,7 +134,17 @@ const CartItems = ({cartItems}) => cartItems.map(product => {
 
 
 const CartComponent = ({ cartItems, dispatch }) => {
-  const { id } = useSelector(state => state.auth.user)
+  
+  const { user, isLoggedIn } = useSelector(state => state?.auth)
+  const [selectedAddress, setAddress] = React.useState()
+  console.log('selectedAddres', selectedAddress)
+  React.useEffect(() => {
+    if(!isLoggedIn){
+      navigate('/')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const subtotal = cartItems?.reduce((ac, item) => {
     return ac + item.subtotal
   }, 0)
@@ -142,7 +154,7 @@ const CartComponent = ({ cartItems, dispatch }) => {
   const registerOrder = () => {
     const orderParams = {
       status: 0,
-      user_id: id,
+      user_id: user?.id,
       ref: generateId(10),
       order_items_attributes: cartItems,
       coupon: 'coupon',
@@ -162,39 +174,115 @@ const CartComponent = ({ cartItems, dispatch }) => {
             }}
           >
             <CartTitleDesktop> Sacola </CartTitleDesktop>
+            <span> Confira a lista de produtos um endereço </span>
             <ClearCartButton onClick={() => dispatch(clearCart())} > Limpar sacola </ClearCartButton>
           </div>
           <div 
-            style={{ width: '100%', margin: '1em 0' }}>
+            style={{ width: '100%', background: '#eaeaea',margin: '0.5em 0', overflow: 'auto', minHeight: '50%' }}>
               <CartItems cartItems={cartItems} />
           </div>
+          <CartTitleDesktop> Entrega </CartTitleDesktop>
+          <span> Escolha um endereço </span>
           <div
-            style={{ width: '100%',  margin: '1em 0' }}
+            style={{ width: '100%', background: '#eaeaea',   margin: '0.5em 0', overflow: 'auto' }}
           >
-            <CartTitleDesktop> Entrega </CartTitleDesktop>
-            <div
-              style={{
-                padding: '1em 0'
-              }}
-            >
-              <CustomRadio label={'Opção 1'} />
-              <CustomRadio label={'Opção 2'} />
-            </div>
+              {
+              user.addresses.map(address => {
+                const { cep, street, number, complement, neighbourhood, city, state } = address
+                return (
+                  <div style={{ display: 'grid', gridTemplateColumns: '50% 50%', border: `1px solid ${colors.veranoBlue}` }}>
+                  {cep && (
+                    <span css={spanCss} > CEP: {cep} </span>
+                  )}
+                  {street && (
+                    <span css={spanCss} > Rua: {street} </span>
+                  )}
+                  {number && (
+                    <span css={spanCss} > Número: {number} </span>
+                  )}
+                  {complement && (
+                    <span css={spanCss} > Complemento: {complement} </span>
+                  )}
+                  {neighbourhood && (
+                    <span css={spanCss} > Bairro: {neighbourhood} </span>
+                  )}
+                  {city && (
+                    <span css={spanCss} > Cidade: {city} </span>
+                  )}
+                  {state && (
+                    <span css={spanCss} > Estado: {state} </span>
+                  )}
+                  <div
+                    style={{ gridColumn: '1/-1', margin: 'auto' }}
+                  >
+                    <button
+                        css={Button}
+                        style={{ fontSize: '1em', margin:'0.5em'}}
+                        onClick={() => {
+                          setAddress(address)
+                        }}
+                    >
+                      Usar endereço
+                    </button>
+                    <button
+                      css={Button}
+                      style={{ fontSize: '1em', margin:'0.5em'}}
+                      onClick={() => navigate('edit', {
+                        state: {
+                          addressId: address.id,
+                          origin: 'cart'
+                        }
+                      })}
+                    > 
+                      Editar endereço
+                    </button>
+                  </div>
+                  </div>
+                )
+              })
+            }
           </div>
         </DetailSectionDesktop>
         <SummaryWrapperDesktop>
-          <SummaryTitleDesktop> Calcular frete e prazo </SummaryTitleDesktop>
-          <SummarySection>
-            <input />
-            <CalcButtonDesktop> Calcular </CalcButtonDesktop>
-          </SummarySection>
-          <SummaryTitleDesktop> Cupom de desconto </SummaryTitleDesktop>
-          <SummarySection>
-            <input />
-            <CalcButtonDesktop> Aplicar </CalcButtonDesktop>
-          </SummarySection>
-          <SummaryTitleDesktop> Resumo do pedido </SummaryTitleDesktop>
           <SummarySection style={{ flexDirection: 'column' }}>
+          <SummaryTitleDesktop> Cupom de desconto </SummaryTitleDesktop>
+
+            <div style={{ display: 'flex' }}>
+              <input />
+              <CalcButtonDesktop> Aplicar </CalcButtonDesktop>
+            </div>
+          </SummarySection>
+          <SummarySection style={{ flexDirection: 'column' }}>
+            <SummaryTitleDesktop> Resumo do pedido </SummaryTitleDesktop>
+            {selectedAddress &&
+            <>
+              <span style={{ fontWeight: 'bold' }}> Endereço de entrega </span>
+              <div style={{ display: 'grid', gridTemplateColumns: '50% 50%', border: `1px solid ${colors.veranoBlue}` }}>
+                {selectedAddress.cep && (
+                  <span css={spanCss} style={{ color: 'white' }} > CEP: {selectedAddress.cep} </span>
+                )}
+                {selectedAddress.street && (
+                  <span css={spanCss} style={{ color: 'white' }} > Rua: {selectedAddress.street} </span>
+                )}
+                {selectedAddress.number && (
+                  <span css={spanCss} style={{ color: 'white' }} > Número: {selectedAddress.number} </span>
+                )}
+                {selectedAddress.complement && (
+                  <span css={spanCss} style={{ color: 'white' }} > Complemento: {selectedAddress.complement} </span>
+                )}
+                {selectedAddress.neighbourhood && (
+                  <span css={spanCss} style={{ color: 'white' }} > Bairro: {selectedAddress.neighbourhood} </span>
+                )}
+                {selectedAddress.city && (
+                  <span css={spanCss} style={{ color: 'white' }} > Cidade: {selectedAddress.city} </span>
+                )}
+                {selectedAddress.state && (
+                  <span css={spanCss} style={{ color: 'white' }} > Estado: {selectedAddress.state} </span>
+                )}
+              </div>
+            </>
+            }
+            <span style={{ fontWeight: 'bold' }}> Valores </span>
             <SummaryValueWrapper>
               <span> Subtotal </span>
               <span> R${subtotal.toFixed(2)} </span>
@@ -205,11 +293,11 @@ const CartComponent = ({ cartItems, dispatch }) => {
             </SummaryValueWrapper>
             <SummaryValueWrapper>
               <span>Entrega</span>
-              <span>R${deliverPrice}</span>
+              <span>Grátis</span>
             </SummaryValueWrapper>
             <SummaryValueWrapper style={{ fontWeight: 'bolder' }}>
               <span> Total </span>
-              <span> R${total} </span>
+              <span> R${total.toFixed(2)} </span>
             </SummaryValueWrapper>
             <CalcButtonDesktop
               onClick={registerOrder}
