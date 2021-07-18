@@ -31,6 +31,7 @@ export const FormButton = styled('button')`
 
 export const FormComponent = styled('form')`
   display: grid;
+  flex-grow: 1;
 `
 
 export const FormTitle = styled('label')`

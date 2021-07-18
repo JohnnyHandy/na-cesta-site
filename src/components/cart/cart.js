@@ -9,6 +9,8 @@ import { clearCart, registerOrderRequest } from '../../store/cart'
 import { generateId } from '../../utils/functions'
 import { colors } from '../../utils/constants'
 
+import Checkout from '../checkout/checkout'
+
 const CartWrapper = styled('div')`
   display: flex;
   font-family: Quicksand;
@@ -162,6 +164,10 @@ const CartComponent = ({ cartItems, dispatch }) => {
     }
     dispatch(registerOrderRequest(orderParams))
   }
+  const checkoutInfo = {
+    amount: subtotal.toFixed(2) * 100,
+    currency: 'BRL',
+  }
   return (
     <CartWrapper>
       <UpperWrapper>
@@ -173,8 +179,10 @@ const CartComponent = ({ cartItems, dispatch }) => {
               width: '100%'
             }}
           >
-            <CartTitleDesktop> Sacola </CartTitleDesktop>
-            <span> Confira a lista de produtos um endereço </span>
+            <div style={{ display: 'grid' }}>
+              <CartTitleDesktop> Sacola </CartTitleDesktop>
+              <span> Confira a lista de produtos um endereço </span>
+            </div>
             <ClearCartButton onClick={() => dispatch(clearCart())} > Limpar sacola </ClearCartButton>
           </div>
           <div 
@@ -190,7 +198,7 @@ const CartComponent = ({ cartItems, dispatch }) => {
               user.addresses.map(address => {
                 const { cep, street, number, complement, neighbourhood, city, state } = address
                 return (
-                  <div style={{ display: 'grid', gridTemplateColumns: '50% 50%', border: `1px solid ${colors.veranoBlue}` }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '30% 30% 30%', border: `1px solid ${colors.veranoBlue}` }}>
                   {cep && (
                     <span css={spanCss} > CEP: {cep} </span>
                   )}
@@ -306,6 +314,7 @@ const CartComponent = ({ cartItems, dispatch }) => {
             </CalcButtonDesktop>
           </SummarySection>
         </SummaryWrapperDesktop>
+        <Checkout checkoutInfo={checkoutInfo} user={user} address={selectedAddress} />
       </UpperWrapper>
     </CartWrapper>
   )

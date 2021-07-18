@@ -10,9 +10,7 @@ import { verifyCredentialsRequest } from '../store/auth'
 
 const { store, persistor } = configureStore();
 
-const stripePromise = loadStripe(process.env.PUBLISHABLE_KEY,{
-  stripeAccount: '{{CONNECTED_STRIPE_ACCOUNT_ID}}'
-})
+const stripePromise = loadStripe(process.env.PUBLISHABLE_KEY)
 
 export const OnRouteChange = ({ location }) => {
     if(store.getState().auth.isLoggedIn) {
