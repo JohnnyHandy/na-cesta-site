@@ -14,6 +14,7 @@ import CartSagas from './cart/sagas'
 import { AuthReducer } from './auth';
 import AuthSaga from './auth/sagas';
 import UserSaga from './user/sagas'
+import OrdersSaga from './orders/sagas'
 
 import { addTokenToRequest } from './middlewares'
 
@@ -30,7 +31,8 @@ export function* rootSaga() {
     ProductSagas(),
     CartSagas(),
     AuthSaga(),
-    UserSaga()
+    UserSaga(),
+    OrdersSaga()
   ]);
 }
 

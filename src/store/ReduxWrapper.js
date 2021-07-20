@@ -19,7 +19,6 @@ export const OnRouteChange = ({ location }) => {
 }
 
 const ReduxWrapper =  ({ element }) => {
-  console.log('proccess', process.env.PUBLISHABLE_KEY)
     return (
     <Provider store={store}>
         <PersistGate

@@ -3,11 +3,11 @@ import styled from '@emotion/styled'
 import { css } from '@emotion/core'
 import { navigate } from 'gatsby'
 import { GatsbyImage } from 'gatsby-plugin-image'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { DesktopBreakpoint, PhoneBreakpoint } from '../../components/responsive/devices'
 
 import KeenSlider from '../../components/slider/keen'
-import { addToCart } from '../../store/cart'
+import { updateCart } from '../../store/cart'
 import { colors } from '../../utils/constants'
 
 const ProductUnitWrapper = styled('div')`
@@ -328,6 +328,7 @@ const ColorOptions = ({ model, setColorIndex, selectedColor }) => model.products
 
 const ProductUnit = (props) => {
     const dispatch = useDispatch()
+    const { cart } = useSelector(state => state)
     const { product, model } = props
     const showPrice = ((product.is_deal
     ? product.deal_price
@@ -344,6 +345,19 @@ const ProductUnit = (props) => {
          // eslint-disable-next-line react-hooks/exhaustive-deps   
     }, [])
   const AddItemToCart = () => {
+    const cartItemIds = cart.items?.map(item => item.ref)
+    let newCartList
+    if(cartItemIds.includes(product.ref)){
+      newCartList = cart.items.map(item => {
+        if(item.ref === product.ref){
+          return({
+            ...item,
+            quantity: item.quantity + quantity
+          })
+        }
+        return item
+      })
+    } else {
       const newCartItem = {
         quantity: quantity,
         size: product.stocks[sizeSelected]['size'],
@@ -351,6 +365,7 @@ const ProductUnit = (props) => {
         name: product.name,
         ref: product.ref,
         subtotal: showPrice * quantity,
+        unitPrice: showPrice,
         deal_price: product.deal_price,
         is_deal: product.is_deal,
         discount: product.discount,
@@ -358,7 +373,9 @@ const ProductUnit = (props) => {
         product_id: product.productId,
         image: product.images[0]
       }
-      dispatch(addToCart(newCartItem))
+      newCartList = cart.items.concat(newCartItem)
+    }
+      dispatch(updateCart(newCartList))
   }
     return(
         <>

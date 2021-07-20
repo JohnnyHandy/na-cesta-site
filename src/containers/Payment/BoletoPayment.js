@@ -60,22 +60,18 @@ const BoletoPaymentProgress = ({ status }) => {
   )
 }
 
-const Checkout = ({ checkoutInfo, user, address, status, setStatus }) => {
+const BoletoCheckout = ({ checkoutInfo, user, address, status, setStatus, orderParams, createOrder }) => {
   const stripe = useStripe({ location: 'pt-BR' });
   const elements = useElements({ location: 'pt-BR' });
 
   const onSubmit = async (event) => {
-    // We don't want to let default form submission happen here,
-    // which would refresh the page.
-
     if (!stripe || !elements) {
-      // Stripe.js has not yet loaded.
-      // Make  sure to disable form submission until Stripe.js has loaded.
       return;
     }
       const params = {
         ...checkoutInfo,
-        payment_method_types: ['boleto']
+        payment_method_types: ['boleto'],
+        receipt_email: 'duarterogerpeixoto@gmail.com',
       }
 
       await createPaymentIntent(params).then(async res => {
@@ -104,20 +100,24 @@ const Checkout = ({ checkoutInfo, user, address, status, setStatus }) => {
           }
         ).then(confirmRes => {
            setStatus('finish')
-            console.log('confirmRes', confirmRes)
             const { paymentIntent } = confirmRes
-            console.log('payment intent', paymentIntent)
+            
+            const newOrder = {
+              ...orderParams,
+              payment_id: paymentIntent.id,
+              payment_method: 'boleto',
+              payment_status: 0,
+              boleto_pdf: paymentIntent.next_action.boleto_display_details.pdf,
+            }
+            createOrder(newOrder)
           }).catch((err) => {
-            console.log('[error 3]', err);
             setStatus('error')
           });
         }
       }).catch((err) => {
-        console.log('[error 2]', err);
         setStatus('error')
       })
   };
-  console.log('address', address, 'status', status)
   return (
     <FormArea style={{ margin: 0, textAlign: 'initial' }}>
       { address === undefined ? (
@@ -137,4 +137,4 @@ const Checkout = ({ checkoutInfo, user, address, status, setStatus }) => {
   )
 }
 
-export default Checkout
+export default BoletoCheckout

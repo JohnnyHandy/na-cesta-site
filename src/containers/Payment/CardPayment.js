@@ -61,8 +61,7 @@ const CardPaymentProgress = ({ status }) => {
   )
 }
 
-const Checkout = ({ checkoutInfo, user, status, setStatus }) => {
-  console.log('status', status)
+const Checkout = ({ checkoutInfo, user, status, setStatus, orderParams, createOrder }) => {
   const stripe = useStripe({ location: 'pt-BR' });
   const elements = useElements({ location: 'pt-BR' });
 
@@ -85,14 +84,14 @@ const Checkout = ({ checkoutInfo, user, status, setStatus }) => {
     });
 
     if (error) {
-      console.log('[error 1]', error);
       setStatus('error')
     } else {
       setStatus('create')
       const { id } = paymentMethod
       const params = {
         ...checkoutInfo,
-        payment_method: id
+        payment_method: id,
+        receipt_email: 'duarterogerpeixoto@gmail.com',
       }
       await createPaymentIntent(params).then(async res => {
         if(res.status === 200) {
@@ -110,16 +109,19 @@ const Checkout = ({ checkoutInfo, user, status, setStatus }) => {
             }
           ).then(confirmRes => {
             setStatus('finish')
-            console.log('confirmRes', confirmRes)
-            const { paymentIntent } = res.data
-            console.log('paymentIntent', paymentIntent)
+            const { paymentIntent } = confirmRes
+            const newOrder = {
+              ...orderParams,
+              payment_id: paymentIntent.id,
+              payment_method: 'card',
+              payment_status: 1,
+            }
+            createOrder(newOrder)
           }).catch((err) => {
-            console.log('[error 3]', err);
             setStatus('error')
           });
         }
       }).catch((err) => {
-        console.log('[error 2]', err);
         setStatus('error')
       })
     }

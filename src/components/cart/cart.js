@@ -3,13 +3,15 @@ import { useSelector } from 'react-redux'
 import { navigate } from 'gatsby'
 import styled from '@emotion/styled'
 import { GatsbyImage } from 'gatsby-plugin-image'
+import { FaRegPlusSquare, FaRegMinusSquare } from 'react-icons/fa'
 
 import { spanCss, Button } from '../../containers/User/UserContainer.styles'
-import { clearCart, registerOrderRequest } from '../../store/cart'
+import { clearCart, updateCart } from '../../store/cart'
 import { generateId } from '../../utils/functions'
 import { colors } from '../../utils/constants'
 
 import Checkout from '../checkout/checkout'
+import { css } from '@emotion/core'
 
 const CartWrapper = styled('div')`
   display: flex;
@@ -85,7 +87,7 @@ const ClearCartButton = styled('div')`
     padding: 0.5em;
 `
 
-const CartItems = ({cartItems}) => cartItems.map(product => {
+const CartItems = ({cartItems, updateCartItems}) => cartItems.map(product => {
   return (
     <div
     key={product.name}
@@ -121,11 +123,21 @@ const CartItems = ({cartItems}) => cartItems.map(product => {
           }}
         >
           <span css={spanCss} style={{ whiteSpace: 'pre' }}> Código: {product.ref} </span>
-          <span css={spanCss}> Quantidade: {product.quantity} </span>
           <span css={spanCss}> Tamanho: {product.size} </span>
           <span css={spanCss} style={{ display: 'flex', alignItems: 'center' }}>
             Cor:  <div style={{ background: product.color, width: '15px', height: '15px' }} />
           </span>
+          <span css={spanCss}> Preço unitário: {product.unitPrice} </span>
+          <div style={{ display: 'grid' }}>
+            <span css={spanCss}> Quantidade: </span>
+            <div
+              style={{ display: 'flex', alignItems: 'center' }}
+            >
+              <FaRegMinusSquare onClick={() => updateCartItems(product.ref, -1)} />
+                <input value={product.quantity} css={css`width: 2em`} />
+              <FaRegPlusSquare onClick={() => updateCartItems(product.ref, 1)} />
+            </div>
+          </div>
         </div>
         <span> Subtotal: R${product.subtotal} </span>
         </div>
@@ -136,10 +148,27 @@ const CartItems = ({cartItems}) => cartItems.map(product => {
 
 
 const CartComponent = ({ cartItems, dispatch }) => {
-  
+  const updateCartItems = (ref, operand) => {
+      const cartItemInfo = cartItems.find(item => item.ref === ref)
+      let newCartList = cartItems
+      if(cartItemInfo) {
+        if(cartItemInfo.quantity + operand <= 0){
+          newCartList = cartItems.filter(item => item.ref !== ref)
+        } else {
+          newCartList = cartItems.map(item => {
+            return({
+              ...item,
+              quantity: item.quantity + operand,
+              subtotal: item.unitPrice * (item.quantity + operand)
+            })
+          })
+        }
+      }
+      dispatch(updateCart(newCartList))
+
+  }
   const { user, isLoggedIn } = useSelector(state => state?.auth)
   const [selectedAddress, setAddress] = React.useState()
-  console.log('selectedAddres', selectedAddress)
   React.useEffect(() => {
     if(!isLoggedIn){
       navigate('/')
@@ -151,21 +180,24 @@ const CartComponent = ({ cartItems, dispatch }) => {
     return ac + item.subtotal
   }, 0)
   const deliverPrice = 0
-  const discount = 0
+  const discount = null
   const total = subtotal + discount + deliverPrice
-  const registerOrder = () => {
-    const orderParams = {
-      status: 0,
-      user_id: user?.id,
-      ref: generateId(10),
-      order_items_attributes: cartItems,
-      coupon: 'coupon',
-      discount: null
-    }
-    dispatch(registerOrderRequest(orderParams))
+  const orderParams = {
+    status: 0,
+    discount: null,
+    coupon: null,
+    ref: generateId(10),
+    user_id: user?.id,
+    address_id: selectedAddress?.id,
+    order_items_attributes: cartItems.map(item => {
+      const {ref, unitPrice, image, ...rest} = item
+      return({...rest})
+    }),
+    tracking_code: null,
+    total: total
   }
   const checkoutInfo = {
-    amount: subtotal.toFixed(2) * 100,
+    amount: total.toFixed(2) * 100,
     currency: 'BRL',
   }
   return (
@@ -187,7 +219,7 @@ const CartComponent = ({ cartItems, dispatch }) => {
           </div>
           <div 
             style={{ width: '100%', background: '#eaeaea',margin: '0.5em 0', overflow: 'auto', minHeight: '50%' }}>
-              <CartItems cartItems={cartItems} />
+              <CartItems updateCartItems={updateCartItems} cartItems={cartItems} />
           </div>
           <CartTitleDesktop> Entrega </CartTitleDesktop>
           <span> Escolha um endereço </span>
@@ -307,14 +339,18 @@ const CartComponent = ({ cartItems, dispatch }) => {
               <span> Total </span>
               <span> R${total.toFixed(2)} </span>
             </SummaryValueWrapper>
-            <CalcButtonDesktop
-              onClick={registerOrder}
-            >
+            <CalcButtonDesktop>
               Finalizar compra
             </CalcButtonDesktop>
           </SummarySection>
         </SummaryWrapperDesktop>
-        <Checkout checkoutInfo={checkoutInfo} user={user} address={selectedAddress} />
+        <Checkout
+          checkoutInfo={checkoutInfo}
+          user={user}
+          address={selectedAddress}
+          cartItems={cartItems}
+          orderParams={orderParams}
+        />
       </UpperWrapper>
     </CartWrapper>
   )
