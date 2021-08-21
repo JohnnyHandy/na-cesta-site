@@ -15,13 +15,8 @@ const ResetPasswordContainer = ({ location }) => {
   const state = useSelector(state => state)
   const isFormValid = isValid('editUserPassword')(state)
   const dispatch = useDispatch()
+  const queryparams = new URLSearchParams(location.search)
 
-  const onSubmit = async (data) => {
-    const formattedData = {
-      ...data,
-    }
-    dispatch(PASSWORD_RESET_REQUEST({ data: formattedData, setErrors, setStatus, headers: headers }))
-  }
   React.useEffect(() => {
     if(state.auth.isLoggedIn){
       dispatch(SIGN_OUT_REQUEST())
@@ -33,18 +28,21 @@ const ResetPasswordContainer = ({ location }) => {
       'expiry',
       'uid'
     ]
-    const queryparams = new URLSearchParams(location.search)
    acceptedHeaders.forEach(header => {
       if(queryparams.has(header) && queryparams.get(header) !== ''){
         newHeaders[header] = queryparams.get(header)
       }
     })
-    if(Object.keys(newHeaders).length < 4){
-      navigate('/login')
-    }
     setHeaders(newHeaders)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+  const onSubmit = async (data) => {
+    const formattedData = {
+      ...data,
+      reset_password_token: queryparams.get('reset_password_token')
+    }
+    dispatch(PASSWORD_RESET_REQUEST({ data: formattedData, setErrors, setStatus, headers: headers }))
+  }
 
   return(
     <FormContainer>

@@ -61,8 +61,16 @@ export function* signOut() {
 export function * signUp({ payload }) {
   const { data, setErrors, setStatus } = payload
   try {
+    const params = {
+      data: {
+        type: 'registrations',
+        attributes: {
+          ...data
+        }
+      }
+    }
     setStatus('loading')
-    const response = yield call(services.signUp, data)
+    const response = yield call(services.signUp, params)
     if(response.status === 201){
       yield put(success({
         title: 'Criar conta',
@@ -125,20 +133,28 @@ export function * verifyCredentials () {
 export function * sendPasswordReset ({ payload }) {
   const { data, setStatus, setErrors } = payload
   try {
-    setStatus('loading')
-    yield call(services.sendPasswordReset, data)
+    setStatus && setStatus('loading')
+    const params = {
+      data: {
+        type: 'passwords',
+        attributes: {
+          ...data
+        }
+      }
+    }
+    yield call(services.sendPasswordReset, params)
     yield put(actions.SEND_PASSWORD_RESET_SUCCESS())
     yield put(success({
-      title: 'Recuperar senha',
-      message: 'Verifique instruções enviadas para o seu email!',
-      autoDismiss: 1,
+      title: 'Alterar ou recuperar senha',
+      message: 'Instruções para recuperaçao/alteraçao de senha foram enviadas para o seu email!',
+      autoDismiss: 5,
     }));
-    setStatus('confirmed')
+    setStatus && setStatus('confirmed')
   } catch(err) {
-    setStatus('waiting')
-    setErrors(['Falha ao enviar email. Favor tentar novamente em instantes.'])
+    setStatus && setStatus('waiting')
+    setErrors && setErrors(['Falha ao enviar email. Favor tentar novamente em instantes.'])
     yield put(error({
-      title: 'Recuperar senha',
+      title: 'Alterar ou recuperar senha',
       message: 'Falha ao enviar email. Favor tentar novamente em instantes.',
       autoDismiss: 1,
     }));
@@ -148,10 +164,18 @@ export function * sendPasswordReset ({ payload }) {
 }
 
 export function * resetPassword ({ payload }) {
-  const { setStatus, setErrors, ...rest} = payload
+  const { setStatus, setErrors, data, headers} = payload
   try {
+    const params = {
+      data: {
+        type: 'passwords',
+        attributes: {
+          ...data
+        }
+      }
+    }
     setStatus('loading')
-    yield call(services.resetPassword, {...rest})
+    yield call(services.resetPassword, {data: params, headers})
     yield put(actions.PASSWORD_RESET_SUCCESS())
     yield put(success({
       title: 'Alterar senha',
@@ -206,17 +230,18 @@ export function * confirmAccount ({ payload }){
 }
 
 export function * verifyReset ({payload}){
-  const { token, setErrors } = payload
+  const { token, setErrors, setStatus} = payload
   try {
     const response = yield call(services.verifyReset, token)
     const redirectUrl = response.request.responseURL
     var newURL = new URL(redirectUrl)
-    navigate(newURL.pathname)
     yield put(success({
       title: 'Recuperação de senha',
       message: 'Verificação feita com sucesso!',
       autoDismiss: 1,
     }));
+    setStatus('confirmed')
+    navigate(`/reset/${newURL.search}`)
     yield put(actions.VERIFY_RESET_SUCCESS())
   } catch(err) {
     yield put(actions.VERIFY_RESET_FAILURE())

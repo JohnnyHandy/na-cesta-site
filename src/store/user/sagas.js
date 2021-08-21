@@ -12,11 +12,26 @@ export function * updateUser({ payload }){
   const { data, id, setErrors, setStatus } = payload
   try {
     setStatus('loading')
-    const response = yield call(services.updateUser, { params: data, id })
+    const params = {
+      data: {
+        id,
+        type: 'users',
+        attributes: {
+          ...data
+        }
+      }
+    }
+    const response = yield call(services.updateUser, { params, id })
     if(response.status === 200){
       yield put(updateCredentialsRequest(response.headers))
-      yield put(updateUserInfo({ user: response.data }))
+      yield put(updateUserInfo({ user: response.data.data.attributes }))
       yield put(actions.UPDATE_USER_SUCCESS())
+      if(Object.keys(data).length === 1 && Object.keys(data).includes('email')){
+        yield put (success({
+          title: 'Alterar email',
+          message: 'Para confirmar alteraçao email, foi enviada uma mensagem de confirmaçao para seu novo email'
+        }))
+      }
       yield put(success({
         title: 'Alterar dados',
         message: 'Dados alterados com sucesso!',
@@ -40,7 +55,16 @@ export function * updatePassword({payload}) {
   const {data, setErrors, setStatus} = payload
   try { 
     setStatus('loading')
-    const response = yield call(services.updatePassword, data)
+    const params = {
+      data: {
+        id: data.id,
+        type: 'passwords',
+        attributes: {
+          ...data
+        }
+      }
+    }
+    const response = yield call(services.updatePassword, params)
     if(response.status === 200){
       yield put(updateCredentialsRequest(response.headers))
       yield put(actions.UPDATE_PASSWORD_SUCCESS())
@@ -81,7 +105,15 @@ export function * createAddress ({ payload }) {
   const { data, setErrors, setStatus } = payload
   try {
     setStatus('loading')
-    const response = yield call(services.createAddress, data)
+    const params = {
+      data: {
+        type: 'addresses',
+        attributes: {
+          ...data
+        }
+      }
+    }
+    const response = yield call(services.createAddress, params)
     if(response.status === 201){
       yield put(verifyCredentialsRequest())
       yield put(success({
@@ -108,7 +140,16 @@ export function * updateAddress ({ payload }) {
   const { data, setErrors, setStatus, addressId } = payload
   try {
     setStatus('loading')
-    const response = yield call(services.updateAddress, { params: data, addressId })
+    const params = {
+      data: {
+        id: addressId,
+        type: 'addresses',
+        attributes: {
+          ...data
+        }
+      }
+    }
+    const response = yield call(services.updateAddress, { params, addressId })
     if(response.status === 201){
       yield put(verifyCredentialsRequest())
       yield put(success({

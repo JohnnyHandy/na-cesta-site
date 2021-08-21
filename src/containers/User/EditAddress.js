@@ -30,14 +30,14 @@ const CreateAddressContainer = ({ location }) => {
   }, [])
 
   const onSubmit = async (data) => {
-    const { city, state , ...rest } = data
+    const { city, state, id: addressId, created_at, updated_at, ...rest } = data
     const formattedData = {
       ...rest,
       city: city.label,
       state: state.label,
       user_id: id
   }
-    dispatch(UPDATE_ADDRESS_REQUEST({ data: formattedData, setStatus, setErrors, addressId: location.state.addressId }))
+    dispatch(UPDATE_ADDRESS_REQUEST({ data: formattedData, setStatus, setErrors, addressId: addressId }))
   }
   
   return(

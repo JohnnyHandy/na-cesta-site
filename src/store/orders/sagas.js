@@ -8,7 +8,15 @@ import { updateCredentialsRequest } from '../auth'
 
 export function * createOrders ({ payload }) {
   try {
-    const response = yield call(services.createOrder, payload)
+    const params = {
+      data: {
+        type: 'orders',
+        attributes: {
+          ...payload
+        }
+      }
+    }
+    const response = yield call(services.createOrder, params)
     yield put(updateCredentialsRequest(response.headers))
     yield put(actions.CREATE_ORDER_SUCCESS())
   } catch (err) {

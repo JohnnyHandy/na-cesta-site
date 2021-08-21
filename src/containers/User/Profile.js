@@ -1,8 +1,10 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
-
-import UserTemplate from '../../templates/UserTemplate'
+import { useSelector, useDispatch } from 'react-redux'
 import { navigate } from 'gatsby'
+
+import { SEND_PASSWORD_RESET_REQUEST } from '../../store/auth'
+import UserTemplate from '../../templates/UserTemplate'
+import { host } from '../../utils/http'
 import { Container, Wrapper , spanCss, spanTitleCss, Button} from './UserContainer.styles'
 
 const genderOptions = [
@@ -23,6 +25,7 @@ const genderOptions = [
 
 const UserProfileContainer = (props) => {
   const { user } = useSelector(state => state.auth)
+  const dispatch = useDispatch()
   const birthdayDate = new Date(user.birthday)
   const year = birthdayDate.getFullYear();
   let month = birthdayDate.getMonth()+1;
@@ -33,6 +36,14 @@ const UserProfileContainer = (props) => {
   }
   if (month < 10) {
     month = '0' + month;
+  }
+  const sendPasswordResetRequest = () => {
+    dispatch(SEND_PASSWORD_RESET_REQUEST({
+      data: {
+        email: user.email,
+        redirect_url: `${host}/reset`
+      },
+    }))
   }
   return (
     <UserTemplate {...props}>
@@ -50,7 +61,7 @@ const UserProfileContainer = (props) => {
           <span css={spanTitleCss} > Dados de acesso </span>
           <span css={spanCss} >Email: {user.email} </span>
           <button css={Button} onClick={() => navigate('/user/edit/email')}>Alterar Email</button>
-          <button css={Button} onClick={() => navigate('/user/edit/password')}>Alterar senha</button>
+          <button css={Button} onClick={() => sendPasswordResetRequest()}>Alterar senha</button>
         </Wrapper>
       </Container>
     </UserTemplate>
